@@ -55,15 +55,11 @@ $subpanel_layout = array(
 		),
 		'name'=>array(
 			'vname' => 'LBL_LIST_NAME',
-		 	'target_module' => 'Employees',
 		 	'module' => 'Users',
-			'target_module' => 'Employees',
-		    'widget_class' => 'SubPanelDetailViewLink',
 	 		'width' => '35%',
 		),
 		'email1'=>array(
 			'vname' => 'LBL_LIST_EMAIL',
-			'widget_class' => 'SubPanelEmailLink',
 			'width' => '35%',
 		),
 		'phone_work'=>array (

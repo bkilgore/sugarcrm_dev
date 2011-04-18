@@ -47,7 +47,8 @@ global $currentModule;
 global $gridline;
 
 
-echo getClassicModuleTitle('Customize Fields', array('Customize Fields'), false);
+// echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_UPGRADE_TITLE'], true);
+echo get_module_title('Customize Fields', 'Customize Fields', true);
 
 ?>
 <table cellspacing="<?php echo $gridline; ?>" class="other view">

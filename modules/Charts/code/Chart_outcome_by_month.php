@@ -199,7 +199,7 @@ echo "<P align='center'><span class='chartFootnote'>".$current_module_strings['L
 
 <?php
 	if (file_exists($sugar_config['tmp_dir'].$cache_file_name)) {
-		$file_date = $timedate->asUser($timedate->fromTimestamp(filemtime($sugar_config['tmp_dir'].$cache_file_name)));
+		$file_date = date($timedate->get_date_format()." ".$timedate->get_time_format(), filemtime($sugar_config['tmp_dir'].$cache_file_name));
 	}
 	else {
 		$file_date = '';
@@ -223,10 +223,10 @@ echo get_validate_chart_js();
 	*/
 	function gen_xml($date_start='1971-10-15', $date_end='2010-10-15', $user_id=array('1'), $cache_file_name='a_file', $refresh=false,$current_module_strings) {
 		global $app_strings, $app_list_strings, $charset, $lang, $barChartColors, $current_user;
-
-		$kDelim = $current_user->getPreference('num_grp_sep');
+		
+		$kDelim = $current_user->getPreference('num_grp_sep');	
 		global $timedate;
-
+		
 		if (!file_exists($cache_file_name) || $refresh == true) {
 			$GLOBALS['log']->debug("date_start is: $date_start");
 			$GLOBALS['log']->debug("date_end is: $date_end");
@@ -248,8 +248,8 @@ echo get_validate_chart_js();
 			}
 
 			// cn: adding user-pref date handling
-			$dateStartDisplay = $timedate->asUserDate($timedate->fromString($date_start));
-			$dateEndDisplay = $timedate->asUserDate($timedate->fromString($date_end));
+			$dateStartDisplay = date($timedate->get_date_format(), strtotime($date_start));
+			$dateEndDisplay = date($timedate->get_date_format(), strtotime($date_end));
 
 			$opp = new Opportunity();
 			//build the where clause for the query that matches $date_start and $date_end
@@ -260,7 +260,7 @@ echo get_validate_chart_js();
 			//Now do the db queries
 			//query for opportunity data that matches $datay and $user
 			//_pp($query);
-
+					
 			$result = $opp->db->query($query)
 			or sugar_die("Error selecting sugarbean: ".mysql_error());
 			//build pipeline by sales stage data
@@ -274,7 +274,7 @@ echo get_validate_chart_js();
 			global $current_user;
 			$salesStages = array("Closed Lost"=>$app_list_strings['sales_stage_dom']["Closed Lost"],"Closed Won"=>$app_list_strings['sales_stage_dom']["Closed Won"],"Other"=>$other);
 			if($current_user->getPreference('currency') ){
-
+				
 				$currency = new Currency();
 				$currency->retrieve($current_user->getPreference('currency'));
 				$div = $currency->conversion_rate;
@@ -362,7 +362,7 @@ echo get_validate_chart_js();
 		return $return;
 
 	}
-
+	
 	function constructQuery(){
 		global $current_user;
 		global $timedate;
@@ -401,7 +401,7 @@ echo get_validate_chart_js();
 		else {
 			$date_end = date('Y').'-12-31';
 		}
-
+				
 		$ids = array();
 		//get list of user ids for which to display data
 		$user_ids = $current_user->getPreference('obm_ids');
@@ -422,9 +422,9 @@ echo get_validate_chart_js();
 			$ids = get_user_array(false);
 			$ids = array_keys($ids);
 		}
-
+		
 		$user_id = $ids;
-
+		
 		$where = "";
 		//build the where clause for the query that matches $user
 		$count = count($user_id);
@@ -439,22 +439,22 @@ echo get_validate_chart_js();
 		}
 
 		// cn: adding user-pref date handling
-		$dateStartDisplay = $timedate->asUserDate($timedate->fromString($date_start));
-		$dateEndDisplay = $timedate->asUserDate($timedate->fromString($date_end));
+		$dateStartDisplay = date($timedate->get_date_format(), strtotime($date_start));
+		$dateEndDisplay = date($timedate->get_date_format(), strtotime($date_end));
 
 		$opp = new Opportunity();
 		//build the where clause for the query that matches $date_start and $date_end
 		$where .= "AND opportunities.date_closed >= ".db_convert("'".$date_start."'",'date')." AND opportunities.date_closed <= ".db_convert("'".$date_end."'",'date')." AND opportunities.deleted=0";
 		$query = "SELECT sales_stage,".db_convert('opportunities.date_closed','date_format',array("'%Y-%m'"),array("'YYYY-MM'"))." as m, sum(amount_usdollar/1000) as total, count(*) as opp_count FROM opportunities ";
 		$query .= "WHERE ".$where;
-		$query .= " GROUP BY sales_stage,".db_convert('opportunities.date_closed','date_format',array("'%Y-%m'"),array("'YYYY-MM'"))."ORDER BY m";
+		$query .= " GROUP BY sales_stage,".db_convert('opportunities.date_closed','date_format',array("'%Y-%m'"),array("'YYYY-MM'"))."ORDER BY m";		
 		return $query;
 	}
-
+	
 	function constructGroupBy(){
 		return array( 'm', 'sales_stage', );
 	}
-
+	
 }
 
 ?>

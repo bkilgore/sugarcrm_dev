@@ -44,8 +44,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
   //increate timeout for phpo script execution
   ini_set('max_execution_time',300);
   //ajaxInit();
-
-
+  
+  
   require_once("include/OutboundEmail/OutboundEmail.php");
   require_once("include/ytree/Tree.php");
   require_once("include/ytree/ExtNode.php");
@@ -80,7 +80,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 			//get the forward header and add to description
             $forward_header = $email->getForwardHeader();
 
-            $ret['description'] = $forward_header . $ret['description'];
+            $ret['description'] = $forward_header . $ret['description']; 
             if ($_REQUEST['composeType'] == 'forward') {
             	$ret = $ie->email->et->getDraftAttachments($ret);
             }
@@ -117,7 +117,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
          */
     case "sendEmail":
         $GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: sendEmail");
-
+        
 
         $sea = new SugarEmailAddress();
 
@@ -130,7 +130,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
         if (isset($_REQUEST['uid']) && !empty($_REQUEST['uid'])) {
         	$email->uid = $_REQUEST['uid'];
         }
-
+        
         if ($email->email2Send($_REQUEST)) {
             $ret = array(
                 'composeLayoutId'  => $_REQUEST['composeLayoutId'],
@@ -179,18 +179,18 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
         $out['signatures'] = $sigs;
         $out['fromAccounts'] = $email->et->getFromAccountsArray($ie);
         $out['errorArray'] = array();
-
+        
         $oe = new OutboundEmail();
         if( $oe->doesUserOverrideAccountRequireCredentials($current_user->id) )
         {
-            $overideAccount = $oe->getUsersMailerForSystemOverride($current_user->id);
+            $overideAccount = $oe->getUsersMailerForSystemOverride($current_user->id);    
             //If the user override account has not been created yet, create it for the user.
             if($overideAccount == null)
                 $overideAccount = $oe->createUserSystemOverrideAccount($current_user->id);
-
+                
 		    $out['errorArray'] = array($overideAccount->id => $app_strings['LBL_EMAIL_WARNING_MISSING_USER_CREDS']);
-        }
-
+        }     
+        
         $ret = $json->encode($out);
         echo $ret;
         break;
@@ -234,7 +234,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
     case "getTemplateAttachments":
         $GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: getTemplateAttachments");
         if(isset($_REQUEST['parent_id']) && !empty($_REQUEST['parent_id'])) {
-
+            
 
             $where = "parent_id='{$_REQUEST['parent_id']}'";
             $order = "";
@@ -385,7 +385,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 	            	if (!empty($ie->email->reply_to_addr)) {
 	            		$emailAddressWithName = $ie->email->reply_to_addr;
 	            	} // if
-
+					
 	            	$emailAddress = SugarEmailAddress::_cleanAddress($emailAddressWithName);
 	            	$contactIds = $ie->email->emailAddress->getRelatedId($emailAddress, 'contacts');
 	            	if (!empty($contactIds)) {
@@ -425,11 +425,11 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
                 echo $out;
             }
             else
-                echo $ret['html'];
-
+                echo $ret['html']; 
+                
     	}
     break;
-
+    
     case "relateEmails":
     	if (isset($_REQUEST['uid']) && !empty($_REQUEST['uid']) &&
     	       isset($_REQUEST['parent_id']) && !empty($_REQUEST['parent_id']) &&
@@ -708,7 +708,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
                 $ret = $ie->email->et->getDraftAttachments($ret, $ie);
             	$ret = $ie->email->et->getFromAllAccountsArray($ie, $ret);
 
-
+            	
                 $out = $json->encode($ret, true);
                 echo $out;
             } else {
@@ -732,7 +732,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
         					</td>
         				</tr>
 eoq;
-        		}
+        		}  
                 echo $json->encode($out);
             }
         } else {
@@ -896,7 +896,7 @@ eoq;
 
     case "updateSubscriptions":
         $GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: updateSubscriptions");
-        if(isset($_REQUEST['subscriptions']) && !empty($_REQUEST['subscriptions']))
+        if(isset($_REQUEST['subscriptions']) && !empty($_REQUEST['subscriptions'])) 
         {
             $subs = explode("::", $_REQUEST['subscriptions']);
             $childrenSubs = array();
@@ -904,10 +904,10 @@ eoq;
             //them to the list of folders to show.
             foreach ($subs as $singleSub)
                 $email->et->folder->findAllChildren($singleSub, $childrenSubs);
-
+            
             $subs = array_merge($subs, $childrenSubs);
             $email->et->folder->setSubscriptions($subs);
-        }
+        } 
         elseif(empty($_REQUEST['subscriptions'])) {
             $email->et->folder->clearSubscriptions();
         }
@@ -1052,7 +1052,7 @@ eoq;
             echo $out;
         break;
 
-
+    	
     case "rebuildFolders":
         $GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: rebuildFolders");
         $tree = $email->et->getMailboxNodes(false);
@@ -1084,7 +1084,7 @@ eoq;
 		$results = array('outbound_account_list' => $outbounds, 'count' => count($outbounds));
 		$out = $json->encode($results, false);
 		echo $out;
-
+		
     	break;
 
     case "editOutbound":
@@ -1098,7 +1098,6 @@ eoq;
             foreach($oe->field_defs as $def) {
                 $ret[$def] = $oe->$def;
             }
-            $ret['mail_smtppass']=''; // don't send back the password
 
             $out = $json->encode($ret, true);
             echo $out;
@@ -1110,16 +1109,16 @@ eoq;
 
     case "deleteOutbound":
         $GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: deleteOutbound");
-        if(isset($_REQUEST['outbound_email']) && !empty($_REQUEST['outbound_email']))
+        if(isset($_REQUEST['outbound_email']) && !empty($_REQUEST['outbound_email'])) 
         {
             $oe = new OutboundEmail();
             global $current_user;
             $oe->retrieve($_REQUEST['outbound_email']);
             $affectedInboundAccounts = $oe->getAssociatedInboundAccounts($current_user);
-
+            
             //Check if the user has confirmed he wants to delete the email account even if associated to an inbound accnt.
             $confirmedDelete = ( isset($_REQUEST['confirm']) && $_REQUEST['confirm'] ) ? TRUE : FALSE;
-
+             
             if( count($affectedInboundAccounts) > 0 && !$confirmedDelete)
             {
                 $results = array('is_error' => true, 'error_message' => $app_strings['LBL_EMAIL_REMOVE_SMTP_WARNING'] , 'outbound_email' => $_REQUEST['outbound_email']);
@@ -1129,15 +1128,15 @@ eoq;
                 $oe->delete();
                 $results = array('is_error' => false, 'error_message' => '');
             }
-
+            
             $out = $json->encode($results);
             @ob_end_clean();
             ob_start();
             echo $out;
             ob_end_flush();
             die();
-        }
-        else
+        } 
+        else 
         {
             echo "NOOP";
         }
@@ -1148,7 +1147,6 @@ eoq;
 
         $oe = new OutboundEmail();
         $oe->id = $_REQUEST['mail_id'];
-        $oe->retrieve($oe->id);
         $oe->name = $_REQUEST['mail_name'];
         $type = empty($_REQUEST['type']) ? 'user' : $_REQUEST['type'];
         $oe->type = $type;
@@ -1160,13 +1158,11 @@ eoq;
         $oe->mail_smtpssl = $_REQUEST['mail_smtpssl'];
         $oe->mail_smtpauth_req = isset($_REQUEST['mail_smtpauth_req']) ? 1 : 0;
         $oe->mail_smtpuser = $_REQUEST['mail_smtpuser'];
-        if(!empty($_REQUEST['mail_smtppass'])) {
-            $oe->mail_smtppass = $_REQUEST['mail_smtppass'];
-        }
+        $oe->mail_smtppass = $_REQUEST['mail_smtppass'];
         $oe = $oe->save();
 		echo $oe->id;
         break;
-
+        
     case "saveDefaultOutbound":
    		global $current_user;
     	$GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: saveDefaultOutbound");
@@ -1177,24 +1173,13 @@ eoq;
     case "testOutbound":
         $GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: testOutbound");
 
-        $pass = '';
-        if(!empty($_REQUEST['mail_smtppass'])) {
-            $pass = $_REQUEST['mail_smtppass'];
-        } elseif(isset($_REQUEST['mail_name'])) {
-            $oe = new OutboundEmail();
-            $oe = $oe->getMailerByName($current_user, $_REQUEST['mail_name']);
-            if(!empty($oe)) {
-                $pass = $oe->mail_smtppass;
-            }
-        }
-        $out = $email->sendEmailTest($_REQUEST['mail_smtpserver'], $_REQUEST['mail_smtpport'], $_REQUEST['mail_smtpssl'],
-        							(isset($_REQUEST['mail_smtpauth_req']) ? 1 : 0), $_REQUEST['mail_smtpuser'],
-        							$pass, $_REQUEST['outboundtest_from_address'], $_REQUEST['outboundtest_from_address']);
-        							
+        $out = $email->sendEmailTest($_REQUEST['mail_smtpserver'], $_REQUEST['mail_smtpport'], $_REQUEST['mail_smtpssl'], 
+        							(isset($_REQUEST['mail_smtpauth_req']) ? 1 : 0), $_REQUEST['mail_smtpuser'], 
+        							$_REQUEST['mail_smtppass'], $_REQUEST['outboundtest_from_address'], $_REQUEST['outboundtest_from_address']);
         $out = $json->encode($out);
         echo $out;
         break;
-
+                
     case "rebuildShowAccount":
         $GLOBALS['log']->debug("********** EMAIL 2.0 - Asynchronous - at: rebuildShowAccount");
         $ret = $email->et->getShowAccountsOptions($ie);
@@ -1279,16 +1264,16 @@ eoq;
                     if (isset($ie->$k))
                     $ret[$k] = $ie->$k;
                 }
-
+                
                 $out = $json->encode($ret);
                 echo $out;
             }
-
+            
             //If the user is saving the username/password then we need to update the outbound account.
             $outboundMailUser = (isset($_REQUEST['mail_smtpuser'])) ? $_REQUEST['mail_smtpuser'] : "";
             $outboundMailPass = (isset($_REQUEST['mail_smtppass'])) ? $_REQUEST['mail_smtppass'] : "";
             $outboundMailId = (isset($_REQUEST['outbound_email'])) ? $_REQUEST['outbound_email'] : "";
-
+            
             if( !empty($outboundMailUser) && !empty($outboundMailPass) && !empty($outboundMailId) )
             {
                 $oe = new OutboundEmail();
@@ -1296,8 +1281,8 @@ eoq;
                 $oe->mail_smtpuser = $outboundMailUser;
                 $oe->mail_smtppass = $outboundMailPass;
                 $oe->save();
-            }
-
+            }     
+            
         } else {
             echo "NOOP";
         }
@@ -1329,7 +1314,6 @@ eoq;
 
                 $ret[$k] = $ie->$k;
             }
-            unset($ret['email_password']); // no need to send the password out
 
             $out = $json->encode($ret);
         } else {
@@ -1369,13 +1353,13 @@ eoq;
 
         $metalist = $email->searchImportedEmails();
         $out = $email->et->jsonOuput($metalist, 'Email', $metalist['totalCount']);
-
+        
         @ob_end_clean();
         ob_start();
         echo $out;
         ob_end_flush();
         die();
-
+        
         break;
         ////    END SEARCH
         ///////////////////////////////////////////////////////////////////////////
@@ -1541,7 +1525,7 @@ eoq;
         	$wheres['last_name'] = $_REQUEST['search_field'];
         	$wheres['email_address'] = $_REQUEST['search_field'];
         }
-
+        
         if(isset($_REQUEST['person']) && !empty($_REQUEST['person'])) {
             $person = $_REQUEST['person'];
         }
@@ -1563,19 +1547,19 @@ eoq;
 	            $count = $row['c'];
 	        }
 	        $time = microtime(true);
-
+	        
 	        //Handle sort and order requests
 	        $sort = !empty($_REQUEST['sort']) ? $_REQUEST['sort'] : "id";
 	        $sort = ($sort == 'bean_id') ? 'id' : $sort;
-	        $sort = ($sort == 'email') ? 'email_address' : $sort;
+	        $sort = ($sort == 'email') ? 'email_address' : $sort; 
 	        $sort = ($sort == 'name') ? 'last_name' : $sort;
 	        $direction = !empty($_REQUEST['dir']) ? $_REQUEST['dir'] : "asc";
 	        $order = ( !empty($sort) && !empty($direction) ) ? " ORDER BY {$sort} {$direction}" : "";
-
+	       
 	        $r = $ie->db->limitQuery($qArray['query'] . " $order ", $start, 25, true);
 	        $GLOBALS['log']->debug("***QUERY Got results in " . (microtime(true) - $time) . " milisec\n");
-
-
+	
+	        
 	        while($a = $ie->db->fetchByAssoc($r)) {
 	            $person = array();
 	            $person['bean_id'] = $a['id'];

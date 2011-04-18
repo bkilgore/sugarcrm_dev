@@ -47,8 +47,13 @@ require_once('include/vCard.php');
 
 class ViewVcard extends SugarView
 {
-	public $type = 'detail';
+	var $type ='detail';
 	
+    public function __construct()
+    {
+ 		parent::SugarView();
+ 	}
+ 	
 	/**
      * @see SugarView::display()
      */

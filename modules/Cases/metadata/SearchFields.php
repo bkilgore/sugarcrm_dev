@@ -44,12 +44,5 @@ $searchFields['Cases'] =
         'case_number' => array( 'query_type'=>'default', 'operator'=>'in'),      
         'current_user_only'=> array('query_type'=>'default','db_field'=>array('assigned_user_id'),'my_items'=>true, 'vname' => 'LBL_CURRENT_USER_FILTER', 'type' => 'bool'),
         'assigned_user_id'=> array('query_type'=>'default'),
-		'open_only' => array(
-			'query_type'=>'default',
-			'db_field'=>array('status'),
-			'operator'=>'not in',
-			'closed_values' => array('Closed', 'Rejected', 'Duplicate'),
-			'type'=>'bool',
-		),		
     );
 ?>

@@ -42,47 +42,20 @@ class SugarFieldBool extends SugarFieldBase {
 	/**
 	 *
 	 * @return The html for a drop down if the search field is not 'my_items_only' or a dropdown for all other fields.
-	 *			This strange behavior arises from the special needs of PM. They want the my items to be checkboxes and all other boolean fields to be dropdowns.
+	 *			This strange behavior arises from the special needs of PM. They want the my items to be checkboxes and all other boolean fields to be dropdowns.			
 	 * @author Navjeet Singh
-	 * @param $parentFieldArray -
+	 * @param $parentFieldArray - 
 	 **/
 	function getSearchViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
 		$this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-		//If there was a type override to specifically render it as a boolean, show the EditView checkbox
-		if( preg_match("/(favorites|current_user|open)_only.*/", $vardef['name']))
-		{
-			return $this->fetch($this->findTemplate('EditView'));
-		} else {
-			return $this->fetch($this->findTemplate('SearchView'));
-		}
+		if( preg_match("/current_user_only.*/", $vardef['name']) || preg_match("/favorites_only.*/", $vardef['name']) )
+			return $this->fetch('include/SugarFields/Fields/Bool/EditView.tpl');
+		else
+			return $this->fetch('include/SugarFields/Fields/Bool/SearchView.tpl');
+		
 	}
-
-    /**
-     * @see SugarFieldBase::importSanitize()
-     */
-    public function importSanitize(
-        $value,
-        $vardef,
-        $focus,
-        ImportFieldSanitize $settings
-        )
-    {
-        $bool_values = array(0=>'0',1=>'no',2=>'off',3=>'n',4=>'yes',5=>'y',6=>'on',7=>'1');
-        $bool_search = array_search($value,$bool_values);
-        if ( $bool_search === false ) {
-            return false;
-        }
-        else {
-            //Convert all the values to a real bool.
-            $value = (int) ( $bool_search > 3 );
-        }
-        if ( isset($vardef['dbType']) && $vardef['dbType'] == 'varchar' )
-            $value = ( $value ? 'on' : 'off' );
-
-        return $value;
-    }
-
-    public function getEmailTemplateValue($inputField, $vardef, $context = null){
+    	
+    public function getEmailTemplateValue($inputField, $vardef, $displayParams = array(), $tabindex = 0){
         global $app_list_strings;
         // This does not return a smarty section, instead it returns a direct value
         if ( $inputField == 'bool_true' || $inputField === true ) { // Note: true must be absolute true
@@ -104,7 +77,7 @@ class SugarFieldBool extends SugarFieldBase {
         } else {
             $unformattedField = true;
         }
-
+        
         return $unformattedField;
     }
 

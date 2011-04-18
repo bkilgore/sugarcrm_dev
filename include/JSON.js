@@ -38,7 +38,7 @@ a.push(s.string(i),':',v);b=true;}}}}
 a[a.length]='}';return a.join('');}
 return'null';},string:function(x){var unicode=new String;for(var i=0;i<x.length;i++){var temp=x.charCodeAt(i).toString(16);while(temp.length<4){temp="0"+temp;}
 unicode+='\\u'+temp;}
-return'"'+unicode+'"';}};return{stringify:function(v){var f=s[typeof v];if(f){v=f(v);if(typeof v==='string'){var securityEnvelope='{"asynchronous_key": "'+asynchronous_key+'", "jsonObject": '+v+'}';return securityEnvelope;}}
+return'"'+unicode+'"';}};return{stringify:function(v){var f=s[typeof v];if(f){v=f(v);if(typeof v==='string'){var securityEnvelope="{asynchronous_key:'"+asynchronous_key+"', jsonObject:"+v+"}";return securityEnvelope;}}
 return;},destringify:function(str){},stringifyNoSecurity:function(v){var f=s[typeof v];if(f){v=f(v);if(typeof v==='string'){return v;}}
 return;},destringify:function(str){},parse:function(text){text=text.replace(/^\s*|\s*$/,'');if(text.substr){if(text.substr(0,11)=="while(1);/*"){text=text.substr(11);text=text.substr(0,(text.length-2));}}
 try{if(/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,'@').replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,']').replace(/(?:^|:|,)(?:\s*\[)+/g,''))){return eval('('+text+')');}else{return false;}}catch(e){return false;}},parseNoSecurity:function(text){try{if(/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,'@').replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,']').replace(/(?:^|:|,)(?:\s*\[)+/g,''))){return eval('('+text+')');}else{return false;}}catch(e){return false;}}};}();

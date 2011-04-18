@@ -51,10 +51,10 @@ $viewdefs['Prospects']['DetailView'] = array(
 'panels' =>array (
   'lbl_prospect_information' => array(
   array (
-    array (
-    'name'=>'full_name',
+    'full_name',
+    
+    
     ),
-  ),
 
   array (
     'title',
@@ -70,9 +70,7 @@ $viewdefs['Prospects']['DetailView'] = array(
   ),
   
   array (
-    array (
-        'name' => 'account_name',
-    ),  
+    'account_name',
   	'phone_fax',
   ),
   

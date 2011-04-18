@@ -503,17 +503,11 @@ FP;
     $enabled_tabs[] = 'Contacts';
     $enabled_tabs[] = 'Opportunities';    
     $enabled_tabs[] = 'Leads';
-    $enabled_tabs[] = 'Calendar';
+    $enabled_tabs[] = 'Activities';
     $enabled_tabs[] = 'Documents';
     $enabled_tabs[] = 'Emails';
     $enabled_tabs[] = 'Campaigns';
-    $enabled_tabs[] = 'Calls';
-    $enabled_tabs[] = 'Meetings';
-    $enabled_tabs[] = 'Tasks';
-    $enabled_tabs[] = 'Notes';
     $enabled_tabs[] = 'Cases';
-    $enabled_tabs[] = 'Prospects';
-    $enabled_tabs[] = 'ProspectLists';
     
     
     require_once('modules/MySettings/TabController.php');

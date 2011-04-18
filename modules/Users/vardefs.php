@@ -68,7 +68,7 @@ $dictionary['User'] = array(
             'reportable' => false,
             'massupdate' => false,
         ) ,
-
+        
         'pwd_last_changed' => array(
             'name' => 'pwd_last_changed',
             'vname' => 'LBL_PSW_MODIFIED',
@@ -317,7 +317,7 @@ $dictionary['User'] = array(
             'name' => 'address_postalcode',
             'vname' => 'LBL_ADDRESS_POSTALCODE',
             'type' => 'varchar',
-            'len' => '20',
+            'len' => '9',
         ) ,
         'deleted' => array(
             'name' => 'deleted',
@@ -336,8 +336,12 @@ $dictionary['User'] = array(
         'employee_status' => array(
             'name' => 'employee_status',
             'vname' => 'LBL_EMPLOYEE_STATUS',
-            'type' => 'enum',
-            'options' => 'employee_status_dom',
+            'type' => 'varchar',
+            'function' => array(
+                'name' => 'getEmployeeStatusOptions',
+                'returns' => 'html',
+                'include' => 'modules/Employees/EmployeeStatus.php'
+            ) ,
             'len' => 100,
         ) ,
         'messenger_id' => array(
@@ -349,8 +353,12 @@ $dictionary['User'] = array(
         'messenger_type' => array(
             'name' => 'messenger_type',
             'vname' => 'LBL_MESSENGER_TYPE',
-            'type' => 'enum',
-            'options' => 'messenger_type_dom',
+            'type' => 'varchar',
+            'function' => array(
+                'name' => 'getMessengerTypeOptions',
+                'returns' => 'html',
+                'include' => 'modules/Employees/EmployeeStatus.php'
+            ) ,
             'len' => 100,
         ) ,
         'calls' => array(
@@ -493,15 +501,7 @@ $dictionary['User'] = array(
             'side' => 'right',
             'vname' => 'LBL_HOLIDAYS',
         ) ,
-       'eapm' =>
-		  array (
-		    'name' => 'eapm',
-		    'type' => 'link',
-		    'relationship' => 'eapm_assigned_user',
-		    'vname' => 'LBL_ASSIGNED_TO_USER',
-		    'source'=>'non-db',
-		  ),
-
+        
     ) ,
     'indices' => array(
         array(
@@ -529,32 +529,32 @@ $dictionary['User'] = array(
   		'users_users_signatures' =>
   		   array(
   		       'lhs_module'=> 'Users',
-  		       'lhs_table'=> 'users',
+  		       'lhs_table'=> 'users', 
   		       'lhs_key' => 'id',
-  		       'rhs_module'=> 'UserSignature',
-  		       'rhs_table'=> 'users_signatures',
+  		       'rhs_module'=> 'UserSignature', 
+  		       'rhs_table'=> 'users_signatures', 
   		       'rhs_key' => 'user_id',
   		       'relationship_type'=>'one-to-many'
   		       ),
-    	'users_email_addresses' =>
+    	'users_email_addresses' => 
 		    array(
 		        'lhs_module'=> "Users", 'lhs_table'=> 'users', 'lhs_key' => 'id',
 		        'rhs_module'=> 'EmailAddresses', 'rhs_table'=> 'email_addresses', 'rhs_key' => 'id',
 		        'relationship_type'=>'many-to-many',
-		        'join_table'=> 'email_addr_bean_rel', 'join_key_lhs'=>'bean_id', 'join_key_rhs'=>'email_address_id',
+		        'join_table'=> 'email_addr_bean_rel', 'join_key_lhs'=>'bean_id', 'join_key_rhs'=>'email_address_id', 
 		        'relationship_role_column'=>'bean_module',
 		        'relationship_role_column_value'=>"Users"
 		    ),
-		'users_email_addresses_primary' =>
+		'users_email_addresses_primary' => 
 		    array('lhs_module'=> "Users", 'lhs_table'=> 'users', 'lhs_key' => 'id',
 		        'rhs_module'=> 'EmailAddresses', 'rhs_table'=> 'email_addresses', 'rhs_key' => 'id',
 		        'relationship_type'=>'many-to-many',
-		        'join_table'=> 'email_addr_bean_rel', 'join_key_lhs'=>'bean_id', 'join_key_rhs'=>'email_address_id',
-		        'relationship_role_column'=>'primary_address',
+		        'join_table'=> 'email_addr_bean_rel', 'join_key_lhs'=>'bean_id', 'join_key_rhs'=>'email_address_id', 
+		        'relationship_role_column'=>'primary_address', 
 		        'relationship_role_column_value'=>'1'
 		    ),
     ),
 
-
-
+      
+    
 );

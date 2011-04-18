@@ -150,7 +150,7 @@ class aCase extends Basic {
 
 		return $array_assign;
 	}
-
+	
 	function save_relationship_changes($is_update)
 	{
 		parent::save_relationship_changes($is_update);
@@ -187,14 +187,9 @@ class aCase extends Basic {
 
 		$this->created_by_name = get_assigned_user_name($this->created_by);
 		$this->modified_by_name = get_assigned_user_name($this->modified_user_id);
-
-        if(!empty($this->id)) {
-		    $account_info = $this->getAccount($this->id);
-            if(!empty($account_info)) {
-                $this->account_name = $account_info['account_name'];
-                $this->account_id = $account_info['account_id'];
-            }
-        }
+		$account_info = $this->getAccount($this->id);
+		$this->account_name = $account_info['account_name'];
+		$this->account_id = $account_info['account_id'];
 	}
 
 
@@ -293,10 +288,10 @@ class aCase extends Basic {
 		return (isset($sugar_config['inbound_email_case_subject_macro']) && !empty($sugar_config['inbound_email_case_subject_macro'])) ?
 			$sugar_config['inbound_email_case_subject_macro'] : $this->emailSubjectMacro;
 	}
-
+	
 	function getAccount($case_id){
-		if(empty($case_id)) return array();
-	    $ret_array = array();
+		$ret_array = array();
+		
 		$query = "SELECT acc.id, acc.name from accounts  acc, cases  where acc.id = cases.account_id and cases.id = '" . $case_id . "' and cases.deleted=0 and acc.deleted=0";
 		$result = $this->db->query($query,true," Error filling in additional detail fields: ");
 
@@ -310,7 +305,7 @@ class aCase extends Basic {
 		else{
 			$ret_array['account_name'] = '';
 			$ret_array['account_id'] 	= '';
-		}
+		}		
 		return $ret_array;
 	}
 }

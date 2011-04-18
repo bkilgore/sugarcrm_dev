@@ -44,7 +44,7 @@ function db_convert($string, $type, $additional_parameters=array(),$additional_p
 	{
     return $GLOBALS['db']->convert($string, $type, $additional_parameters, $additional_parameters_oracle_only);
             }
-
+    
 /**
  * @deprecated use DBManager::concat() instead.
  */
@@ -52,7 +52,7 @@ function db_concat($table, $fields)
 	{
     return $GLOBALS['db']->concat($table, $fields);
 }
-
+	
 /**
  * @deprecated use DBManager::fromConvert() instead.
  */
@@ -88,14 +88,14 @@ function to_html($string, $encode=true){
 	if (isset($cache['c'.$string])) {
 	    return $cache['c'.$string];
 	}
-
+	
 	$cache_key = 'c'.$string;
-
+	
 	if($encode && is_string($string)){//$string = htmlentities($string, ENT_QUOTES);
 		/*
-		 * cn: bug 13376 - handle ampersands separately
+		 * cn: bug 13376 - handle ampersands separately 
 		 * credit: ashimamura via bug portal
-		 */
+		 */ 
 		//$string = str_replace("&", "&amp;", $string);
 
 		if(is_array($toHTML)) { // cn: causing errors in i18n test suite ($toHTML is non-array)
@@ -129,10 +129,10 @@ function from_html($string, $encode=true) {
         $toHTML_values = array_values($toHTML);
         $toHTML_keys = array_keys($toHTML);
     }
-
+    
     // Bug 36261 - Decode &amp; so we can handle double encoded entities
 	$string = str_replace("&amp;", "&", $string);
-
+	
     if (!isset($cache[$string])) {
         $cache[$string] = str_replace($toHTML_values, $toHTML_keys, $string);
     }
@@ -141,7 +141,7 @@ function from_html($string, $encode=true) {
 
 /**
  * @deprecated
- * @todo this function is only used by one function ( run_upgrade_wizard_sql() ), which isn't
+ * @todo this function is only used by one function ( run_upgrade_wizard_sql() ), which isn't 
  *       used either; trying kill this off
  */
 function run_sql_file( $filename )
@@ -151,8 +151,11 @@ function run_sql_file( $filename )
         return( false );
     }
 
+    
 
-    $contents = sugar_file_get_contents($filename);
+    $fh         = sugar_fopen( $filename,'r' );
+    $contents   = fread( $fh, filesize($filename) );
+    fclose( $fh );
 
     $lastsemi   = strrpos( $contents, ';') ;
     $contents   = substr( $contents, 0, $lastsemi );
@@ -171,32 +174,6 @@ function run_sql_file( $filename )
         }
     }
     return( true );
-}
-
-/*
- * Return a version of $proposed that can be used as a column name in any of our supported databases
- * Practically this means no longer than 25 characters as the smallest identifier length for our supported DBs is 30 chars for Oracle plus we add on at least four characters in some places (for indicies for example)
- * @param string $name Proposed name for the column
- * @param string $ensureUnique
- * @return string Valid column name trimmed to right length and with invalid characters removed
- */
- function getValidDBName ($name, $ensureUnique = false, $maxLen = 30)
-{
-    // first strip any invalid characters - all but alphanumerics and -
-    $name = preg_replace ( '/[^\w-]+/i', '', $name ) ;
-    $len = strlen ( $name ) ;
-    $result = $name;
-    if ($ensureUnique)
-    {
-        $md5str = md5($name);
-        $tail = substr ( $name, -11) ;
-        $temp = substr($md5str , strlen($md5str)-4 );
-        $result = substr ( $name, 0, 10) . $temp . $tail ;
-    }else if ($len > ($maxLen - 5))
-    {
-        $result = substr ( $name, 0, 11) . substr ( $name, 11 - $maxLen + 5);
-    }
-    return strtolower ( $result ) ;
 }
 
 ?>

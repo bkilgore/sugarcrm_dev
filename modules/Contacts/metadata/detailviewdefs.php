@@ -39,22 +39,22 @@ $viewdefs['Contacts']['DetailView'] = array(
                                                          array('customCode'=>'<input title="{$APP.LBL_MANAGE_SUBSCRIPTIONS}" class="button" onclick="this.form.return_module.value=\'Contacts\'; this.form.return_action.value=\'DetailView\'; this.form.return_id.value=\'{$fields.id.value}\'; this.form.action.value=\'Subscriptions\'; this.form.module.value=\'Campaigns\'; this.form.module_tab.value=\'Contacts\';" type="submit" name="Manage Subscriptions" value="{$APP.LBL_MANAGE_SUBSCRIPTIONS}">'),
                                                         ),
                                        ),
-                        'maxColumns' => '2',
+                        'maxColumns' => '2', 
                         'widths' => array(
-                                        array('label' => '10', 'field' => '30'),
+                                        array('label' => '10', 'field' => '30'), 
                                         array('label' => '10', 'field' => '30')
                                         ),
-
+                        
 						'includes'=> array(
                             			array('file'=>'modules/Leads/Lead.js'),
-                         				),
+                         				),		                
                         ),
-
-
-
-    'panels' =>
+                        
+                        
+                        
+    'panels' => 
     array (
-      'lbl_contact_information' =>
+      'lbl_contact_information' => 
       array (
 
         array (
@@ -84,9 +84,9 @@ $viewdefs['Contacts']['DetailView'] = array(
           array (
             'name' => 'phone_mobile',
             'label' => 'LBL_MOBILE_PHONE',
-          ),
+          ),                
         ),
-
+        
         array (
           array (
             'name' => 'account_name',
@@ -104,7 +104,7 @@ $viewdefs['Contacts']['DetailView'] = array(
             'name' => 'primary_address_street',
             'label' => 'LBL_PRIMARY_ADDRESS',
             'type' => 'address',
-            'displayParams' =>
+            'displayParams' => 
             array (
               'key' => 'primary',
             ),
@@ -114,7 +114,7 @@ $viewdefs['Contacts']['DetailView'] = array(
             'name' => 'alt_address_street',
             'label' => 'LBL_ALTERNATE_ADDRESS',
             'type' => 'address',
-            'displayParams' =>
+            'displayParams' => 
             array (
               'key' => 'alt',
             ),
@@ -128,8 +128,8 @@ $viewdefs['Contacts']['DetailView'] = array(
             'studio' => 'false',
             'label' => 'LBL_EMAIL_ADDRESS',
           ),
-        ),
-
+        ),      
+        
         array (
 
           array (
@@ -139,8 +139,8 @@ $viewdefs['Contacts']['DetailView'] = array(
           ),
         ),
       ),
-
-      'LBL_PANEL_ADVANCED' =>
+      
+      'LBL_PANEL_ADVANCED' => 
       array (
 
         array (
@@ -164,26 +164,26 @@ $viewdefs['Contacts']['DetailView'] = array(
             'comment' => 'How did the contact come about',
             'label' => 'LBL_LEAD_SOURCE',
           ),
-
+ 
           array (
             'name' => 'do_not_call',
             'comment' => 'An indicator of whether contact can be called',
             'label' => 'LBL_DO_NOT_CALL',
           ),
         ),
-
+        
 	    array (
-
+		   
 		    array (
 		      'name' => 'campaign_name',
 		      'label' => 'LBL_CAMPAIGN',
 		    ),
-
-	  	),
-
-
+		    
+	  	),  
+	  	
+	  	
       ),
-      'LBL_PANEL_ASSIGNMENT' =>
+      'LBL_PANEL_ASSIGNMENT' => 
       array (
 
         array (
@@ -201,7 +201,7 @@ $viewdefs['Contacts']['DetailView'] = array(
         ),
 
         array (
-
+        
           array (
             'name' => 'date_entered',
             'customCode' => '{$fields.date_entered.value} {$APP.LBL_BY} {$fields.created_by_name.value}',
@@ -210,6 +210,6 @@ $viewdefs['Contacts']['DetailView'] = array(
 
         ),
       ),
-     )
+     )                         
 );
 ?>

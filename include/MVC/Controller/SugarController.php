@@ -220,8 +220,7 @@ class SugarController{
 	/**
 	 * Given a record id load the bean. This bean is accessible from any sub controllers.
 	 */
-	public function loadBean()
-	{
+	public function loadBean(){
 		if(!empty($GLOBALS['beanList'][$this->module])){
 			$class = $GLOBALS['beanList'][$this->module];
 			if(!empty($GLOBALS['beanFiles'][$class])){
@@ -458,6 +457,9 @@ class SugarController{
 		foreach($this->bean->field_defs as $field => $properties) {
 			$type = !empty($properties['custom_type']) ? $properties['custom_type'] : $properties['type'];
 		    $sf = $sfh->getSugarField(ucfirst($type), true);
+            if($sf != null){
+                $sf->save($this->bean, $_POST, $field, $properties);
+            }
 			if(isset($_POST[$field])) {
 				if(is_array($_POST[$field]) && !empty($properties['isMultiSelect'])) {
 					if(empty($_POST[$field][0])) {
@@ -469,9 +471,6 @@ class SugarController{
 			} else if(!empty($properties['isMultiSelect']) && !isset($_POST[$field]) && isset($_POST[$field . '_multiselect'])) {
 				$this->bean->$field = '';
 			}
-            if($sf != null){
-                $sf->save($this->bean, $_POST, $field, $properties);
-            }
 		}
 
 		foreach($this->bean->relationship_fields as $field=>$link){

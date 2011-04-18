@@ -54,9 +54,9 @@ if(isset($GLOBALS['current_language']) && ($GLOBALS['current_language'] != null)
 $mod_strings = return_module_language($curr_lang, 'UpgradeWizard',true);
 
 function check_php($sys_php_version = '')
-{
+{   
     $min_considered_php_version = '5.2.1';
-
+    
     $supported_php_versions = array (
     '5.2.1', '5.2.2', '5.2.3', '5.2.4', '5.2.5', '5.2.6', '5.2.8', '5.3.0'
     );
@@ -70,7 +70,7 @@ function check_php($sys_php_version = '')
     // invalid versions above the $min_considered_php_version,
     // should be mutually exclusive with $supported_php_versions
 
-    // SugarCRM prohibits install on PHP 5.2.x on all platforms
+    // SugarCRM prohibits install on PHP 5.2.x on all platforms 
     $invalid_php_versions = array('5.2.7');
 
     // default unsupported
@@ -125,7 +125,7 @@ if (version_compare(phpversion(),'5.2.0') >=0) {
 	}
 
 	$errors = preflightCheck();
-
+    
 	$php_version = constant('PHP_VERSION');
     if(check_php($php_version) == -1)
     {
@@ -145,7 +145,7 @@ if (version_compare(phpversion(),'5.2.0') >=0) {
     if(substr($sugar_version,0,1) >= 5){
     	updateQuickCreateDefs();
 	}
-	upgradeSugarCache($_SESSION['install_file']);
+
 
 	if((count($errors) == 1)) { // only diffs
 		logThis('file preflight check passed successfully.');
@@ -287,12 +287,12 @@ $diffs ='';
 	// aw: BUG 10161: check flavor conversion sql files
 	$sqlFile = ''; // cn: bug
 	if($current_version == $targetVersion) {
-
+		
 		if(preg_match('/(.*?)([^0])$/', $current_version, $matches))
 		{
 			$current_version = $matches[1].'0';
 		}
-
+	
 		switch($manifest['name']){
 			case 'SugarCE to SugarPro':
 				$sqlFile = $current_version.'_ce_to_pro_'.$db->dbType;
@@ -328,7 +328,7 @@ $diffs ='';
 		else{
 			$fp = fopen($sqlScript, 'r');
 		}
-		$contents = stream_get_contents($fp);
+		$contents = fread($fp, filesize($sqlScript));
 	    $anyScriptChanges =$contents;
 
 		// remove __uw_temp tables
@@ -346,7 +346,7 @@ $diffs ='';
 		$schema .= "<div id='schemashow' style='display:none;'>";
 		$schema .= "<textarea readonly cols='80' rows='10'>{$contents}</textarea>";
 		$schema .= "</div></p>";
-
+		
 		if(!empty($sqlErrors)) {
 			$stop = true;
 			$out = "<b class='error'>{$mod_strings['ERR_UW_PREFLIGHT_ERRORS']}:</b> ";

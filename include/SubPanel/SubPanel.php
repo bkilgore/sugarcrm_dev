@@ -203,7 +203,6 @@ class SubPanel
 		$ListView->show_export_button = false;
 		
 		//function returns the query that was used to populate sub-panel data.
-
 		$query=$ListView->process_dynamic_listview($this->parent_module, $this->parent_bean,$this->subpanel_defs);
 		$this->subpanel_query=$query; 
 		$ob_contents = ob_get_contents();

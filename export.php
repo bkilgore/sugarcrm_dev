@@ -46,15 +46,15 @@ global $current_user;
 
 $the_module = clean_string($_REQUEST['module']);
 
-if($sugar_config['disable_export'] 	|| (!empty($sugar_config['admin_export_only']) && !(is_admin($current_user) || (ACLController::moduleSupportsACL($the_module)  && ACLAction::getUserAccessLevel($current_user->id,$the_module, 'access') == ACL_ALLOW_ENABLED &&
+if($sugar_config['disable_export'] 	|| (!empty($sugar_config['admin_export_only']) && !(is_admin($current_user) || (ACLController::moduleSupportsACL($the_module)  && ACLAction::getUserAccessLevel($current_user->id,$the_module, 'access') == ACL_ALLOW_ENABLED && 
     (ACLAction::getUserAccessLevel($current_user->id, $the_module, 'admin') == ACL_ALLOW_ADMIN ||
      ACLAction::getUserAccessLevel($current_user->id, $the_module, 'admin') == ACL_ALLOW_ADMIN_DEV))))){
 	die($GLOBALS['app_strings']['ERR_EXPORT_DISABLED']);
 }
 
-if(!empty($_REQUEST['uid'])){
+if(!empty($_REQUEST['uid'])){ 
 	$content = export(clean_string($_REQUEST['module']), $_REQUEST['uid'], isset($_REQUEST['members']) ? $_REQUEST['members'] : false);
-}else{
+}else{ 
 	$content = export(clean_string($_REQUEST['module']));
 }
 $filename = $_REQUEST['module'];
@@ -68,7 +68,7 @@ header("Content-type: application/octet-stream; charset=".$GLOBALS['locale']->ge
 header("Content-Disposition: attachment; filename={$filename}.csv");
 header("Content-transfer-encoding: binary");
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
-header("Last-Modified: " . TimeDate::httpTime() );
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT" );
 header("Cache-Control: post-check=0, pre-check=0", false );
 header("Content-Length: ".strlen($content));
 

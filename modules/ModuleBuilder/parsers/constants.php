@@ -50,6 +50,7 @@ define('MB_DASHLET','dashlet');
 define('MB_DASHLETSEARCH','dashletsearch');
 define('MB_EDITVIEW','editview');
 define('MB_DETAILVIEW','detailview');
+define('MB_CONVERTLEAD','convertlead');
 define('MB_QUICKCREATE','quickcreate');
 define('MB_POPUPLIST','popuplist');
 define('MB_POPUPSEARCH','popupsearch');

@@ -197,24 +197,14 @@ class ListLayoutMetaDataParser extends AbstractMetaDataParser implements MetaDat
         {
             if (is_array($def [ 'studio' ]))
             {
-            	//CL - Bug 42085 - if the element is explicitly set to be removed from the view, remove it
-            	$view = !empty($_REQUEST['view']) ? $_REQUEST['view'] : '';
-                if (!empty($view) && isset($def [ 'studio' ][$view]))
-                {
-                    return $def [ 'studio' ][$view] !== false && $def [ 'studio' ][$view] != 'false' && $def [ 'studio' ][$view] != 'hidden';
-                }
-                
-                if (isset($def [ 'studio' ]['listview'])) 
-                {
+                if (isset($def [ 'studio' ]['listview'])) {
                     $lv = $def [ 'studio' ]['listview'];
                     return $lv !== false && (!is_string($lv) || $lv != 'false');
                 }
-                
                 if (isset($def [ 'studio' ]['visible']))
-                {
-                    return $def [ 'studio' ]['visible'];
-                }
-            } else {
+                   return $def [ 'studio' ]['visible'];
+            } else
+            {
             	return ($def [ 'studio' ] != 'false' && $def [ 'studio' ] !== false && $def [ 'studio' ] != 'hidden') ;
             }
         }  

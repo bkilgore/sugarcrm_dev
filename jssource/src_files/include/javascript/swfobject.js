@@ -248,12 +248,12 @@ function loadChartSWF(chartName, xmlFile, width, height, stylesheet, colorscheme
 	}
 	
 	height = height.replace(/px/,'');	
-	var home = new SWFObject("include/SugarCharts/SugarFlash/swf/chart.swf", chartName, "100%", "100%", "7");
+	var home = new SWFObject("include/SugarCharts/swf/chart.swf", chartName, "100%", "100%", "7");
 	home.addParam("wmode","transparent");
 	home.addParam("menu","false");
 	home.addParam("quality","high");
 	home.addVariable( "inputFile" , xmlFile)
-	home.addVariable( "swfLocation" ,"include/SugarCharts/SugarFlash/swf/");
+	home.addVariable( "swfLocation" ,"include/SugarCharts/swf/");
 	home.addVariable( "inputColorScheme" , colorscheme);
 	home.addVariable( "inputStyleSheet", stylesheet);
 	home.addVariable( "inputLanguage", langFile);

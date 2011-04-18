@@ -47,9 +47,6 @@ class PipelineBySalesStageDashlet extends DashletGenericChart
     public $pbss_date_end;
     public $pbss_sales_stages = array();
     
-    /**
-     * @see DashletGenericChart::$_seedName
-     */
     protected $_seedName = 'Opportunities';
     
     /**
@@ -100,8 +97,8 @@ class PipelineBySalesStageDashlet extends DashletGenericChart
     {
         global $current_user, $sugar_config;
         
-        require_once('include/SugarCharts/SugarChartFactory.php');
-        $sugarChart = SugarChartFactory::getInstance();
+        require_once('include/SugarCharts/SugarChart.php');
+        $sugarChart = new SugarChart();
         $sugarChart->base_url = array( 	
             'module' => 'Opportunities',
             'action' => 'index',
@@ -129,7 +126,7 @@ class PipelineBySalesStageDashlet extends DashletGenericChart
         $xmlFile = $sugarChart->getXMLFileName($this->id);
         $sugarChart->saveXMLFile($xmlFile, $sugarChart->generateXML());
 		
-        return $this->getTitle('') . '<div align="center">' . $sugarChart->display($this->id, $xmlFile, '100%', '480', false) . '</div>'. $this->processAutoRefresh();		
+        return $this->getTitle('') . '<div align="center">' . $sugarChart->display($this->id, $xmlFile, '100%', '480', false) . '</div><br />';		
     }
 
 	/**
@@ -215,3 +212,5 @@ class PipelineBySalesStageDashlet extends DashletGenericChart
            );
     }
 }
+
+?>

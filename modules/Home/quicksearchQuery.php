@@ -86,17 +86,11 @@ class quicksearchQuery {
 	        }
 	    }
 	    
-        $whereClause = '('.implode(" {$query_obj['group']} ",$cond_arr).')';
+        $whereClause = implode(" {$query_obj['group']} ",$cond_arr);
         
         if($table == 'users.') 
             $whereClause .= " AND {$table}status='Active'";
         
-        // Need to include the default whereStatement
-		if(!empty($query_obj['whereExtra'])){
-            if(!empty($whereClause))$whereClause .= ' AND ';
-            $whereClause .= html_entity_decode($query_obj['whereExtra'],ENT_QUOTES);
-		}
-		
         return $whereClause;
     }
     
@@ -149,8 +143,8 @@ class quicksearchQuery {
             $query_where = $this->constructWhere($args, $focus);
            
             $list_arr = array();
-            if($focus->ACLAccess('ListView', true)) 
-            {
+            if($focus->ACLAccess('ListView', true)) {
+            	$GLOBALS['log']->fatal($query_where);
                 $curlist = $focus->get_list($query_orderby, $query_where, 0, $query_limit, -1, 0);
                 $list_return = array_merge($list_return,$curlist['list']);
             }
@@ -160,7 +154,6 @@ class quicksearchQuery {
     }
     
     protected function formatResults($args, $list_return){
-        global $sugar_config;
         $app_list_strings = null;
         $list_arr['totalCount']=count($list_return);
         $list_arr['fields']= array();
@@ -186,7 +179,7 @@ class quicksearchQuery {
                         $list_return[$i]->$field = $app_list_strings[$list_return[$i]->field_name_map[$field]['options']][$list_return[$i]->$field];
                     }
                 }
-
+                
     			
                 if (isset($listData[$field]))
     			{
@@ -290,36 +283,21 @@ class quicksearchQuery {
         $response = array();
         
         if(showFullName()) { // utils.php, if system is configured to show full name
-        	$user_array = getUserArrayFromFullName($args['conditions'][0]['value'], true);
+        	$user_array = getUserArrayFromFullName($args['conditions'][0]['value']);
         } else {
-            $user_array = get_user_array(false, "Active", '', false, $args['conditions'][0]['value'],' AND portal_only=0 ',false);
+            $user_array = get_user_array(false, "Active", '', false, $args['conditions'][0]['value'],null,false);
         }
         $response['totalCount']=count($user_array);
         $response['fields']=array();
         $i=0;
         foreach($user_array as $id=>$name) {
-            array_push($response['fields'], array('id' => (string) $id, 'user_name' => $name, 'module' => 'Users'));
+            array_push($response['fields'], array('id' => $id, 'user_name' => $name, 'module' => 'Users'));
             $i++;
         }
     
         return $json->encodeReal($response);
     }
     
-
-    function externalApi($data) {
-        require_once('include/externalAPI/ExternalAPIFactory.php');
-        
-        $api = ExternalAPIFactory::loadAPI($data['api']);
-
-    	$json = getJSONobj();
-
-        $listArray['fields'] = $api->searchDoc($_REQUEST['query']);
-        $listArray['totalCount'] = count($listArray['fields']);
-        
-        $listJson = $json->encodeReal($listArray);
-        
-        return $listJson;
-    }
 }
 
 $json = getJSONobj();

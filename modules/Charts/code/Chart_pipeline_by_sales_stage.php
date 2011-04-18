@@ -98,7 +98,7 @@ elseif (isset($_REQUEST['pbss_date_start']) && $_REQUEST['pbss_date_start'] != '
 	$GLOBALS['log']->debug($current_user->getPreference('pbss_date_start'));
 }
 else {
-	$date_start = $timedate->nowDate();
+	$date_start = date($timedate->get_date_format(), time());
 }
 
 $user_date_end = $current_user->getPreference('pbss_date_end');
@@ -117,7 +117,7 @@ elseif (isset($_REQUEST['pbss_date_end']) && $_REQUEST['pbss_date_end'] != '') {
 	$GLOBALS['log']->debug( $current_user->getPreference('pbss_date_end'));
 }
 else {
-	$date_end = $timedate->asUserDate($timedate->fromString("2010-01-01"));
+	$date_end = date($timedate->get_date_format(), strtotime('2010-01-01'));
 	$GLOBALS['log']->debug("USER PREFERENCES['pbss_date_end'] not found. Using: ".$date_end);
 }
 
@@ -243,7 +243,7 @@ $puser_date_start = $current_user->getPreference('user_date_start');
 	<td valign='top' ><select name="pbss_ids[]" multiple size='3'><?php echo  get_select_options_with_id(get_user_array(false),$ids); ?></select></td>
 </tr>
 <tr>
-<?php
+<?php 
 global $app_strings;
 ?>
 	<td align="right" colspan="2"><input class="button" onclick="return verify_chart_data(pipeline_by_sales_stage);" type="submit" title="<?php echo $app_strings['LBL_SELECT_BUTTON_TITLE']; ?>" accessKey="<?php echo $app_strings['LBL_SELECT_BUTTON_KEY']; ?>" value="<?php echo $app_strings['LBL_SELECT_BUTTON_LABEL']?>" /><input class="button" onClick="javascript: toggleDisplay('pipeline_by_sales_stage_edit');" type="button" title="<?php echo $app_strings['LBL_CANCEL_BUTTON_TITLE']; ?>" accessKey="<?php echo $app_strings['LBL_CANCEL_BUTTON_KEY'];?>" value="<?php echo $app_strings['LBL_CANCEL_BUTTON_LABEL']?>"/></td>
@@ -267,7 +267,7 @@ echo "<P align='center'>".$this->gen_xml($datax, $dateXml[0], $dateXml[1], $ids,
 echo "<P align='center'><span class='chartFootnote'>".$current_module_strings['LBL_SALES_STAGE_FORM_DESC']."</span></P>";
 
 	if (file_exists($sugar_config['tmp_dir'].$cache_file_name)) {
-		$file_date = $timedate->asUser($timedate->fromTimestamp(filemtime($sugar_config['tmp_dir'].$cache_file_name)));
+		$file_date = date($timedate->get_date_format()." ".$timedate->get_time_format(), filemtime($sugar_config['tmp_dir'].$cache_file_name));
 	}
 	else {
 		$file_date = '';
@@ -293,9 +293,9 @@ echo get_validate_chart_js();
 	*/
 	function gen_xml($datax=array('foo','bar'), $date_start='2071-10-15', $date_end='2071-10-15', $user_id=array('1'), $cache_file_name='a_file', $refresh=false,$chart_size='hBarF',$current_module_strings) {
 		global $app_strings, $charset, $lang, $barChartColors, $current_user;
-
+		
 		$kDelim = $current_user->getPreference('num_grp_sep');
-
+		
 		global $timedate;
 
 		if (!file_exists($cache_file_name) || $refresh == true) {
@@ -336,7 +336,7 @@ echo get_validate_chart_js();
 			}
 
 			//build the where clause for the query that matches $date_start and $date_end
-			$where .= "	AND opportunities.date_closed >= ". db_convert("'".$date_start."'",'date'). "
+			$where .= "	AND opportunities.date_closed >= ". db_convert("'".$date_start."'",'date'). " 
 						AND opportunities.date_closed <= ".db_convert("'".$date_end."'",'date') ;
 			$where .= "	AND opportunities.assigned_user_id = users.id  AND opportunities.deleted=0 ";
 
@@ -350,9 +350,9 @@ echo get_validate_chart_js();
 						FROM users,opportunities  ";
 			$query .= "WHERE " .$where;
 			$query .= " GROUP BY opportunities.sales_stage,users.user_name,opportunities.assigned_user_id";
-
-
-
+					
+			
+			
 			$result = $opp->db->query($query)
 			or sugar_die("Error selecting sugarbean: ".mysql_error());
 			//build pipeline by sales stage data
@@ -362,16 +362,16 @@ echo get_validate_chart_js();
 			$symbol = $sugar_config['default_currency_symbol'];
 			global $current_user;
 			if($current_user->getPreference('currency') ){
-
+				
 				$currency = new Currency();
 				$currency->retrieve($current_user->getPreference('currency'));
 				$div = $currency->conversion_rate;
 				$symbol = $currency->symbol;
 			}
 			// cn: adding user-pref date handling
-			$dateStartDisplay = $timedate->asUserDate($timedate->fromString($date_start));
-			$dateEndDisplay = $timedate->asUserDate($timedate->fromString($date_end));
-
+			$dateStartDisplay = date($timedate->get_date_format(), strtotime($date_start));
+			$dateEndDisplay = date($timedate->get_date_format(), strtotime($date_end));
+			
 			$fileContents = '     <yData defaultAltText="'.$current_module_strings['LBL_ROLLOVER_DETAILS'].'">'."\n";
 			$stageArr = array();
 			$usernameArr = array();
@@ -453,15 +453,15 @@ echo get_validate_chart_js();
 		$return = create_chart($chart_size,$cache_file_name,$width,$height);
 		return $return;
 	}
-
+	
 	function constructQuery(){
 		global $current_user;
 		global $timedate;
 		global $app_list_strings;
-
+		
 		//get the dates to display
 		$user_date_start = $current_user->getPreference('pbss_date_start');
-
+		
 		if (!empty($user_date_start) && !isset($_REQUEST['pbss_date_start'])) {
 			$date_start = $timedate->to_display_date($user_date_start, false);
 			$GLOBALS['log']->debug("USER PREFERENCES['pbss_date_start'] is:");
@@ -477,9 +477,9 @@ echo get_validate_chart_js();
 			$GLOBALS['log']->debug($current_user->getPreference('pbss_date_start'));
 		}
 		else {
-			$date_start = $timedate->nowDate();
+			$date_start = date($timedate->get_date_format(), time());
 		}
-
+		
 		$user_date_end = $current_user->getPreference('pbss_date_end');
 		if (!empty($user_date_end) && !isset($_REQUEST['pbss_date_end'])) {
 			$date_end = $timedate->to_display_date($user_date_end, false);
@@ -496,10 +496,10 @@ echo get_validate_chart_js();
 			$GLOBALS['log']->debug( $current_user->getPreference('pbss_date_end'));
 		}
 		else {
-			$date_end = $timedate->asUserDate($timedate->fromString("2010-01-01"));
+			$date_end = date($timedate->get_date_format(), strtotime('2010-01-01'));
 			$GLOBALS['log']->debug("USER PREFERENCES['pbss_date_end'] not found. Using: ".$date_end);
 		}
-
+		
 $tempx = array();
 $datax = array();
 $datax_selected= array();
@@ -532,16 +532,16 @@ else {
 }
 $GLOBALS['log']->debug("datax is:");
 $GLOBALS['log']->debug($datax);
-
-
-
+		
+		
+		
 		$ids = array();
 		$new_ids = array();
 		$user_ids = $current_user->getPreference('pbss_ids');
 		//get list of user ids for which to display data
 		if (!empty($user_ids) && count($user_ids) != 0 && !isset($_REQUEST['pbss_ids'])) {
 			$ids = $user_ids;
-
+		
 			$GLOBALS['log']->debug("USER PREFERENCES['pbss_ids'] is:");
 			$GLOBALS['log']->debug($user_ids);
 		}
@@ -556,8 +556,8 @@ $GLOBALS['log']->debug($datax);
 		else {
 			$ids = get_user_array(false);
 			$ids = array_keys($ids);
-
-		}
+		
+		}	
 
 		$user_id = $ids;
 		$opp = new Opportunity;
@@ -590,7 +590,7 @@ $GLOBALS['log']->debug($datax);
 		}
 
 		//build the where clause for the query that matches $date_start and $date_end
-		$where .= "	AND opportunities.date_closed >= ". db_convert("'".$date_start."'",'date'). "
+		$where .= "	AND opportunities.date_closed >= ". db_convert("'".$date_start."'",'date'). " 
 					AND opportunities.date_closed <= ".db_convert("'".$date_end."'",'date') ;
 		$where .= "	AND opportunities.assigned_user_id = users.id  AND opportunities.deleted=0 ";
 
@@ -607,7 +607,7 @@ $GLOBALS['log']->debug($datax);
 
 		return $query;
 	}
-
+	
 	function constructGroupBy(){
 		return array( 'sales_stage', 'user_name' );
 	}

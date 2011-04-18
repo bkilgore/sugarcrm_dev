@@ -165,20 +165,10 @@ class MyMeetingsDashlet extends DashletGeneric {
                                      'myItems' => translate('LBL_DASHLET_CONFIGURE_MY_ITEMS_ONLY', 'Meetings'),
                                      'displayRows' => $GLOBALS['mod_strings']['LBL_DASHLET_CONFIGURE_DISPLAY_ROWS'],
                                      'title' => $GLOBALS['mod_strings']['LBL_DASHLET_CONFIGURE_TITLE'],
-                                     'save' => $GLOBALS['app_strings']['LBL_SAVE_BUTTON_LABEL'],
-                                     'autoRefresh' => $GLOBALS['app_strings']['LBL_DASHLET_CONFIGURE_AUTOREFRESH'],
-                                     ));
-		
-        require_once('modules/Meetings/Meeting.php');
-        $types = getMeetingsExternalApiDropDown();
-        $this->currentSearchFields['type']['input'] = '<select size="3" multiple="true" name="type[]">'
-                                     . get_select_options_with_id($types, (empty($this->filters['type']) ? '' : $this->filters['type']))
-                                     . '</select>';
-        $this->configureSS->assign('searchFields', $this->currentSearchFields);
-		
+                                     'save' => $GLOBALS['app_strings']['LBL_SAVE_BUTTON_LABEL']));
         return $this->configureSS->fetch($this->configureTpl);
     }
-    
+        
     function saveStatus()
     {
        

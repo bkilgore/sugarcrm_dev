@@ -63,9 +63,9 @@ global $current_user;
 //if (!is_admin($current_user)) sugar_die("Unauthorized access to administration.");
 //account for use within wizards
 if($focus->campaign_type == 'NewsLetter'){
-    echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_NEWSLETTER_WIZARD_START_TITLE'].$focus->name), true, false);
+    echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_NEWSLETTER_WIZARD_START_TITLE'].$focus->name, true, false);
 }else{
-    echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_CAMPAIGN_WIZARD_START_TITLE'].$focus->name), true, false);
+    echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_CAMPAIGN_WIZARD_START_TITLE'].$focus->name, true, false);
 }
 
 global $theme;
@@ -160,7 +160,7 @@ global $currentModule;
     
     //if (!is_admin($current_user)) sugar_die("Unauthorized access to administration.");
     //account for use within wizards
-        echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_CAMPAIGN_WIZARD'].$focus->name), true, false);
+        echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_CAMPAIGN_WIZARD'].$focus->name, true, false);
              
 
     $ss = new Sugar_Smarty();

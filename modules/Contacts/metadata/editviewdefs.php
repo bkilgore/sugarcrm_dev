@@ -40,17 +40,17 @@ $viewdefs['Contacts']['EditView'] = array(
     											          '<input type="hidden" name="bug_id" value="{$smarty.request.bug_id}">',
     											          '<input type="hidden" name="email_id" value="{$smarty.request.email_id}">',
     											          '<input type="hidden" name="inbound_email_id" value="{$smarty.request.inbound_email_id}">')),
-							'maxColumns' => '2',
+							'maxColumns' => '2', 
                             'widths' => array(
-                                            array('label' => '10', 'field' => '30'),
+                                            array('label' => '10', 'field' => '30'), 
                                             array('label' => '10', 'field' => '30'),
                                         ),
 ),
 
 
-    'panels' =>
+    'panels' => 
     array (
-      'lbl_contact_information' =>
+      'lbl_contact_information' => 
       array (
         array (
           array (
@@ -69,7 +69,7 @@ $viewdefs['Contacts']['EditView'] = array(
             'name' => 'phone_work',
             'comment' => 'Work phone number of the contact',
             'label' => 'LBL_OFFICE_PHONE',
-          ),
+          ),   
         ),
 
         array (
@@ -83,8 +83,8 @@ $viewdefs['Contacts']['EditView'] = array(
             'name' => 'phone_mobile',
             'comment' => 'Mobile phone number of the contact',
             'label' => 'LBL_MOBILE_PHONE',
-          ),
-
+          ),          
+                    
         ),
 
         array (
@@ -98,17 +98,17 @@ $viewdefs['Contacts']['EditView'] = array(
         array(
           array (
             'name' => 'account_name',
-            'displayParams' =>
+            'displayParams' => 
             array (
               'key' => 'billing',
               'copy' => 'primary',
               'billingKey' => 'primary',
-              'additionalFields' =>
+              'additionalFields' => 
               array (
                 'phone_office' => 'phone_work',
               ),
             ),
-          ),
+          ),  
         ),
 
         array (
@@ -117,7 +117,7 @@ $viewdefs['Contacts']['EditView'] = array(
             'name' => 'primary_address_street',
             'hideLabel' => true,
             'type' => 'address',
-            'displayParams' =>
+            'displayParams' => 
             array (
               'key' => 'primary',
               'rows' => 2,
@@ -130,7 +130,7 @@ $viewdefs['Contacts']['EditView'] = array(
             'name' => 'alt_address_street',
             'hideLabel' => true,
             'type' => 'address',
-            'displayParams' =>
+            'displayParams' => 
             array (
               'key' => 'alt',
               'copy' => 'primary',
@@ -149,7 +149,7 @@ $viewdefs['Contacts']['EditView'] = array(
             'label' => 'LBL_EMAIL_ADDRESS',
           ),
         ),
-
+        
         array (
 
           array (
@@ -158,9 +158,9 @@ $viewdefs['Contacts']['EditView'] = array(
           ),
         ),
       ),
-
-
-      'LBL_PANEL_ADVANCED' =>
+      
+      
+      'LBL_PANEL_ADVANCED' => 
       array (
 
         array (
@@ -191,17 +191,17 @@ $viewdefs['Contacts']['EditView'] = array(
             'label' => 'LBL_DO_NOT_CALL',
           ),
         ),
-
+        
         array (
 	      'campaign_name',
         ),
       ),
-
-
-
-      'LBL_PANEL_ASSIGNMENT' =>
+      
+      
+      
+      'LBL_PANEL_ASSIGNMENT' => 
       array (
-        array (
+        array (      
           array (
             'name' => 'assigned_user_name',
             'label' => 'LBL_ASSIGNED_TO_NAME',

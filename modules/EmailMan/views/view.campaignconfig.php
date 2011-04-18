@@ -51,13 +51,13 @@ class ViewCampaignconfig extends SugarView
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
     	return array(
     	   "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
-    	   translate('LBL_CAMPAIGN_CONFIG_TITLE','Administration'),
+    	   $mod_strings['LBL_CONFIGURE_CAMPAIGN_EMAIL_SETTINGS'],
     	   );
     }
     
@@ -83,7 +83,7 @@ class ViewCampaignconfig extends SugarView
         global $app_strings;
         global $current_user;
         
-        echo $this->getModuleTitle(false);
+        echo $this->getModuleTitle();
         global $currentModule;
         
         $focus = new Administration();

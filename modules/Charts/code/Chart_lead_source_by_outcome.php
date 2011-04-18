@@ -50,7 +50,7 @@ require_once('include/charts/Charts.php');
 
 class Chart_lead_source_by_outcome
 {
-	var $modules = array('Opportunities');
+	var $modules = array('Opportunities');	
 	var $order = 0;
 function Chart_lead_source_by_outcome()
 {
@@ -186,7 +186,7 @@ echo "<P align='center'><span class='chartFootnote'>".$current_module_strings['L
 
 	if (file_exists($sugar_config['tmp_dir'].$cache_file_name)) {
 global  $timedate;
-		$file_date = $timedate->asUser($timedate->fromTimestamp(filemtime($sugar_config['tmp_dir'].$cache_file_name)));
+		$file_date = date($timedate->get_date_format()." ".$timedate->get_time_format(), filemtime($sugar_config['tmp_dir'].$cache_file_name));
 	}
 	else {
 		$file_date = '';
@@ -214,9 +214,9 @@ global  $timedate;
 	*/
 	function  gen_xml($datay=array('foo','bar'), $user_id=array('1'), $cache_file_name='a_file', $refresh=false,$current_module_strings) {
 		global $app_strings, $charset, $lang, $barChartColors,$app_list_strings, $current_user;
-
+		
 		$kDelim = $current_user->getPreference('num_grp_sep');
-
+		
 		if (!file_exists($cache_file_name) || $refresh == true) {
 			$GLOBALS['log']->debug("datay is:");
 			$GLOBALS['log']->debug($datay);
@@ -253,7 +253,7 @@ global  $timedate;
 			$query .= " GROUP BY sales_stage,lead_source ORDER BY lead_source,sales_stage";
 			//Now do the db queries
 			//query for opportunity data that matches $datay and $user
-
+			
 			$result = $opp->db->query($query)
 			or sugar_die("Error selecting sugarbean: ".mysql_error());
 			//build pipeline by sales stage data
@@ -267,7 +267,7 @@ global  $timedate;
 			global $current_user;
 			$salesStages = array("Closed Lost"=>$app_list_strings['sales_stage_dom']["Closed Lost"],"Closed Won"=>$app_list_strings['sales_stage_dom']["Closed Won"],"Other"=>$other);
 			if($current_user->getPreference('currency') ){
-
+				
 				$currency = new Currency();
 				$currency->retrieve($current_user->getPreference('currency'));
 				$div = $currency->conversion_rate;
@@ -350,8 +350,8 @@ global  $timedate;
 		$return = create_chart('hBarF',$cache_file_name);
 		return $return;
 	}
-
-
+	
+	
 	function constructQuery(){
 		global $current_user;
 		global $app_list_strings;
@@ -360,7 +360,7 @@ global  $timedate;
 		$datax = array();
 		$selected_datax = array();
 		//get list of sales stage keys to display
-
+		
 		$tempx = $current_user->getPreference('lsbo_lead_sources');
 		if (!empty($lsbo_lead_sources) && count($lsbo_lead_sources) > 0 && !isset($_REQUEST['lsbo_lead_sources'])) {
 			$GLOBALS['log']->fatal("user->getPreference('lsbo_lead_sources') is:");
@@ -384,10 +384,10 @@ global  $timedate;
 		else {
 			$datax = $app_list_strings['lead_source_dom'];
 			$selected_datax = array_keys($app_list_strings['lead_source_dom']);
-		}
-
+		}		
+		
 		$datay = $datax;
-
+		
 		$ids =$current_user->getPreference('lsbo_ids');
 		//get list of user ids for which to display data
 		if (!empty($ids) && count($ids) != 0 && !isset($_REQUEST['lsbo_ids'])) {
@@ -408,7 +408,7 @@ global  $timedate;
 		}
 
 		$user_id = $ids;
-
+		
 		$opp = new Opportunity();
 		$where="";
 		//build the where clause for the query that matches $user
@@ -437,10 +437,10 @@ global  $timedate;
 		$query = "SELECT lead_source,sales_stage,sum(amount_usdollar/1000) as total,count(*) as opp_count FROM opportunities ";
 		$query .= "WHERE " .$where." AND opportunities.deleted=0 ";
 		$query .= " GROUP BY sales_stage,lead_source ORDER BY lead_source,sales_stage";
-
+		
 		return $query;
 	}
-
+	
 	function constructGroupBy(){
 		return array( 'lead_source', 'sales_stage' );
 	}

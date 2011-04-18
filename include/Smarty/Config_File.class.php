@@ -261,11 +261,14 @@ class Config_File {
             $config_file = $file_name;
 
         ini_set('track_errors', true);
-        $contents = @sugar_file_get_contents($config_file);
-        if ($contents === false) {
+        $fp = @fopen($config_file, "r");
+        if (!is_resource($fp)) {
             $this->_trigger_error_msg("Could not open config file '$config_file'");
             return false;
         }
+
+        $contents = ($size = filesize($config_file)) ? fread($fp, $size) : '';
+        fclose($fp);
 
         $this->_config_data[$config_file] = $this->parse_contents($contents);
         return true;
@@ -321,7 +324,7 @@ class Config_File {
                         $vars = array();
                         continue;
                     }
-                } else {
+                } else {                    
                     $section_name = $match[1];
                 }
                 if (!isset($config_data['sections'][$section_name]))

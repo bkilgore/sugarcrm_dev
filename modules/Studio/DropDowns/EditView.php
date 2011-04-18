@@ -46,7 +46,7 @@ $dh = new DropDownHelper();
 $dh->getDropDownModules();
 $smarty = new Sugar_Smarty();
 $smarty->assign('MOD', $GLOBALS['mod_strings']);
-$title=getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_RENAME_TABS']), false);
+$title=get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_RENAME_TABS'], true);
 $smarty->assign('title', $title);
 $selected_lang = (!empty($_REQUEST['dropdown_lang'])?$_REQUEST['dropdown_lang']:$_SESSION['authenticated_user_language']);
 if(empty($selected_lang)){

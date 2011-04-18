@@ -60,10 +60,8 @@
 		{sugar_translate label='LBL_DIRECTION' module='SavedSearch'}
 	</td>
 	<td width='23%'>
-		<div><input id='sort_order_desc_radio' type='radio' name='sortOrder' value='DESC' {if $selectedSortOrder == 'DESC'}checked{/if}>&nbsp;<span onclick='document.getElementById("sort_order_desc_radio").checked = true' style="cursor: pointer; cursor: hand">{$MOD.LBL_DESCENDING}</span></div>
-		
-		<div><input id='sort_order_asc_radio' type='radio' name='sortOrder' value='ASC' {if $selectedSortOrder == 'ASC'}checked{/if}>&nbsp;<span onclick='document.getElementById("sort_order_asc_radio").checked = true' style="cursor: pointer; cursor: hand">{$MOD.LBL_ASCENDING}</span>
-		</div>
+		<input id='sort_order_desc_radio' type='radio' name='sortOrder' value='DESC' {if $selectedSortOrder == 'DESC'}checked{/if}> <span onclick='document.getElementById("sort_order_desc_radio").checked = true' style="cursor: pointer; cursor: hand">{$MOD.LBL_DESCENDING}</span><br>
+		<input id='sort_order_asc_radio' type='radio' name='sortOrder' value='ASC' {if $selectedSortOrder == 'ASC'}checked{/if}> <span onclick='document.getElementById("sort_order_asc_radio").checked = true' style="cursor: pointer; cursor: hand">{$MOD.LBL_ASCENDING}</span>
 	</td>
 	</tr>
 

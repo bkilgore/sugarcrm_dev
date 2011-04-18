@@ -48,15 +48,7 @@ function var_export_helper($tempArray) {
 
 
 
-/*
- * this function is used to overide a value in an array and returns the string code to write
- * @params : $array_name - a String containing the name of an array.
- * @params : $value_name - a String containing the name of a variable in the array.
- * @params : $value      - a String containing the associated value with $value_name.
- * 
- * @returns: String. Example - override_value_to_string($name, 'b', 1) = '$name['b'] = 1;'
- */
-
+//this function is used to overide a value in an array and returns the string code to write
 function override_value_to_string($array_name, $value_name, $value){
 	$string = "\${$array_name}[". var_export($value_name, true). "] = ";
 	$string .= var_export_helper($value,true);

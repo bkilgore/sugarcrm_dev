@@ -53,7 +53,6 @@ $mod_strings = array (
 	'LBL_DOCUMENT_ID' => 'Document ID',
 	'LBL_NAME' => 'Document Name',
 	'LBL_DESCRIPTION' => 'Description',
-	'LBL_ASSIGNED_TO' => 'Assigned to:',
 	'LBL_CATEGORY' => 'Category',
 	'LBL_SUBCATEGORY' => 'Sub Category',
 	'LBL_STATUS' => 'Status',
@@ -75,7 +74,6 @@ $mod_strings = array (
 	//document edit and detail view
 	'LBL_DOC_NAME' => 'Document Name:',
 	'LBL_FILENAME' => 'File Name:',
-	'LBL_FILE_UPLOAD' => 'File:',
 	'LBL_DOC_VERSION' => 'Revision:',
 	'LBL_CATEGORY_VALUE' => 'Category:',
 	'LBL_SUBCATEGORY_VALUE'=> 'Sub Category:',
@@ -121,3 +119,4 @@ $mod_strings = array (
 
 
 ?>
+

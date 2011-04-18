@@ -55,15 +55,6 @@ var ERR_REENTER_PASSWORDS = '{$MOD.ERR_REENTER_PASSWORDS}';
 </script>
 <script type='text/javascript' src='{sugar_getjspath file='modules/Users/PasswordRequirementBox.js'}'></script>
 {$ERROR_STRING}
-<!-- This is here for the external API forms -->
-<form name="DetailView" id="DetailView" method="POST" action="index.php">
-	<input type="hidden" name="record" id="record" value="{$ID}">
-	<input type="hidden" name="module" value="Users">
-	<input type="hidden" name="return_module" value="Users">
-	<input type="hidden" name="return_id" value="{$ID}">
-	<input type="hidden" name="return_action" value="EditView">
-</form>
-
 <form name="EditView" enctype="multipart/form-data" id="EditView" method="POST" action="index.php">
 	<input type="hidden" name="display_tabs_def">
 	<input type="hidden" name="hide_tabs_def">
@@ -86,7 +77,7 @@ var ERR_REENTER_PASSWORDS = '{$MOD.ERR_REENTER_PASSWORDS}';
 	<input type="hidden" name="edit_self" id="edit_self" value='{$EDIT_SELF}' >
 	<input type="hidden" name="required_email_address" id="required_email_address" value='{$REQUIRED_EMAIL_ADDRESS}' >
 	<div id="popup_window"></div>
-
+						
 <script type="text/javascript">
 var EditView_tabs = new YAHOO.widget.TabView("EditView_tabs");
 
@@ -96,28 +87,17 @@ SUGAR.EmailAddressWidget.prototype.forceSubmit = function() { document.getElemen
 
 EditView_tabs.on('contentReady', function(e){
 {/literal}
-{if $ID}
-{literal}
-    EditView_tabs.addTab( new YAHOO.widget.Tab({
-        label: '{/literal}{$MOD.LBL_EAPM_SUBPANEL_TITLE}{literal}',
-        dataSrc: 'index.php?sugar_body_only=1&module=Users&subpanel=eapm&action=SubPanelViewer&inline=1&record={/literal}{$ID}{literal}&layout_def_key=UserEAPM&inline=1&ajaxSubpanel=true',
-        content: '<div style="text-align:center; width: 100%">{/literal}{sugar_image name="loading"}{literal}</div>',
-        cacheData: true
-    }));
-    EditView_tabs.getTab(4).getElementsByTagName('a')[0].id = 'tab5';
-{/literal}
-{/if}
 });
-</script>
+</script> 
 
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="actionsContainer">
     <tr>
         <td>
-            <input	id="Save" title="{$APP.LBL_SAVE_BUTTON_TITLE}" accessKey="{$APP.LBL_SAVE_BUTTON_KEY}"
+            <input	id="Save" title="{$APP.LBL_SAVE_BUTTON_TITLE}" accessKey="{$APP.LBL_SAVE_BUTTON_KEY}" 
                     class="button primary" onclick="if (!set_password(form,newrules('{$PWDSETTINGS.minpwdlength}','{$PWDSETTINGS.maxpwdlength}','{$REGEX}'))) return false; if (!Admin_check()) return false; this.form.action.value='Save'; {$CHOOSER_SCRIPT} {$REASSIGN_JS} if(verify_data(EditView)) this.form.submit();"
                     type="button" name="button" value="{$APP.LBL_SAVE_BUTTON_LABEL}" >
-            <input	title="{$APP.LBL_CANCEL_BUTTON_TITLE}" accessKey="{$APP.LBL_CANCEL_BUTTON_KEY}"
-                    class="button" onclick="this.form.action.value='{$RETURN_ACTION}'; this.form.module.value='{$RETURN_MODULE}'; this.form.record.value='{$RETURN_ID}'; this.form.submit()"
+            <input	title="{$APP.LBL_CANCEL_BUTTON_TITLE}" accessKey="{$APP.LBL_CANCEL_BUTTON_KEY}" 
+                    class="button" onclick="this.form.action.value='{$RETURN_ACTION}'; this.form.module.value='{$RETURN_MODULE}'; this.form.record.value='{$RETURN_ID}'; this.form.submit()" 
                     type="button" name="button" value="{$APP.LBL_CANCEL_BUTTON_LABEL}">
             {$BUTTONS}
         </td>
@@ -135,7 +115,7 @@ EditView_tabs.on('contentReady', function(e){
         <li><a id="tab3" href="#tab3"><em>{$MOD.LBL_THEME}</em></a></li>
         {/if}
         <li><a id="tab4" href="#tab4" style='display:{$HIDE_FOR_GROUP_AND_PORTAL};'><em>{$MOD.LBL_ADVANCED}</em></a></li>
-    </ul>
+    </ul>            
     <div class="yui-content">
         <div>
             <div id="basic">
@@ -152,7 +132,7 @@ EditView_tabs.on('contentReady', function(e){
                                 <td width="33%" id='first_name_field'  style='display:{$HIDE_FOR_GROUP_AND_PORTAL}'><slot><input id='first_name' name='first_name' {$FIRST_NAME_DISABLED} tabindex='1' size='25' maxlength='25' type="text" value="{$FIRST_NAME}"></slot></td>
                             </tr>
                             <tr>
-                                {$USER_STATUS_OPTIONS}
+                                {$USER_STATUS_OPTIONS}	
                                 <td width="17%" scope="row" style='display:{$HIDE_STATIC_USERTYPE}'><slot>{$MOD.LBL_USER_TYPE}:</slot></td>
                                 <td scope="row" style='display:{$HIDE_STATIC_USERTYPE}'><slot>{$USER_TYPE_LABEL}&nbsp;{sugar_help text=$USER_TYPE_DESC WIDTH=250}</slot></td>
                                 <td id='last_name_lbl' scope="row"  style='display:{$HIDE_FOR_GROUP_AND_PORTAL}'><slot>{$MOD.LBL_LAST_NAME}: <span class="required">{$APP.LBL_REQUIRED_SYMBOL}</span></slot></td>
@@ -293,7 +273,7 @@ EditView_tabs.on('contentReady', function(e){
                                 <td >&nbsp;</td>
                             </tr>
                              {if !empty($mail_smtpauth_req) }
-
+                            
                             <tr id="mail_smtpuser_tr">
                                 <td width="20%" scope="row" nowrap="nowrap"><span id="mail_smtpuser_label">{$MOD.LBL_MAIL_SMTPUSER}</span></td>
                                 <td width="30%" ><slot><input type="text" id="mail_smtpuser" name="mail_smtpuser" size="25" maxlength="64" value="{$mail_smtpuser}" tabindex='1' ></slot></td>
@@ -307,7 +287,7 @@ EditView_tabs.on('contentReady', function(e){
                                 <td >&nbsp;</td>
                             </tr>
                             {/if}
-
+                         
                             <tr id="test_outbound_settings_tr">
                                 <td width="17%" scope="row"><input type="button" class="button" value="{$APP.LBL_EMAIL_TEST_OUTBOUND_SETTINGS}" onclick="startOutBoundEmailSettingsTest();"></td>
                                 <td width="33%" >&nbsp;</td>
@@ -319,7 +299,7 @@ EditView_tabs.on('contentReady', function(e){
             </div>
         </div>
         <div>
-            {if ($CHANGE_PWD) == '1'}
+            {if ($CHANGE_PWD) == '1'} 
             <div id="generate_password">
             <table width="100%" border="0" cellspacing="0" cellpadding="0" class="edit view">
                 <tr>
@@ -354,7 +334,7 @@ EditView_tabs.on('contentReady', function(e){
                                     <span class="required" id="mandatory_pwd">{if ($REQUIRED_PASSWORD)}{$APP.LBL_REQUIRED_SYMBOL}{/if}</span>
                                 </td>
                                 <td class='dataField'>
-
+                                    
                                     <input name='new_password' id= "new_password" type='password' tabindex='2' onkeyup="password_confirmation();newrules('{$PWDSETTINGS.minpwdlength}','{$PWDSETTINGS.maxpwdlength}','{$REGEX}');" />
                                 </td>
                                 <td width='40%'>
@@ -380,9 +360,9 @@ EditView_tabs.on('contentReady', function(e){
                             <tr>
                                 <td class='dataLabel'></td>
                                 <td class='dataField'></td>
-                            </td>
+                            </td>                    
                         </table>
-
+            
                         <table width='17%' cellspacing='0' cellpadding='1' border='0'>
                             <tr>
                                 <td width='50%'>
@@ -446,9 +426,9 @@ EditView_tabs.on('contentReady', function(e){
                             </td>
                             <td width="33%">
                             <slot><input name='receive_notifications' class="checkbox" tabindex='12' type="checkbox" value="12" {$RECEIVE_NOTIFICATIONS}></slot>
-                            </td>
+                            </td>                
                         </tr>
-
+        
                         <tr>
                             <td scope="row" valign="top"><slot>{$MOD.LBL_EXPORT_CHARSET}:</slot>&nbsp;{sugar_help text=$MOD.LBL_EXPORT_CHARSET_DESC }</td>
                             <td ><slot><select tabindex='12' name="default_export_charset">{$EXPORT_CHARSET}</select></slot></td>
@@ -490,7 +470,7 @@ EditView_tabs.on('contentReady', function(e){
                 <tr>
                     <th align="left" scope="row" colspan="4"><h4>{$MOD.LBL_LAYOUT_OPTIONS}</h4></th>
                 </tr>
-							<tr id="use_group_tabs_row" style="display: {$DISPLAY_GROUP_TAB};">
+							<tr id="use_group_tabs_row" style="display: {$DISPLAY_GROUP_TAB};">	
                                 <td scope="row"><span>{$MOD.LBL_USE_GROUP_TABS}:</span>&nbsp;{sugar_help text=$MOD.LBL_NAVIGATION_PARADIGM_DESCRIPTION }</td>
                                 <td colspan="3"><input name="use_group_tabs" type="hidden" value="m"><input id="use_group_tabs" type="checkbox" name="use_group_tabs" {$USE_GROUP_TABS} tabindex='12' value="gm"></td>
                             </tr>
@@ -508,11 +488,11 @@ EditView_tabs.on('contentReady', function(e){
                                 <td width="17%" scope="row"><span scope="row">{$MOD.LBL_MAX_TAB}:</span>&nbsp;{sugar_help text=$MOD.LBL_MAX_TAB_DESCRIPTION }</td>
                                 <td width="83%" colspan="3">
                                     <select name="user_max_tabs" tabindex='12'>
-                                    {html_options values=$MAX_TAB_OPTIONS output=$MAX_TAB_OPTIONS selected=$MAX_TAB}
+                                    {html_options values=$MAX_TAB_OPTIONS output=$MAX_TAB_OPTIONS selected=$MAX_TAB} 
                                     </select>
                                 </td>
 							</tr>
-							<tr>
+							<tr>	
                                 <td scope="row"><span>{$MOD.LBL_SUBPANEL_TABS}:</span>&nbsp;{sugar_help text=$MOD.LBL_SUBPANEL_TABS_DESCRIPTION }</td>
                                 <td colspan="3"><input type="checkbox" name="user_subpanel_tabs" {$SUBPANEL_TABS} tabindex='13'></td>
                             </tr>
@@ -550,7 +530,7 @@ EditView_tabs.on('contentReady', function(e){
                         </tr>
                         <tr>
                             <td scope="row"><slot>{$MOD.LBL_TIMEZONE}:</slot>&nbsp;{sugar_help text=$MOD.LBL_TIMEZONE_TEXT }</td>
-                            <td ><slot><select tabindex='14' name='timezone'>{html_options options=$TIMEZONEOPTIONS selected=$TIMEZONE_CURRENT}</select></slot></td>
+                            <td ><slot><select tabindex='14' name='timezone'>{$TIMEZONEOPTIONS}</select></slot></td>
                             <!-- BEGIN: currency -->
                             <td width="17%" scope="row"><slot>
                                 <i>{$MOD.LBL_LOCALE_EXAMPLE_NAME_FORMAT}</i>:
@@ -561,7 +541,7 @@ EditView_tabs.on('contentReady', function(e){
                             <!-- END: currency -->
                         </tr>
                         <tr>
-                        {if ($IS_ADMIN)}
+                        {if ($IS_ADMIN)} 
                             <td scope="row"><slot>{$MOD.LBL_PROMPT_TIMEZONE}:</slot>&nbsp;{sugar_help text=$MOD.LBL_PROMPT_TIMEZONE_TEXT }</td>
                             <td ><slot><input type="checkbox" tabindex='14'class="checkbox" name="ut" value="0" {$PROMPTTZ}></slot></td>
                         {else}
@@ -571,7 +551,7 @@ EditView_tabs.on('contentReady', function(e){
                             <td width="17%" scope="row"><slot>{$MOD.LBL_NUMBER_GROUPING_SEP}:</slot>&nbsp;{sugar_help text=$MOD.LBL_NUMBER_GROUPING_SEP_TEXT }</td>
                             <td ><slot>
                                 <input tabindex='14' name='num_grp_sep' id='default_number_grouping_seperator'
-                                    type='text' maxlength='1' size='1' value='{$NUM_GRP_SEP}'
+                                    type='text' maxlength='1' size='1' value='{$NUM_GRP_SEP}' 
                                     onkeydown='setSigDigits();' onkeyup='setSigDigits();'>
                             </slot></td></tr>
                         {capture name=SMARTY_LOCALE_NAME_FORMAT_DESC}&nbsp;{$MOD.LBL_LOCALE_NAME_FORMAT_DESC}<br />{$MOD.LBL_LOCALE_NAME_FORMAT_DESC_2}{/capture}
@@ -582,18 +562,18 @@ EditView_tabs.on('contentReady', function(e){
                             </td>
                              <td width="17%" scope="row"><slot>{$MOD.LBL_DECIMAL_SEP}:</slot>&nbsp;{sugar_help text=$MOD.LBL_DECIMAL_SEP_TEXT }</td>
                             <td ><slot>
-                                <input tabindex='14' name='dec_sep' id='default_decimal_seperator'
+                                <input tabindex='14' name='dec_sep' id='default_decimal_seperator' 
                                     type='text' maxlength='1' size='1' value='{$DEC_SEP}'
                                     onkeydown='setSigDigits();' onkeyup='setSigDigits();'>
                             </slot></td>
                         </tr>
                         <tr>
                             <td  scope="row" valign="top"><i>{$MOD.LBL_LOCALE_EXAMPLE_NAME_FORMAT}:</i> </td>
-                            <td   valign="top"><input tabindex='14' name="no_value" id="nameTarget" value="" style="border: none;" disabled size="50"></td>
+                            <td   valign="top"><input tabindex='14' name="no_value" id="nameTarget" value="" style="border: none;" disabled size="50"></td>        
                         </tr>
                     </table>
         </div>
-
+        
         <div id="calendar_options" style="display:{$HIDE_FOR_GROUP_AND_PORTAL}">
         <table width="100%" border="0" cellspacing="1" cellpadding="0" class="edit view">
             <tr>
@@ -623,9 +603,9 @@ EditView_tabs.on('contentReady', function(e){
 
 
 <div class="actionContainer">
-	<input	id="Save" title="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button primary" onclick="if (!set_password(form,newrules('{$PWDSETTINGS.minpwdlength}','{$PWDSETTINGS.maxpwdlength}','{$REGEX}'))) return false;Admin_check(); this.form.action.value='Save'; {$CHOOSER_SCRIPT} {$REASSIGN_JS} if(verify_data(EditView)) this.form.submit();"
+	<input	id="Save" title="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button primary" onclick="if (!set_password(form,newrules('{$PWDSETTINGS.minpwdlength}','{$PWDSETTINGS.maxpwdlength}','{$REGEX}'))) return false;Admin_check(); this.form.action.value='Save'; {$CHOOSER_SCRIPT} {$REASSIGN_JS} if(verify_data(EditView)) this.form.submit();" 
 			type="button" name="button" value="{$APP.LBL_SAVE_BUTTON_LABEL}" />
-	<input	title="{$APP.LBL_CANCEL_BUTTON_TITLE}" class="button" onclick="this.form.action.value='{$RETURN_ACTION}'; this.form.module.value='{$RETURN_MODULE}'; this.form.record.value='{$RETURN_ID}'; this.form.submit();"
+	<input	title="{$APP.LBL_CANCEL_BUTTON_TITLE}" class="button" onclick="this.form.action.value='{$RETURN_ACTION}'; this.form.module.value='{$RETURN_MODULE}'; this.form.record.value='{$RETURN_ID}'; this.form.submit();" 
 			type="button" name="button" value="{$APP.LBL_CANCEL_BUTTON_LABEL}" />
     {$BUTTONS}
 </div>
@@ -681,11 +661,11 @@ function startOutBoundEmailSettingsTest()
         requires: ["datatable", "dragdrop", "treeview", "tabview"]
     });
     loader.insert();
-
+     
 }
 
-function testOutboundSettings()
-{
+function testOutboundSettings() 
+{ 
 	var errorMessage = '';
 	var isError = false;
 	var fromAddress = document.getElementById("outboundtest_from_address").value;
@@ -694,36 +674,40 @@ function testOutboundSettings()
     var smtpServer = document.getElementById('mail_smtpserver').value;
 
     var mailsmtpauthreq = document.getElementById('mail_smtpauth_req');
-    if(trim(smtpServer) == '' || trim(mail_smtpport) == '')
+    if(trim(smtpServer) == '' || trim(mail_smtpport) == '') 
     {
         isError = true;
         errorMessage += "{/literal}{$MOD.LBL_MISSING_DEFAULT_OUTBOUND_SMTP_SETTINGS}{literal}" + "<br/>";
         overlay("{/literal}{$APP.ERR_MISSING_REQUIRED_FIELDS}{literal}", errorMessage, 'alert');
         return false;
     }
-
-
-    if(document.getElementById('mail_smtpuser') && trim(document.getElementById('mail_smtpuser').value) == '')
+    
+   
+    if(document.getElementById('mail_smtpuser') && trim(document.getElementById('mail_smtpuser').value) == '') 
     {
         isError = true;
         errorMessage += "{/literal}{$APP.LBL_EMAIL_ACCOUNTS_SMTPUSER}{literal}" + "<br/>";
     }
 
-
+    
+    if(document.getElementById('mail_smtppass') && trim(document.getElementById('mail_smtppass').value) == '') 
+    {
+        isError = true;
+        errorMessage += "{/literal}{$APP.LBL_EMAIL_ACCOUNTS_SMTPPASS}{literal}" + "<br/>";
+    }
     if(isError) {
         overlay("{/literal}{$APP.ERR_MISSING_REQUIRED_FIELDS}{literal}", errorMessage, 'alert');
-        return false;
-    }
-
+        return false;    
+    } 
+	
     testOutboundSettingsDialog();
 }
 
 function sendTestEmail()
 {
-    var toAddress = document.getElementById("outboundtest_from_address").value;
     var fromAddress = document.getElementById("outboundtest_from_address").value;
-
-    if (trim(fromAddress) == "")
+    
+    if (trim(fromAddress) == "") 
     {
         overlay("{/literal}{$APP.ERR_MISSING_REQUIRED_FIELDS}{literal}", "{{/literal}$APP.LBL_EMAIL_SETTINGS_FROM_TO_EMAIL_ADDR}{literal}", 'alert');
         return;
@@ -732,26 +716,26 @@ function sendTestEmail()
         overlay("{/literal}{$APP.ERR_INVALID_REQUIRED_FIELDS}{literal}", "{/literal}{$APP.LBL_EMAIL_SETTINGS_FROM_TO_EMAIL_ADDR}{literal}", 'alert');
         return;
     }
-
+    
     //Hide the email address window and show a message notifying the user that the test email is being sent.
     EmailMan.testOutboundDialog.hide();
     overlay("{/literal}{$APP.LBL_EMAIL_PERFORMING_TASK}{literal}", "{/literal}{$APP.LBL_EMAIL_ONE_MOMENT}{literal}", 'alert');
-
+    
     var callbackOutboundTest = {
     	success	: function(o) {
     		hideOverlay();
     		overlay("{/literal}{$APP.LBL_EMAIL_TEST_OUTBOUND_SETTINGS}{literal}", "{/literal}{$APP.LBL_EMAIL_TEST_NOTIFICATION_SENT}{literal}", 'alert');
     	}
-    };
+    };    
     var smtpServer = document.getElementById('mail_smtpserver').value;
-
+    
     if(document.getElementById('mail_smtpuser') && document.getElementById('mail_smtppass')){
-    var postDataString = 'mail_sendtype=SMTP&mail_smtpserver=' + smtpServer + "&mail_smtpport=" + mail_smtpport + "&mail_smtpssl=" + mail_smtpssl + "&mail_smtpauth_req=true&mail_smtpuser=" + trim(document.getElementById('mail_smtpuser').value) + "&mail_smtppass=" + trim(document.getElementById('mail_smtppass').value) + "&outboundtest_from_address=" + fromAddress + "&outboundtest_to_address=" + toAddress;
+    var postDataString = 'mail_sendtype=SMTP&mail_smtpserver=' + smtpServer + "&mail_smtpport=" + mail_smtpport + "&mail_smtpssl=" + mail_smtpssl + "&mail_smtpauth_req=true&mail_smtpuser=" + trim(document.getElementById('mail_smtpuser').value) + "&mail_smtppass=" + trim(document.getElementById('mail_smtppass').value) + "&outboundtest_from_address=" + fromAddress;
     }
     else{
-	var postDataString = 'mail_sendtype=SMTP&mail_smtpserver=' + smtpServer + "&mail_smtpport=" + mail_smtpport + "&mail_smtpssl=" + mail_smtpssl + "&outboundtest_from_address=" + fromAddress + "&outboundtest_to_address=" + toAddress;
+	var postDataString = 'mail_sendtype=SMTP&mail_smtpserver=' + smtpServer + "&mail_smtpport=" + mail_smtpport + "&mail_smtpssl=" + mail_smtpssl + "&outboundtest_from_address=" + fromAddress;
     }
-	YAHOO.util.Connect.asyncRequest("POST", "index.php?action=testOutboundEmail&mail_name=system&module=EmailMan&to_pdf=true&sugar_body_only=true", callbackOutboundTest, postDataString);
+	YAHOO.util.Connect.asyncRequest("POST", "index.php?action=testOutboundEmail&module=EmailMan&to_pdf=true&sugar_body_only=true", callbackOutboundTest, postDataString);
 }
 function testOutboundSettingsDialog() {
         // lazy load dialogue
@@ -767,7 +751,7 @@ function testOutboundSettingsDialog() {
             EmailMan.testOutboundDialog.setHeader("{/literal}{$APP.LBL_EMAIL_TEST_OUTBOUND_SETTINGS}{literal}");
             YAHOO.util.Dom.removeClass("testOutboundDialog", "yui-hidden");
         } // end lazy load
-
+        
         EmailMan.testOutboundDialog.render();
         EmailMan.testOutboundDialog.show();
 } // fn
@@ -836,7 +820,7 @@ setSigDigits();
 		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="edit view">
 			<tr>
 				<td scope="row">
-					{$APP.LBL_EMAIL_SETTINGS_FROM_TO_EMAIL_ADDR}
+					{$APP.LBL_EMAIL_SETTINGS_FROM_TO_EMAIL_ADDR} 
 					<span class="required">
 						{$APP.LBL_REQUIRED_SYMBOL}
 					</span>

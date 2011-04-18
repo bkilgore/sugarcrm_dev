@@ -114,7 +114,7 @@ function get_entries($session, $module_name, $ids, $select_fields, $link_name_to
 			if ($seed->retrieve($id) == null)
 				$seed->deleted = 1;
 		}
-
+    
 		if ($seed->deleted == 1) {
 			$list = array();
 			$list[] = array('name'=>'warning', 'value'=>'Access to this object is denied since it has been deleted or does not exist');
@@ -525,7 +525,7 @@ public function login($user_auth, $application, $name_value_list){
 	$isLoginSuccess = $authController->login($user_auth['user_name'], $user_auth['password'], array('passwordEncrypted' => true));
 	$usr_id=$user->retrieve_user_id($user_auth['user_name']);
 	if($usr_id) {
-		$user->retrieve($usr_id);
+		$user->retrieve($usr_id);	
 	}
 	if ($isLoginSuccess) {
 		if ($_SESSION['hasExpiredPassword'] =='1') {
@@ -638,7 +638,7 @@ function get_server_info(){
 	}
 
 	$GLOBALS['log']->info('End: SugarWebServiceImpl->get_server_info');
-	return array('flavor' => $sugar_flavor, 'version' => $sugar_version, 'gmt_time' => TimeDate::getInstance()->nowDb());
+	return array('flavor' => $sugar_flavor, 'version' => $sugar_version, 'gmt_time' => gmdate('Y-m-d H:i:s'));
 } // fn
 
 /**
@@ -669,7 +669,7 @@ function get_user_id($session){
  *                  'link_fields' -- Array - The vardef information on the link fields
  * @exception 'SoapFault' -- The SOAP error, if any
  */
-function get_module_fields($session, $module_name, $fields = array()){
+function get_module_fields($session, $module_name, $fields){
 	$GLOBALS['log']->info('Begin: SugarWebServiceImpl->get_module_fields');
 	global  $beanList, $beanFiles;
 	$error = new SoapError();
@@ -840,13 +840,14 @@ function get_document_revision($session, $id) {
     $dr->retrieve($id);
     if(!empty($dr->filename)){
         $filename = $sugar_config['upload_dir']."/".$dr->id;
+        $handle = sugar_fopen($filename, "r");
+        $contents = '';
         if (filesize($filename) > 0) {
-        	$contents = sugar_file_get_contents($filename);
-        } else {
-            $contents = '';
+        	$contents = fread($handle, filesize($filename));
         }
+        fclose($handle);
         $contents = base64_encode($contents);
-        $GLOBALS['log']->info('End: SugarWebServiceImpl->get_document_revision');
+		$GLOBALS['log']->info('End: SugarWebServiceImpl->get_document_revision');
         return array('document_revision'=>array('id' => $dr->id, 'document_name' => $dr->document_name, 'revision' => $dr->revision, 'filename' => $dr->filename, 'file' => $contents));
     }else{
         $error->set_error('no_records');
@@ -895,9 +896,9 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
 	include($GLOBALS['sugar_config']['cache_dir'].'modules/unified_search_modules.php');
 	$modules_to_search = array();
 	$unified_search_modules['Users'] =   array('fields' => array());
-
+	
 	$unified_search_modules['ProjectTask'] =   array('fields' => array());
-
+	
     foreach($unified_search_modules as $module=>$data) {
     	if (in_array($module, $modules)) {
         	$modules_to_search[$module] = $beanList[$module];
@@ -919,7 +920,7 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
 			require_once $beanFiles[$beanName] ;
 			$seed = new $beanName();
 			require_once 'include/SearchForm/SearchForm2.php' ;
-			if ($beanName == "User"
+			if ($beanName == "User" 
 			    || $beanName == "ProjectTask"
 			    ) {
 				if(!self::$helperObject->check_modules_access($current_user, $seed->module_dir, 'read')){
@@ -930,7 +931,7 @@ function search_by_module($session, $search_string, $modules, $offset, $max_resu
 				} // if
 			}
 
-			if ($beanName != "User"
+			if ($beanName != "User" 
 			    && $beanName != "ProjectTask"
 			    ) {
 				$searchForm = new SearchForm ($seed, $name ) ;

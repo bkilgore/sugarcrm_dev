@@ -193,6 +193,12 @@ array (
     'label' => 'LBL_DATE_MODIFIED',
     'default' => false,
   ),
+  'DATE_ENTERED' => 
+  array (
+    'width' => '5%',
+    'label' => 'LBL_DATE_ENTERED',
+    'default' => false,
+  ),
   'CREATED_BY_NAME' => 
   array (
     'width' => '10%',
@@ -213,12 +219,6 @@ array (
     'link' => true,
     'customCode' => '{$EMAIL1_LINK}{$EMAIL1}</a>',
     'default' => true
-  ),  
-  'DATE_ENTERED' => 
-  array (
-    'width' => '5%',
-    'label' => 'LBL_DATE_ENTERED',
-    'default' => true,
   ),  
 );
 ?>

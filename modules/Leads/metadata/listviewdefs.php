@@ -206,6 +206,12 @@ array (
     'label' => 'LBL_ALT_ADDRESS_POSTALCODE',
     'default' => false,
   ),
+  'DATE_ENTERED' => 
+  array (
+    'width' => '10%',
+    'label' => 'LBL_DATE_ENTERED',
+    'default' => false,
+  ),
   'CREATED_BY' => 
   array (
     'width' => '10%',
@@ -218,11 +224,5 @@ array (
     'label' => 'LBL_MODIFIED',
     'default' => false,
   ),
-  'DATE_ENTERED' => 
-  array (
-    'width' => '10%',
-    'label' => 'LBL_DATE_ENTERED',
-    'default' => true,
-  ),  
 );
 ?>

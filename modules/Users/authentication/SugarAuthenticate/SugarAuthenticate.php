@@ -81,11 +81,6 @@ class SugarAuthenticate{
 			if(hasPasswordExpired($username)) {
 				$_SESSION['hasExpiredPassword'] = '1';
 			}
-			// now that user is authenticated, reset loginfailed
-			if ($usr->getPreference('loginfailed') != '' && $usr->getPreference('loginfailed') != 0) {
-				$usr->setPreference('loginfailed','0');
-				$usr->savePreferencesToDB();
-			}
 			return $this->postLoginAuthenticate();
 
 		}

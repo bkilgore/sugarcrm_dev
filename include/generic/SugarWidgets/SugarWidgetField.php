@@ -46,7 +46,7 @@ class SugarWidgetField extends SugarWidget {
 	function SugarWidgetField(&$layout_manager) {
         parent::SugarWidget($layout_manager);
     }
-
+	
 	function display($layout_def) {
 		//print $layout_def['start_link_wrapper']."===";
 		$context = $this->layout_manager->getAttribute('context'); //_ppd($context);
@@ -108,7 +108,7 @@ class SugarWidgetField extends SugarWidget {
 
 	function displayHeaderCell($layout_def) {
 		$module_name = $this->layout_manager->getAttribute('module_name');
-
+		
 		$this->local_current_module = $_REQUEST['module'];
 		$this->is_dynamic = true;
 		// don't show sort links if name isn't defined
@@ -153,14 +153,14 @@ class SugarWidgetField extends SugarWidget {
 		$header_cell = "<a class=\"listViewThLinkS1\" href=\"".$start.$this->base_URL.$subpanel_module.'&'.$sort_by.$end."\">";
 		$header_cell .= $header_cell_text;
 		$header_cell .= "</a>";
-
+		
 		$imgArrow = '';
 
 		if (isset ($layout_def['sort'])) {
 			$imgArrow = $layout_def['sort'];
 		}
 		$arrow_start = ListView :: getArrowUpDownStart($imgArrow);
-
+		
 		$header_cell .= " ".$arrow_start;
 
 		return $header_cell;
@@ -174,7 +174,7 @@ class SugarWidgetField extends SugarWidget {
 	function displayListPlain($layout_def) {
 		$value= $this->_get_list_value($layout_def);
 		if (isset($layout_def['widget_type']) && $layout_def['widget_type'] =='checkbox') {
-			if ($value != '' &&  ($value == 'on' || intval($value) == 1 || $value == 'yes'))
+			if ($value != '' &&  ($value == 'on' || intval($value) == 1 || $value == 'yes'))  
 			{
 				return "<input name='checkbox_display' class='checkbox' type='checkbox' disabled='true' checked>";
 			}
@@ -233,3 +233,6 @@ class SugarWidgetField extends SugarWidget {
         }
     }
 }
+?>
+
+

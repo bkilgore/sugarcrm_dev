@@ -53,9 +53,6 @@ class DocumentRevision extends SugarBean {
 
 	var $id;
 	var $document_id;
-    var $doc_id;
-    var $doc_type;
-    var $doc_url;
 	var $date_entered;
 	var $created_by;
 	var $filename;
@@ -118,20 +115,11 @@ class DocumentRevision extends SugarBean {
 	}
 
 	function save($check_notify = false){	
-		$saveRet = parent::save($check_notify);
-
-		//update documents table. (not through save, because it causes a loop)
-        // If we don't have a document_id, find it.
-        if ( empty($this->document_id) ) {
-            $query = "SELECT document_id FROM document_revisions WHERE id = '".$this->db->quote($this->id)."'";
-            $ret = $this->db->query($query,true);
-            $row = $this->db->fetchByAssoc($ret);
-            $this->document_id = $row['document_id'];
-        }
-		$query = "UPDATE documents set document_revision_id='".$this->db->quote($this->id)."', doc_type='".$this->db->quote($this->doc_type)."', doc_url='".$this->db->quote($this->doc_url)."', doc_id='".$this->db->quote($this->doc_id)."' where id = '".$this->db->quote($this->document_id)."'";
-		$this->db->query($query,true);
-
-        return $saveRet;
+		parent::save($check_notify);
+				
+		//update documents table.
+		//$query = "UPDATE documents set document_version_id='$this->id' where id = '$this->document_id'";	
+		//$this->db->query($query);
 	}
 	function get_summary_text()
 	{
@@ -159,25 +147,40 @@ class DocumentRevision extends SugarBean {
 		global $current_language;
 		
 		parent::fill_in_additional_detail_fields();
-
-        if ( empty($this->id) && empty($this->document_id) && isset($_REQUEST['return_id']) && !empty($_REQUEST['return_id']) ) {
-            $this->document_id = $_REQUEST['return_id'];
-        }
+		
+		$mod_strings=return_module_language($current_language, 'Documents');
 		
 		//find the document name and current version.
-		$query = "SELECT document_name, revision, document_revision_id FROM documents, document_revisions where documents.id = '".$this->db->quote($this->document_id)."' AND document_revisions.id = documents.document_revision_id";
+		$query = "SELECT document_name, revision, document_revision_id FROM documents, document_revisions where documents.id = '$this->document_id' AND document_revisions.id = documents.document_revision_id";
 		$result = $this->db->query($query,true,"Error fetching document details...:");
 		$row = $this->db->fetchByAssoc($result);
 		if ($row != null) {
 			$this->document_name = $row['document_name'];
-            $this->document_name = '<a href="index.php?module=Documents&action=DetailView&record='.$this->document_id.'">'.$row['document_name'].'</a>';
 			$this->latest_revision = $row['revision'];	
 			$this->latest_revision_id = $row['document_revision_id'];
-
-            if ( empty($this->revision) ) {
-                $this->revision = $this->latest_revision + 1;
-            }
-       }
+		}
+		//populate the file url. 
+		//image is selected based on the extension name <ext>_image_inline, extension is stored in document_revisions.
+		//if file is not found then default image file will be used.
+		global $img_name;
+		global $img_name_bare;
+		if (!empty($this->file_ext)) {
+			$img_name = SugarThemeRegistry::current()->getImageURL("{$this->file_ext}_image_inline.gif");	
+			$img_name_bare = "{$this->file_ext}_image_inline";		
+		}
+		
+		//set default file name.
+		if (!empty($img_name) && file_exists($img_name)) {
+			$img_name = $img_name_bare;			
+		}
+		else {
+			$img_name = "def_image_inline";  //todo change the default image.						
+		}
+		if($this->ACLAccess('DetailView')){
+		    $this->file_url = "<a href='".UploadFile::get_url($this->filename,$this->id)."' target='_blank'>".SugarThemeRegistry::current()->getImage($img_name,'alt="'.$mod_strings['LBL_LIST_VIEW_DOCUMENT'].'"  border="0"')."</a>";
+		}else{
+		    $this->file_url = "";
+		}
 	}
 	
 	/**
@@ -193,6 +196,9 @@ class DocumentRevision extends SugarBean {
 		$localLabels = return_module_language($current_language, 'DocumentRevisions');
 		
 		// prep - get source Document
+		if(!class_exists('Documents')) {
+			
+		}
 		$document = new Document();
 		
 		// use passed revision ID
@@ -299,5 +305,4 @@ class DocumentRevision extends SugarBean {
 		return $return_array;
 	}	
 }
-
-require_once('modules/Documents/DocumentExternalApiDropDown.php');
+?>

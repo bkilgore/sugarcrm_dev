@@ -46,7 +46,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  *                              'required' -- Is the field required?
  *                              'options' -- Possible values for a drop down field
  */
-function get_field_list($value, $translate=true){
+function get_field_list(&$value, $translate=true){
 	$list = array();
 
 	if(!empty($value->field_defs)){
@@ -58,7 +58,8 @@ function get_field_list($value, $translate=true){
 			$options_ret = array();
 			// Apparently the only purpose of this check is to make sure we only return fields
 			//   when we've read a record.  Otherwise this function is identical to get_module_field_list
-			if(!empty($var['required'])) {
+			if((isset($value->required_fields) && key_exists($var['name'], $value->required_fields)) ||
+				(isset($var['required']) && $var['required'] == '1')){
 				$required = 1;
 			}
 			if(isset($var['options'])){
@@ -91,7 +92,7 @@ function get_field_list($value, $translate=true){
 	} //if
 
 	if($value->module_dir == 'Bugs'){
-
+		
 		$seedRelease = new Release();
 		$options = $seedRelease->get_releases(TRUE, "Active");
 		$options_ret = array();
@@ -111,7 +112,7 @@ function get_field_list($value, $translate=true){
 			$list['release_name']['options'] = $options_ret;
 		}
 	}
-
+	
 	if(isset($value->assigned_user_name) && isset($list['assigned_user_id'])) {
 		$list['assigned_user_name'] = $list['assigned_user_id'];
 		$list['assigned_user_name']['name'] = 'assigned_user_name';
@@ -130,11 +131,11 @@ function get_field_list($value, $translate=true){
 function new_get_field_list($value, $translate=true) {
 	$module_fields = array();
 	$link_fields = array();
-
+	
 	if(!empty($value->field_defs)){
 
 		foreach($value->field_defs as $var){
-			if(isset($var['source']) && ($var['source'] != 'db' && $var['source'] != 'non-db' && $var['source'] != 'custom_fields') && $var['name'] != 'email1' && $var['name'] != 'email2' && (!isset($var['type'])|| $var['type'] != 'relate'))continue;
+			if(isset($var['source']) && ($var['source'] != 'db' && $var['source'] != 'non-db' &&$var['source'] != 'custom_fields') && $var['name'] != 'email1' && $var['name'] != 'email2' && (!isset($var['type'])|| $var['type'] != 'relate'))continue;
 			if ($var['source'] == 'non_db' && (isset($var['type']) && $var['type'] != 'link')) {
 				continue;
 			}
@@ -143,7 +144,8 @@ function new_get_field_list($value, $translate=true) {
 			$options_ret = array();
 			// Apparently the only purpose of this check is to make sure we only return fields
 			//   when we've read a record.  Otherwise this function is identical to get_module_field_list
-			if(!empty($var['required'])) {
+			if((isset($value->required_fields) && key_exists($var['name'], $value->required_fields)) ||
+				(isset($var['required']) && $var['required'] == '1')){				
 				$required = 1;
 			}
 			if(isset($var['options'])){
@@ -180,9 +182,9 @@ function new_get_field_list($value, $translate=true) {
             } // else
 		} //foreach
 	} //if
-
+	
 	if($value->module_dir == 'Bugs'){
-
+		
 		$seedRelease = new Release();
 		$options = $seedRelease->get_releases(TRUE, "Active");
 		$options_ret = array();
@@ -202,7 +204,7 @@ function new_get_field_list($value, $translate=true) {
 			$module_fields['release_name']['options'] = $options_ret;
 		}
 	}
-
+	
 	if(isset($value->assigned_user_name) && isset($module_fields['assigned_user_id'])) {
 		$module_fields['assigned_user_name'] = $module_fields['assigned_user_id'];
 		$module_fields['assigned_user_name']['name'] = 'assigned_user_name';
@@ -215,7 +217,7 @@ function new_get_field_list($value, $translate=true) {
 		$module_fields['created_by_name'] = $module_fields['created_by'];
 		$module_fields['created_by_name']['name'] = 'created_by_name';
 	}
-
+	
 	return array('module_fields' => $module_fields, 'link_fields' => $link_fields);
 } // fn
 
@@ -267,10 +269,16 @@ function get_user_module_list($user){
 	$app_list_strings = return_app_list_strings_language($current_language);
 	$modules = query_module_access_list($user);
 	ACLController :: filterModuleList($modules, false);
-	global $modInvisList;
+	global $modInvisList, $modInvisListActivities;
 
 	foreach($modInvisList as $invis){
 		$modules[$invis] = 'read_only';
+	}
+
+	if(isset($modules['Calendar']) || $modules['Activities']){
+		foreach($modInvisListActivities as $invis){
+				$modules[$invis] = $invis;
+		}
 	}
 
 	$actions = ACLAction::getUserActions($user->id,true);
@@ -284,18 +292,18 @@ function get_user_module_list($user){
 		} else {
 			$modules[$key] = '';
 		} // else
-	} // foreach
-
+	} // foreach		
+	
 	//Remove all modules that don't have a beanFiles entry associated with it
 	foreach($modules as $module_name=>$module)
 	{
 		$class_name = $beanList[$module_name];
 		if(empty($beanFiles[$class_name]))
 		{
-		   unset($modules[$module_name]);
+		   unset($modules[$module_name]);   
 		}
-	}
-
+	}	
+	
 	return $modules;
 
 }
@@ -315,7 +323,7 @@ function check_modules_access($user, $module_name, $action='write'){
 
 }
 
-function get_name_value_list($value, $returnDomValue = false){
+function get_name_value_list(&$value, $returnDomValue = false){
 	global $app_list_strings;
 	$list = array();
 	if(!empty($value->field_defs)){
@@ -591,7 +599,7 @@ function new_handle_set_relationship($module_name, $module_id, $link_field_name,
     foreach($related_ids as $ids) {
     	$GLOBALS['log']->debug("ids = " . $ids );
     }
-
+    
 	if ($mod->load_relationship($link_field_name)) {
 		$mod->$link_field_name->add($related_ids);
 		return true;
@@ -601,11 +609,11 @@ function new_handle_set_relationship($module_name, $module_id, $link_field_name,
 }
 
 function new_handle_set_entries($module_name, $name_value_lists, $select_fields = FALSE) {
-	global $beanList, $beanFiles, $app_list_strings;
-	global $current_user;
+	global $beanList, $beanFiles;
 
 	$ret_values = array();
 
+	global $current_user;
 	$class_name = $beanList[$module_name];
 	require_once($beanFiles[$class_name]);
 	$ids = array();
@@ -727,7 +735,7 @@ function new_handle_set_entries($module_name, $name_value_lists, $select_fields 
 	}
 }
 
-function get_return_value($value, $module, $returnDomValue = false){
+function get_return_value(&$value, $module, $returnDomValue = false){
 	global $module_name, $current_user;
 	$module_name = $module;
 	if($module == 'Users' && $value->id != $current_user->id){
@@ -756,6 +764,54 @@ function get_name_value_xml($val, $module_name){
 			return $xml;
 }
 
+/*
+function get_module_field_list(&$value){
+	$list = array();
+	if(!empty($value->field_defs)){
+		foreach($value->field_defs as $var){
+			$required = 0;
+			$options_dom = array();
+			$translateOptions = false;
+
+				if(isset($value->required_fields) && key_exists($var['name'], $value->required_fields)){
+					$required = 1;
+				}
+				if(isset($var['options'])){
+					$options_dom = $var['options'];
+					$translateOptions = true;
+				}
+				if($value->module_dir == 'Bugs'){
+					require_once('modules/Releases/Release.php');
+					$seedRelease = new Release();
+					$options = $seedRelease->get_releases(TRUE, "Active");
+					if($var['name'] == 'fixed_in_release'){
+						$var['type'] = 'enum';
+						$translateOptions = false;
+						foreach($options as $name=>$avalue){
+							$options_dom[$avalue] =  $name;
+						}
+					}
+					if($var['name'] == 'release'){
+						$var['type'] = 'enum';
+						$translateOptions = false;
+						foreach($options as $name=>$avalue){
+							$options_dom[$avalue] =  $name;
+						}
+					}
+				}
+				$list[$var['name']] = array('name'=>$var['name'],
+											'type'=>$var['type'],
+											'label'=>translate($var['vname'], $value->module_dir),
+											'required'=>$required,
+											'options'=>get_field_options($options_dom, $translateOptions) );
+
+		}
+		}
+
+	return $list;
+}
+*/
+
 function new_get_return_module_fields($value, $module, $translate=true){
 	global $module_name;
 	$module_name = $module;
@@ -766,7 +822,7 @@ function new_get_return_module_fields($value, $module, $translate=true){
 				);
 }
 
-function get_return_module_fields($value, $module, $error, $translate=true){
+function get_return_module_fields(&$value, $module, &$error, $translate=true){
 	global $module_name;
 	$module_name = $module;
 	return Array('module_name'=>$module,
@@ -782,7 +838,7 @@ function get_return_error_value($error_num, $error_name, $error_description){
 				);
 }
 
-function filter_field_list(&$field_list, $select_fields, $module_name){
+function filter_field_list(&$field_list, &$select_fields, $module_name){
 	return filter_return_list($field_list, $select_fields, $module_name);
 }
 
@@ -831,7 +887,7 @@ function login_success(){
 /*
  *	Given an account_name, either create the account or assign to a contact.
  */
-function add_create_account($seed)
+function add_create_account(&$seed)
 {
 	global $current_user;
 	$account_name = $seed->account_name;
@@ -906,8 +962,8 @@ function add_create_account($seed)
     }
 }
 
-function check_for_duplicate_contacts($seed){
-
+function check_for_duplicate_contacts(&$seed){
+	
 
 	if(isset($seed->id)){
 		return null;
@@ -961,7 +1017,7 @@ function check_for_duplicate_contacts($seed){
             }
             return null;
         }
-	}
+	}	
 }
 
 /*
@@ -1026,7 +1082,7 @@ function get_decoded($object){
  */
 function decrypt_string($string){
 	if(function_exists('mcrypt_cbc')){
-
+		
 		$focus = new Administration();
 		$focus->retrieveSettings();
 		$key = '';

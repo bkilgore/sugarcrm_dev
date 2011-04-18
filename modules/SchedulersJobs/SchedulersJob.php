@@ -59,30 +59,30 @@ class SchedulersJob extends SugarBean {
 	// object specific attributes
 	var $user; // User object
 	var $scheduler; // Scheduler parent
-
+	
 	/**
 	 * Sole constructor.
 	 */
 	function SchedulersJob($init=true) {
 		parent::SugarBean();
-
+		
 		if($init) {
-
+			
 			$user = new User();
 			$user->retrieve('1'); // Scheduler jobs run as Admin
 			$this->user = $user;
 		}
 
 	}
-
+	
 	///////////////////////////////////////////////////////////////////////////
 	////	SCHEDULERSJOB HELPER FUNCTIONS
 
 	function fireSelf($id) {
-
+		
 		$sched = new Scheduler();
 		$sched->retrieve($id);
-
+		
 		$exJob = explode('::', $sched->job);
 
 		if(is_array($exJob)) {
@@ -90,16 +90,16 @@ class SchedulersJob extends SugarBean {
 			$this->scheduler		= $sched;
 			$this->execute_time	= $this->handleDateFormat('now');
 			$this->save();
-
+			
 			if($exJob[0] == 'function') {
 				$GLOBALS['log']->debug('----->Scheduler found a job of type FUNCTION');
 				require_once('modules/Schedulers/_AddJobsHere.php');
 
 				$this->setJobFlag(1);
-
+				
 				$func = $exJob[1];
 				$GLOBALS['log']->debug('----->SchedulersJob firing '.$func);
-
+				
 				$res = call_user_func($func);
 				if($res) {
 					$this->setJobFlag(2);
@@ -113,7 +113,7 @@ class SchedulersJob extends SugarBean {
 				if(function_exists('curl_init')) {
 					$GLOBALS['log']->debug('----->SchedulersJob found a job of type URL');
 					$this->setJobFlag(1);
-
+	
 					$GLOBALS['log']->debug('----->SchedulersJob firing URL job: '.$exJob[1]);
 					if($this->fireUrl($exJob[1])) {
 						$this->setJobFlag(2);
@@ -139,23 +139,27 @@ class SchedulersJob extends SugarBean {
 	 * @return string formatted time.
 	 */
 	function handleDateFormat($time, $user=null) {
-		$timedate = TimeDate::getInstance();
-
+		global $timedate;
+		
+		if(!isset($timedate) || empty($timedate)) {
+			$timedate = new TimeDate();
+		}
+		
 		// get proper user
 		$user = (empty($user)) ? $this->user : $user;
-		$dbTime = $timedate->nowDb();
+		$dbTime = gmdate($GLOBALS['timedate']->get_db_date_time_format(), strtotime($time));
 
 		$ret = $timedate->to_display_date_time($dbTime, true, true, $user);
 		return $ret;
 	}
-
+	
 	function setJobFlag($flag) {
 		$trackerManager = TrackerManager::getInstance();
-		$trackerManager->pause();
+		$trackerManager->pause();		
 		$status = array (0 => 'ready', 1 => 'in progress', 2 => 'completed', 3 => 'failed', 4 => 'no curl');
 		$statusScheduler = array (0 => 'Active', 1 => 'In Progress', 2 => 'Active', 3 => 'Active', 4 => 'Active');
 		$GLOBALS['log']->info('-----> SchedulersJob setting Job flag: '.$status[$flag].' AND setting Scheduler status to: '.$statusScheduler[$flag]);
-
+		
 		$time = $this->handleDateFormat('now');
 		$this->status = $status[$flag];
 		$this->scheduler->retrieve($this->scheduler_id);
@@ -165,7 +169,7 @@ class SchedulersJob extends SugarBean {
 		$this->retrieve($this->id);
 		$trackerManager->unPause();
 	}
-
+	
 	/**
 	 * This function takes a job_id, and updates schedulers last_run as well as
 	 * soft delete the job instance from schedulers_times
@@ -173,15 +177,19 @@ class SchedulersJob extends SugarBean {
 	 */
 	function finishJob() {
 		$trackerManager = TrackerManager::getInstance();
-		$trackerManager->pause();
+		$trackerManager->pause();		
 		$GLOBALS['log']->debug('----->SchedulersJob updating Job Status and finishing Job execution.');
 		$this->scheduler->retrieve($this->scheduler->id);
-		$this->scheduler->last_run = TimeDate::getInstance()->nowDb();
+		$this->scheduler->last_run = $this->handleDateFormat('now');
+		if($this->scheduler->last_run == gmdate($GLOBALS['timedate']->get_db_date_time_format(), strtotime('Jan 01 2000 00:00:00'))) {
+			$this->scheduler->last_run = $this->handleDateFormat('now');
+			$GLOBALS['log']->fatal('Scheduler applying bogus date for "Last Run": '.$this->scheduler->last_run);
+		}
 		$this->scheduler->save();
 		$trackerManager->unPause();
 	}
 
-	/**
+	/** 
 	 * This function takes a passed URL and cURLs it to fake multi-threading with another httpd instance
 	 * @param	$job		String in URI-clean format
 	 * @param	$timeout	Int value in secs for cURL to timeout. 30 default.
@@ -190,7 +198,7 @@ class SchedulersJob extends SugarBean {
 	function fireUrl($job, $timeout=30) {
 		// cURL inits
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $job); // set url
+		curl_setopt($ch, CURLOPT_URL, $job); // set url 
 		curl_setopt($ch, CURLOPT_FAILONERROR, true); // silent failure (code >300);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // do not follow location(); inits - we always use the current
 		curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
@@ -201,19 +209,11 @@ class SchedulersJob extends SugarBean {
 		curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);  // open brand new conn
 		curl_setopt($ch, CURLOPT_HEADER, true); // do not return header info with result
 		curl_setopt($ch, CURLOPT_NOPROGRESS, true); // do not have progress bar
-		$urlparts = parse_url($job);
-		if(empty($urlparts['port'])) {
-		    if($urlparts['scheme'] == 'https'){
-				$urlparts['port'] = 443;
-			} else {
-				$urlparts['port'] = 80;
-			}
-		}
-		curl_setopt($ch, CURLOPT_PORT, $urlparts['port']); // set port as reported by Server
+		curl_setopt($ch, CURLOPT_PORT, $_SERVER['SERVER_PORT']); // set port as reported by Server
 		//TODO make the below configurable
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // most customers will not have Certificate Authority account
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // most customers will not have Certificate Authority account
-
+		
 		if(constant('PHP_VERSION') > '5.0.0') {
 			curl_setopt($ch, CURLOPT_NOSIGNAL, true); // ignore any cURL signals to PHP (for multi-threading)
 		}
@@ -225,9 +225,9 @@ class SchedulersJob extends SugarBean {
 									//starttransfer_time,redirect_time
 		curl_close($ch);
 
-		if($result !== FALSE && $cInfo['http_code'] < 400) {
+		if($cInfo['http_code'] < 400) {
 			$GLOBALS['log']->debug('----->Firing was successful: ('.$job.') at '.$this->handleDateFormat('now'));
-			$GLOBALS['log']->debug('----->WTIH RESULT: '.strip_tags($result).' AND '.strip_tags(print_r($cInfo, true)));
+			$GLOBALS['log']->debug('----->WTIH RESULT: '.strip_tags($result).' AND '.strip_tags(print_r($cInfo)));
 			return true;
 		} else {
 			$GLOBALS['log']->fatal('Job errored: ('.$job.') at '.$this->handleDateFormat('now'));
@@ -254,7 +254,7 @@ class SchedulersJob extends SugarBean {
 	}
 
 	/** method stub for future customization
-	 *
+	 * 
 	 */
 	function fill_in_additional_list_fields() {
 		$this->fill_in_additional_detail_fields();
@@ -268,10 +268,10 @@ class SchedulersJob extends SugarBean {
 //		$this->job_name = $row['name'];
 //		$this->job = $row['job'];
 //		$GLOBALS['log']->info('Assigned Name('.$this->job_name.') and Job('.$this->job.') to Job');
-//
+//		
 //		$this->created_by_name = get_assigned_user_name($this->created_by);
 //		$this->modified_by_name = get_assigned_user_name($this->modified_user_id);
-
+		
     }
 
 	/**
@@ -286,5 +286,5 @@ class SchedulersJob extends SugarBean {
 	 * function overrides the one in SugarBean.php
 	 */
 
-}  // end class Job
+}  // end class Job 
 ?>

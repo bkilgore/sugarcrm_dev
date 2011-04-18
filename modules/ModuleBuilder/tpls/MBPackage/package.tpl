@@ -59,11 +59,11 @@
 	{/if}
 	<tr>
 		<td class='mbLBL' ><font color="#ff0000"> * </font><b>{$mod_strings.LBL_PACKAGE_NAME}</b></td><td>
-		<input type='text' name='name' size='36' maxlength='36' value='{$package->name}'>
+		<input type='text' name='name' size=50 value={$package->name}>
 		</td>
 	</tr>
 	<tr>
-		<td class='mbLBL' ><b>{$mod_strings.LBL_AUTHOR}</b></td><td><input type='text' name='author' size='36' maxlength='36' value='{$package->author}'></td>
+		<td class='mbLBL' ><b>{$mod_strings.LBL_AUTHOR}</b></td><td><input type='text' name='author' size=50 value={$package->author}></td>
 	</tr>
 	
 	<tr>
@@ -71,15 +71,15 @@
 		<td class='mbLBL' ><font color="#ff0000"> * </font><b>{$mod_strings.LBL_KEY}</b></td>
 		<td>
 		{if empty($package->key)}
-		<input type='text' name='key' size='5' maxlength='5' value='{$package->key}'>
+		<input type='text' name='key' size=5 maxlength=5 value={$package->key}>
 		{else}
-			{$package->key}<input type='hidden' name='key' size='5' maxlength='5' value='{$package->key}'>
+			{$package->key}<input type='hidden' name='key' size=5 maxlength=5 value={$package->key}>
 		{/if}
 		</td>
 	</tr>
 
 	<tr>
-		<td class='mbLBL'  ><b>{$mod_strings.LBL_DESCRIPTION}</b></td><td><textarea name='description' cols='60' rows='5'>{$package->description}</textarea></td>
+		<td class='mbLBL'  ><b>{$mod_strings.LBL_DESCRIPTION}</b></td><td><textarea name='description' cols=60 rows=5>{$package->description}</textarea></td>
 	</tr>
 
 	<tr>	
@@ -90,7 +90,7 @@
 	</tr>
 	<tr id='readmefield' style="display:none;">
 		<td></td>
-		<td ><textarea name='readme' cols='60' rows='10'>{$package->readme}</textarea></td>
+		<td ><textarea name='readme' cols=60 rows=10>{$package->readme}</textarea></td>
 	</tr>
 	
 	{if !empty($package->name)}
@@ -147,9 +147,7 @@
 <script>
 addForm('CreatePackage');
 addToValidate('CreatePackage', 'name', 'DBName', true, '{/literal}{$mod_strings.LBL_JS_VALIDATE_NAME}{literal}');
-addToValidateIsInArray('CreatePackage', 'name', 'in_array', false, '{/literal}{$mod_strings.LBL_JS_VALIDATE_PACKAGE_NAME}','{$package_labels}'{literal}, 'u==');
 addToValidate('CreatePackage', 'key', 'DBName', true, '{/literal}{$mod_strings.LBL_JS_VALIDATE_KEY}{literal}');
-
 ModuleBuilder.helpRegister('CreatePackage');
 ModuleBuilder.helpRegisterByID('CreatePackage','td');
 if(document.getElementById('package_modules'))

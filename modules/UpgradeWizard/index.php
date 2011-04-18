@@ -528,7 +528,7 @@ eoq;
 $smarty->assign('UW_MAIN', $uwMain);
 $smarty->assign('UW_JS', $js);
 $smarty->assign('CHECKLIST', getChecklist($steps, $step));
-$smarty->assign('UW_TITLE', getClassicModuleTitle($mod_strings['LBL_UW_TITLE'], array($mod_strings['LBL_UW_TITLE'],$steps['desc'][$_REQUEST['step']]), false));
+$smarty->assign('UW_TITLE', get_module_title($mod_strings['LBL_UW_TITLE'], $mod_strings['LBL_UW_TITLE'].": ".$steps['desc'][$_REQUEST['step']], true));
 $smarty->assign('MOD', $mod_strings);
 $smarty->assign('APP', $app_strings);
 $smarty->assign('GRIDLINE', $current_user->getPreference('gridline'));

@@ -86,31 +86,6 @@ $popupMeta = array(
 			'label' => 'LBL_BILLING_ADDRESS_POSTALCODE',
 			'default' => false,										        
 		),	
-	    'SHIPPING_ADDRESS_STREET' => array(
-			'width' => '10', 
-			'label' => 'LBL_SHIPPING_ADDRESS_STREET',
-			'default' => false,										        
-		),		
-		'SHIPPING_ADDRESS_CITY' => array(
-			'width' => '10', 
-			'label' => 'LBL_LIST_CITY',
-			'default' => false,										        
-		),
-		'SHIPPING_ADDRESS_STATE' => array(
-        	'width' => '7', 
-        	'label' => 'LBL_STATE',
-        	'default' => false,									        	
-		),
-        'SHIPPING_ADDRESS_COUNTRY' => array(
-	        'width' => '10', 
-	        'label' => 'LBL_COUNTRY',
-	        'default' => false,
-		),
-	    'SHIPPING_ADDRESS_POSTALCODE' => array(
-			'width' => '10', 
-			'label' => 'LBL_SHIPPING_ADDRESS_POSTALCODE',
-			'default' => false,										        
-		),			
 		'ASSIGNED_USER_NAME' => array(
 	        'width' => '2', 
 	        'label' => 'LBL_LIST_ASSIGNED_USER',

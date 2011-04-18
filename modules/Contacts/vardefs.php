@@ -37,7 +37,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 $dictionary['Contact'] = array('table' => 'contacts', 'audited'=>true,
 
-'unified_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge'=>true, 'fields' =>
+'unified_search' => true, 'duplicate_merge'=>true, 'fields' =>
 array (
 
 	'email_and_name1' =>
@@ -251,14 +251,6 @@ array (
 			'source' => 'non-db',
 			'vname' => 'LBL_EMAILS',
 		),
-	'documents'=>
-		array (
-			'name' => 'documents',
-			'type' => 'link',
-			'relationship' => 'documents_contacts',
-			'source' => 'non-db',
-			'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
-		),
 	'leads'=>
 		array (
 			'name' => 'leads',
@@ -471,7 +463,6 @@ array (
         'type' => 'bool',
         'source' => 'non-db',
         'comment' => 'Synch to outlook?  (Meta-Data only)',
-        'studio' => 'true',
       ),
 ),
 'indices' => array (

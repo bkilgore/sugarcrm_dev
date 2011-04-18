@@ -110,18 +110,13 @@ if (!empty($searchField)) {
 
 
 $ie                 = new InboundEmail();
-if(!empty($_REQUEST['ie_id'])) {
-    $ie->retrieve($_REQUEST['ie_id']);
-}
 $ie->email_user     = $_REQUEST['email_user'];
 $ie->server_url     = $_REQUEST['server_url'];
 $ie->port           = $_REQUEST['port'];
 $ie->protocol       = $_REQUEST['protocol'];
 //Bug 23083.Special characters in email password results in IMAP authentication failure
-if(!empty($_REQUEST['email_password'])) {
-    $ie->email_password = html_entity_decode($_REQUEST['email_password'], ENT_QUOTES);
-    $ie->email_password = str_rot13($ie->email_password);
-}
+$ie->email_password = html_entity_decode($_REQUEST['email_password'], ENT_QUOTES);
+$ie->email_password = str_rot13($ie->email_password);
 //$ie->mailbox      = $_REQUEST['mailbox'];
 
 $ie->mailbox        = 'INBOX';

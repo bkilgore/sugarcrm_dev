@@ -156,12 +156,8 @@ class DropDownHelper{
         	//add the new ones
         	$contents .= "\n\$app_list_strings['$dropdown_name']=" . var_export_helper($dropdown) . ";";
         }
-       
-        // Bug 40234 - If we have no contents, we don't write the file. Checking for "<?php" because above it's set to that if empty
-        if($contents != "<?php"){
-            save_custom_app_list_strings_contents($contents, $selected_lang);
-            sugar_cache_reset();
-        }
+        save_custom_app_list_strings_contents($contents, $selected_lang);
+    	sugar_cache_reset();
     }
     
 

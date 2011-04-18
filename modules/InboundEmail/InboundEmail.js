@@ -43,7 +43,7 @@ if(word.indexOf('%')>0){fragment1=word.substr(0,word.indexOf('%'));fragment2=wor
 return words;}
 function ie_test_open_popup_with_submit(module_name,action,pageTarget,width,height,mail_server,protocol,port,login,password,mailbox,ssl,personal,formName)
 {if(!formName)formName="testSettingsView";var words=getEncryptedPassword(login,password,mailbox);var isPersonal=(personal)?'true':'false';if(!isDataValid(formName,true)){return;}
-ie_id=(typeof document.getElementById(formName).ie_id!='undefined')?document.getElementById(formName).ie_id:'';URL='index.php?'
+URL='index.php?'
 +'module='+module_name
 +'&to_pdf=1'
 +'&action='+action
@@ -56,7 +56,6 @@ ie_id=(typeof document.getElementById(formName).ie_id!='undefined')?document.get
 +'&email_password='+words[1]
 +'&mailbox='+words[2]
 +'&ssl='+ssl
-+'&ie_id='+ie_id
 +'&personal='+isPersonal;var SI=SUGAR.inboundEmail;if(!SI.testDlg){SI.testDlg=new YAHOO.widget.SimpleDialog("testSettingsDiv",{width:width+"px",draggable:true,dragOnly:true,close:true,constraintoviewport:true,modal:true,loadingText:SUGAR.language.get("app_strings","LBL_EMAIL_LOADING")});SI.testDlg._updateContent=function(o){var w=this.cfg.config.width.value+"px";this.setBody(o.responseText);if(this.evalJS)
 SUGAR.util.evalScript(o.responseText);if(!SUGAR.isIE)
 this.body.style.width=w}}
@@ -64,7 +63,7 @@ var title=SUGAR.language.get('Emails','LBL_TEST_SETTINGS');if(typeof(title)=="un
 title=SUGAR.language.get('InboundEmail','LBL_TEST_SETTINGS');SI.testDlg.setHeader(title);SI.testDlg.setBody(SUGAR.language.get("app_strings","LBL_EMAIL_LOADING"));SI.testDlg.render(document.body);var Connect=YAHOO.util.Connect;if(Connect.url)URL=Connect.url+"&"+url;Connect.asyncRequest("GET",URL,{success:SI.testDlg._updateContent,failure:SI.testDlg.hide,scope:SI.testDlg});SI.testDlg.show();}
 function isDataValid(formName,validateMonitoredFolder){var formObject=document.getElementById(formName);var errors=new Array();var out=new String();if(trim(formObject.server_url.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_SERVER'));}
 if(trim(formObject.email_user.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_USER'));}
-if(trim(formObject.email_password.value)==""&&trim(formObject.ie_id.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_PASSWORD'));}
+if(trim(formObject.email_password.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_PASSWORD'));}
 if(formObject.protocol.protocol==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_PROTOCOL'));}
 if(formObject.protocol.value=='imap'&&validateMonitoredFolder){if(trim(formObject.mailbox.value)==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_MONITORED_FOLDER'));}}
 if(formObject.port.value==""){errors.push(SUGAR.language.get('app_strings','LBL_EMAIL_ERROR_PORT'));}

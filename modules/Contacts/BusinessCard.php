@@ -51,7 +51,7 @@ global $theme;
 $error_msg = '';
 global $current_language;
 $mod_strings = return_module_language($current_language, 'Contacts');
-echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$mod_strings['LBL_BUSINESSCARD']), true); 
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'].": ".$mod_strings['LBL_BUSINESSCARD'], true); 
 $xtpl=new XTemplate ('modules/Contacts/BusinessCard.html');
 $xtpl->assign("MOD", $mod_strings);
 $xtpl->assign("APP", $app_strings);

@@ -91,7 +91,6 @@ class MssqlHelper extends DBHelper
             'id'       => 'varchar(36)',
             'url'=>'varchar',
             'encrypt'=>'varchar',
-            'file'     => 'varchar',
             );
         
         return $map[$type];
@@ -159,7 +158,7 @@ class MssqlHelper extends DBHelper
         $ignoreRequired = false
         )
     {
-        $sql=$sql2='';
+        $sql='';
         $constraints = $this->get_field_default_constraint_name($tablename);
         if ($this->isFieldArray($fieldDefs)) {
             foreach ($fieldDefs as $def)
@@ -169,15 +168,7 @@ class MssqlHelper extends DBHelper
           		if (!empty($constraints[$def['name']])) {
           			$sql.=" ALTER TABLE " . $tablename . " DROP CONSTRAINT " . $constraints[$def['name']];
           		}
-          		//check to see if we need to drop related indexes before the alter
-          		$indices = $this->get_indices($tablename);
-                foreach ( $indices as $index ) {
-                    if ( in_array($def['name'],$index['fields']) ) {
-                        $sql  .= ' ' . $this->add_drop_constraint($tablename,$index,true).' ';
-                        $sql2 .= ' ' . $this->add_drop_constraint($tablename,$index,false).' ';
-                    }
-                }
-            
+
           		$columns[] = $this->alterSQLRep($action, $def, $ignoreRequired,$tablename);
       		}
         }
@@ -187,21 +178,12 @@ class MssqlHelper extends DBHelper
       		if (!empty($constraints[$fieldDefs['name']])) {
       			$sql.=" ALTER TABLE " . $tablename . " DROP CONSTRAINT " . $constraints[$fieldDefs['name']];
       		}
-      		//check to see if we need to drop related indexes before the alter
-            $indices = $this->get_indices($tablename);
-            foreach ( $indices as $index ) {
-                if ( in_array($fieldDefs['name'],$index['fields']) ) {
-                    $sql  .= ' ' . $this->add_drop_constraint($tablename,$index,true).' ';
-                    $sql2 .= ' ' . $this->add_drop_constraint($tablename,$index,false).' ';
-                }
-            }
-            
 
           	$columns[] = $this->alterSQLRep($action, $fieldDefs, $ignoreRequired,$tablename);
         }
 
         $columns = implode(", ", $columns);
-        $sql .= " ALTER TABLE $tablename $columns " . $sql2;
+        $sql .= " ALTER TABLE $tablename $columns";
         
         return $sql;
     }
@@ -245,8 +227,6 @@ class MssqlHelper extends DBHelper
        $columns = array();
        foreach ($indices as $index) {
            if(!empty($index['db']) && $index['db'] != 'mssql')
-               continue;
-           if (isset($index['source']) && $index['source'] != 'db')
                continue;
 
            $type = $index['type'];
@@ -481,14 +461,14 @@ EOSQL;
         case 'index':
         case 'alternate_key':
             if ($drop)
-                $sql = "DROP INDEX {$name} ON {$table}";
+                $sql = "DROP INDEX {$name} ";
             else
                 $sql = "CREATE INDEX {$name} ON {$table} ({$fields})";
             break;
         // constraints as indices
         case 'unique':
             if ($drop)
-                $sql = "ALTER TABLE {$table} DROP CONSTRAINT $name";
+                $sql = "ALTER TABLE {$table} DROP INDEX $name";
             else
                 $sql = "ALTER TABLE {$table} ADD CONSTRAINT {$name} UNIQUE ({$fields})";
             break;

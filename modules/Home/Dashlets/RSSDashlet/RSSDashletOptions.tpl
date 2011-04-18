@@ -54,18 +54,6 @@
     	<input class="text" name="title" size='20' value='{$title}'>
     </td>
 </tr>
-{if $isRefreshable}
-<tr>
-    <td scope='row'>
-        {$autoRefresh}
-    </td>
-    <td>
-        <select name='autoRefresh'>
-            {html_options options=$autoRefreshOptions selected=$autoRefreshSelect}
-        </select>
-    </td>
-</tr>
-{/if}
 <tr>
     <td valign='top' nowrap scope='row'>{$rssUrlLbl}</td>
     <td valign='top'>

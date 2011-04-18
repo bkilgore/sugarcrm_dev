@@ -88,11 +88,10 @@ class AuthenticationController {
 	 */
 	function login($username, $password, $PARAMS = array ()) {
 		//kbrill bug #13225
-		$_SESSION['loginAttempts'] = (isset($_SESSION['loginAttempts']))? $_SESSION['loginAttempts'] + 1: 1;
+		$_SESSION['loginAttempts'] = (isset($_fSESSION['loginAttempts']))? $_SESSION['loginAttempts'] + 1: 1;
 		unset($GLOBALS['login_error']);
 
 		if($this->loggedIn)return $this->loginSuccess;
-		LogicHook::initialize()->call_custom_logic('Users', 'before_login');
 
 		$this->loginSuccess = $this->authController->loginAuthenticate($username, $password, false, $PARAMS);
 		$this->loggedIn = true;
@@ -108,28 +107,28 @@ class AuthenticationController {
 				$this->loginSuccess = false;
 				return false;
 			}
-
+			
 			//call business logic hook
 			if(isset($GLOBALS['current_user']))
 				$GLOBALS['current_user']->call_custom_logic('after_login');
-
+			
 			// Check for running Admin Wizard
 			$config = new Administration();
 			$config->retrieveSettings();
-		    if ( is_admin($GLOBALS['current_user']) && empty($config->settings['system_adminwizard']) && $_REQUEST['action'] != 'AdminWizard' ) {
+		    if ( is_admin($GLOBALS['current_user']) && $_REQUEST['action'] != 'AdminWizard' && empty($config->settings['system_adminwizard']) ) {
 				$GLOBALS['module'] = 'Configurator';
 				$GLOBALS['action'] = 'AdminWizard';
 				ob_clean();
 				header("Location: index.php?module=Configurator&action=AdminWizard");
 				sugar_cleanup(true);
 			}
-
+			
 			$ut = $GLOBALS['current_user']->getPreference('ut');
 			$checkTimeZone = true;
 			if (is_array($PARAMS) && !empty($PARAMS) && isset($PARAMS['passwordEncrypted'])) {
 				$checkTimeZone = false;
 			} // if
-			if(empty($ut) && $checkTimeZone && $_REQUEST['action'] != 'SetTimezone' && $_REQUEST['action'] != 'SaveTimezone' ) {
+			if(empty($ut) && $_REQUEST['action'] != 'SetTimezone' && $_REQUEST['action'] != 'SaveTimezone' && $checkTimeZone) {
 				$GLOBALS['module'] = 'Users';
 				$GLOBALS['action'] = 'Wizard';
 				ob_clean();
@@ -143,7 +142,7 @@ class AuthenticationController {
 			$GLOBALS['log']->fatal('FAILED LOGIN:attempts[' .$_SESSION['loginAttempts'] .'] - '. $username);
 		}
 		// if password has expired, set a session variable
-
+		
 		return $this->loginSuccess;
 	}
 

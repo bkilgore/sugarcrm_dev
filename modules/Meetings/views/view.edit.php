@@ -83,7 +83,7 @@ class MeetingsViewEdit extends ViewEdit
 		}
  		$this->ss->assign('JSON_CONFIG_JAVASCRIPT', $javascript);
  		if($this->ev->isDuplicate){
-	        $this->bean->status = $this->bean->getDefaultStatus();
+	       $this->bean->status = $GLOBALS['mod_strings']['LBL_DEFAULT_STATUS'];
  		} //if
 
  		parent::display();

@@ -216,7 +216,7 @@ class ProjectTaskViewList extends ViewList{
 		
 		if(isset($this->options['show_title']) && $this->options['show_title']) {
 			$moduleName = isset($this->seed->module_dir) ? $this->seed->module_dir : $GLOBALS['mod_strings']['LBL_MODULE_NAME'];
-			echo getClassicModuleTitle($moduleName, array($GLOBALS['mod_strings']['LBL_MODULE_TITLE']), FALSE); 
+			echo get_module_title($moduleName, $GLOBALS['mod_strings']['LBL_MODULE_TITLE'], true); 
 		}
 
 		$where = '';

@@ -50,7 +50,7 @@ if($_REQUEST['from'] == 'DetailView') {
 	if(!isset($_REQUEST['record']))
 		sugar_die("A record number must be specified to delete the template.");
 	$focus->retrieve($_REQUEST['record']);
-	if(check_email_template_in_use($focus)) {
+	if($focus->is_used_by_email_marketing()) {
 		echo 'true';
 		return;
 	}
@@ -60,7 +60,7 @@ if($_REQUEST['from'] == 'DetailView') {
 	$idArray = explode(',', $_REQUEST['records']);
 	foreach($idArray as $key => $value) {
 		if($focus->retrieve($value)) {
-			if(check_email_template_in_use($focus)) {
+			if($focus->is_used_by_email_marketing()) {
 				$returnString .= $focus->name . ',';
 			}
 		}
@@ -71,14 +71,4 @@ if($_REQUEST['from'] == 'DetailView') {
 	echo '';
 }
 
-function check_email_template_in_use($focus)
-{
-	if($focus->is_used_by_email_marketing()) {
-		return true;
-	}
-	$system = $GLOBALS['sugar_config']['passwordsetting'];
-	if($focus->id == $system['generatepasswordtmpl'] || $focus->id == $system['lostpasswordtmpl']) {
-	    return true;
-	}
-    return false;
-}
+?>

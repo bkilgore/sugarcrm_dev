@@ -38,7 +38,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $dictionary['Prospect'] = array(
 
 	'table' => 'prospects',
-	'unified_search' => true,
 	'fields' => array (
 	 'tracker_key' => array (
 		'name' => 'tracker_key',

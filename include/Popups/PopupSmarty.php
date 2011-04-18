@@ -246,9 +246,7 @@ class PopupSmarty extends ListViewSmarty{
 			$formBase = new $this->_popupMeta['create']['formBaseClass']();
 			if(isset($_REQUEST['doAction']) && $_REQUEST['doAction'] == 'save')
 			{
-				//If it's a new record, set useRequired to false
-				$useRequired = empty($_REQUEST['id']) ? false : true;
-				$formBase->handleSave('', false, $useRequired);
+				$formBase->handleSave('', false, true);
 			}
 		}
 	    
@@ -300,7 +298,6 @@ class PopupSmarty extends ListViewSmarty{
         $this->searchForm->lv = $lv;
         $this->searchForm->displaySavedSearch = false;
 
-        
         $this->searchForm->populateFromRequest('advanced_search');
         $searchWhere = $this->_get_where_clause();
         $this->searchColumns = $this->searchForm->searchColumns;

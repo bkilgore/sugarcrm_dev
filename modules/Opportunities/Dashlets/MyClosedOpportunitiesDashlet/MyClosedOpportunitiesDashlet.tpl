@@ -44,9 +44,11 @@
 		<th  align="center">{$lblTotalOpportunities}</td>
 		<th  align="center">{$lblClosedWonOpportunities}</td>
 	</tr>
-	<tr class="oddListRowS1">
-		<td valign="top">{$total_opportunities}</td>
-		<td valign="top"><b>{$total_opportunities_won}</b></td>
+	<tr>
+		<td class="oddListRowS1" valign="top">{$total_opportunities}</td>
+		<td class="oddListRowS1" valign="top"><b>{$total_opportunities_won}</b></td>
 	</tr>
 </table>
 </div>
+<br />
+

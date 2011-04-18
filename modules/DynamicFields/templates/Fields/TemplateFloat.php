@@ -35,10 +35,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-require_once('modules/DynamicFields/templates/Fields/TemplateRange.php');
 
-class TemplateFloat extends TemplateRange
-{
+class TemplateFloat extends TemplateText{
 	var $type = 'float';
 	var $default = null;
 	var $default_value = null;
@@ -46,14 +44,13 @@ class TemplateFloat extends TemplateRange
 	var $precision = '8';
 	
 	function TemplateFloat(){
-		parent::__construct();
 		$this->vardef_map['precision']='ext1';
 		//$this->vardef_map['precision']='precision';
 	}
 
     function get_field_def(){
     	$def = parent::get_field_def();
-		$def['precision'] = isset($this->ext1) && $this->ext1 != '' ? $this->ext1 : $this->precision;
+		$def['precision'] = !empty($this->ext1) ? $this->ext1 : $this->precision;
     	return $def;
     }
 
@@ -97,7 +94,8 @@ class TemplateFloat extends TemplateRange
 	
 	function populateFromRow($row=array()) {
 	   parent::populateFromRow($row);
-	}	
+	   
+	}
 }
 
 ?>

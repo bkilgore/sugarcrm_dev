@@ -69,8 +69,8 @@ class ViewSugarFieldCollection{
 	        $this->value_name = $this->name . '_values';
 	        $this->numFields = 1;
 	        $this->ss = new Sugar_Smarty();
-	        $this->edit_tpl_path = $this->findTemplate('CollectionEditView');
-	        $this->detail_tpl_path = $this->findTemplate('CollectionDetailView');
+	        $this->edit_tpl_path = 'include/SugarFields/Fields/Collection/CollectionEditView.tpl';
+	        $this->detail_tpl_path = 'include/SugarFields/Fields/Collection/CollectionDetailView.tpl';
 	        $this->extra_var = array();
 	        $this->field_to_name_array = array();
     	}
@@ -339,7 +339,7 @@ FRA;
                
                mkdir_recursive($dir, null, true);
             }
-            $cacheRow = $this->ss->fetch($this->findTemplate('CollectionEditViewRow'));
+            $cacheRow = $this->ss->fetch('include/SugarFields/Fields/Collection/CollectionEditViewRow.tpl');
             file_put_contents($cacheRowFile, $cacheRow);
         }
         $this->ss->assign('cacheRowFile', $cacheRowFile);
@@ -494,49 +494,6 @@ FRA;
             //Make sure to replace {{ and }} with spacing in between because Smarty template parsing will treat {{ or }} specially
             $this->displayParams['popupData'] = '{literal}'. str_replace(array('{{', '}}'), array('{ {', '} }'), $this->json->encode($popup_request_data)) . '{/literal}';
         }
-    }
-    
-    
-    
-    function findTemplate($view){
-        static $tplCache = array();
-
-        if ( isset($tplCache[$this->type][$view]) ) {
-            return $tplCache[$this->type][$view];
-        }
-
-        $lastClass = get_class($this);
-        $classList = array($this->type,str_replace('ViewSugarField','',$lastClass));
-        while ( $lastClass = get_parent_class($lastClass) ) {
-            $classList[] = str_replace('ViewSugarField','',$lastClass);
-        }
-        
-        $tplName = '';
-        foreach ( $classList as $className ) {
-            global $current_language;
-            if(isset($current_language)) {
-                $tplName = 'include/SugarFields/Fields/'. $className .'/'. $current_language . '.' . $view .'.tpl';
-                if ( file_exists('custom/'.$tplName) ) {
-                    $tplName = 'custom/'.$tplName;
-                    break;
-                }
-                if ( file_exists($tplName) ) {
-                    break;
-                }
-            }
-            $tplName = 'include/SugarFields/Fields/'. $className .'/'. $view .'.tpl';
-            if ( file_exists('custom/'.$tplName) ) {
-                $tplName = 'custom/'.$tplName;
-                break;
-            }
-            if ( file_exists($tplName) ) {
-                break;
-            }
-        }
-
-        $tplCache[$this->type][$view] = $tplName;
-
-        return $tplName;
     }
 }
 

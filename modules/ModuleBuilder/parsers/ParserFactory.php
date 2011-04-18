@@ -64,6 +64,9 @@ class ParserFactory
             case MB_QUICKCREATE :
                 require_once 'modules/ModuleBuilder/parsers/views/GridLayoutMetaDataParser.php' ;
                 return new GridLayoutMetaDataParser ( $view, $moduleName, $packageName ) ;
+            case MB_CONVERTLEAD :
+                require_once 'modules/Leads/ConvertLayoutMetadataParser.php';
+                return new ConvertLayoutMetadataParser( $moduleName );
             case MB_BASICSEARCH :
             case MB_ADVANCEDSEARCH :
                 require_once 'modules/ModuleBuilder/parsers/views/SearchViewMetaDataParser.php' ;

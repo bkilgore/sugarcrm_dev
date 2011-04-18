@@ -41,31 +41,31 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/Dashlets/DashletGenericChart.php');
 
-class MyPipelineBySalesStageDashlet extends DashletGenericChart
+class MyPipelineBySalesStageDashlet extends DashletGenericChart 
 {
     public $mypbss_date_start;
     public $mypbss_date_end;
     public $mypbss_sales_stages = array();
-
+    
     protected $_seedName = 'Opportunities';
-
+    
     /**
      * @see DashletGenericChart::__construct()
      */
     public function __construct(
-        $id,
+        $id, 
         array $options = null
-        )
+        ) 
     {
         global $timedate;
-
-        if(empty($options['mypbss_date_start']))
-            $options['mypbss_date_start'] = $timedate->nowDbDate();
+        
+        if(empty($options['mypbss_date_start'])) 
+            $options['mypbss_date_start'] = date($timedate->get_db_date_time_format(), time());
         if(empty($options['mypbss_date_end']))
-            $options['mypbss_date_end'] = $timedate->asDbDate($timedate->getNow()->modify("+6 months"));
-        if(empty($options['title']))
+            $options['mypbss_date_end'] = date($timedate->get_db_date_time_format(), strtotime("+6 months", time()));
+        if(empty($options['title'])) 
             $options['title'] = translate('LBL_MY_PIPELINE_FORM_TITLE', 'Home');
-
+        
         parent::__construct($id,$options);
     }
 
@@ -75,66 +75,66 @@ class MyPipelineBySalesStageDashlet extends DashletGenericChart
     public function displayOptions()
     {
         global $app_list_strings;
-
+        
         $selected_datax = array();
         if (count($this->mypbss_sales_stages) > 0)
             foreach ($this->mypbss_sales_stages as $key)
                 $selected_datax[] = $key;
-        else
+        else 
             $selected_datax = array_keys($app_list_strings['sales_stage_dom']);
-
+        
         $this->_searchFields['mypbss_sales_stages']['options'] = $app_list_strings['sales_stage_dom'];
         $this->_searchFields['mypbss_sales_stages']['input_name0'] = $selected_datax;
-
+        
         return parent::displayOptions();
     }
-
+    
     /**
      * @see DashletGenericChart::display()
      */
-    public function display()
+    public function display() 
     {
 		global $sugar_config, $current_user;
-
-        require_once('include/SugarCharts/SugarChartFactory.php');
-		$sugarChart = SugarChartFactory::getInstance();
+        
+        require_once('include/SugarCharts/SugarChart.php');
+		$sugarChart = new SugarChart();
 		$sugarChart->base_url = array( 	'module' => 'Opportunities',
 								'action' => 'index',
 								'query' => 'true',
 								'searchFormTab' => 'advanced_search',
 							 );
-        $sugarChart->url_params = array( 'assigned_user_id' => $current_user->id );
+        $sugarChart->url_params = array( 'assigned_user_id' => $current_user->id );		
         $sugarChart->group_by = $this->constructGroupBy();
-
+		
         $currency_symbol = $sugar_config['default_currency_symbol'];
 		if ($current_user->getPreference('currency')){
-
+		    
             $currency = new Currency();
             $currency->retrieve($current_user->getPreference('currency'));
             $currency_symbol = $currency->symbol;
-        }
-
+        }		
+        
         $sugarChart->is_currency = true;
         $sugarChart->thousands_symbol = translate('LBL_OPP_THOUSANDS', 'Charts');
-
+        
         $subtitle = translate('LBL_OPP_SIZE', 'Charts') . " " . $currency_symbol . "1" . translate('LBL_OPP_THOUSANDS', 'Charts');
-
+		
         $query = $this->constructQuery();
 			$dataset = $this->constructCEChartData($this->getChartData($query));
 			$sugarChart->setData($dataset);
-			$total = format_number($this->getHorizBarTotal($dataset), 0, 0, array('convert'=>true));
+			$total = format_number($this->getHorizBarTotal($dataset), 0, 0, array('convert'=>true));		
 			$pipeline_total_string = translate('LBL_TOTAL_PIPELINE', 'Charts') . $sugarChart->currency_symbol . $total . $sugarChart->thousands_symbol;
 			$sugarChart->setProperties($pipeline_total_string, $subtitle, 'horizontal bar chart');
-
+			
         $xmlFile = $sugarChart->getXMLFileName($this->id);
         $sugarChart->saveXMLFile($xmlFile, $sugarChart->generateXML());
 		
         return $this->getTitle('') . 
-            '<div align="center">' .$sugarChart->display($this->id, $xmlFile, '100%', '480', false) . '</div><br />'. $this->processAutoRefresh();
+            '<div align="center">' .$sugarChart->display($this->id, $xmlFile, '100%', '480', false) . '</div><br />';
     }
 
 	/**
-     * awu: Bug 16794 - this function is a hack to get the correct sales stage order
+     * awu: Bug 16794 - this function is a hack to get the correct sales stage order 
      * until i can clean it up later
      *
      * @param  $query string
@@ -145,14 +145,14 @@ class MyPipelineBySalesStageDashlet extends DashletGenericChart
         )
     {
     	global $app_list_strings, $db;
-
+    	
     	$data = array();
     	$temp_data = array();
     	$selected_datax = array();
-
+    	
     	$user_sales_stage = $this->mypbss_sales_stages;
         $tempx = $user_sales_stage;
-
+        
         //set $datax using selected sales stage keys
         if (count($tempx) > 0) {
             foreach ($tempx as $key) {
@@ -164,16 +164,16 @@ class MyPipelineBySalesStageDashlet extends DashletGenericChart
             $datax = $app_list_strings['sales_stage_dom'];
             $selected_datax = array_keys($app_list_strings['sales_stage_dom']);
         }
-
+        
         $result = $db->query($query);
         $row = $db->fetchByAssoc($result, -1, false);
-
+        
         while($row != null){
         	$temp_data[] = $row;
         	$row = $db->fetchByAssoc($result, -1, false);
         }
 
-		// reorder and set the array based on the order of selected_datax
+		// reorder and set the array based on the order of selected_datax        
         foreach($selected_datax as $sales_stage){
         	foreach($temp_data as $key => $value){
         		if ($value['sales_stage'] == $sales_stage){
@@ -187,7 +187,7 @@ class MyPipelineBySalesStageDashlet extends DashletGenericChart
         }
         return $data;
     }
-
+    
     /**
      * @param  $dataset array
      * @return int
@@ -200,10 +200,10 @@ class MyPipelineBySalesStageDashlet extends DashletGenericChart
     	foreach($dataset as $value){
     		$total += $value;
     	}
-
+    	
     	return $total;
     }
-
+    
     /**
      * @param  $dataset array
      * @return array
@@ -216,13 +216,13 @@ class MyPipelineBySalesStageDashlet extends DashletGenericChart
     	foreach($dataset as $key=>$value){
     		$newData[$value['sales_stage']] = $value['total'];
     	}
-    	return $newData;
+    	return $newData;	
     }
-
+    
 	/**
      * @see DashletGenericChart::constructQuery()
      */
-    protected function constructQuery()
+    protected function constructQuery() 
     {
         $query = "SELECT opportunities.sales_stage,
                         users.user_name,
@@ -240,16 +240,16 @@ class MyPipelineBySalesStageDashlet extends DashletGenericChart
 
         return $query;
     }
-
+    
     /**
      * @see DashletGenericChart::constructGroupBy()
      */
     protected function constructGroupBy()
     {
     	$groupBy = array('sales_stage');
-
+    	
     		array_push($groupBy, 'user_name');
-    	return $groupBy;
+    	return $groupBy; 
     }
 }
 

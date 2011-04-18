@@ -80,14 +80,3 @@ SUGAR.dashlets = function() {
 		}
 	 };
 }();
-
-if(SUGAR.util.isTouchScreen() && typeof iScroll == 'undefined') {
-
-	with (document.getElementsByTagName("head")[0].appendChild(document.createElement("script")))
-	{
-		setAttribute("id", "newScript", 0);
-		setAttribute("type", "text/javascript", 0);
-		setAttribute("src", "include/javascript/iscroll.js", 0);
-	}
-
-}

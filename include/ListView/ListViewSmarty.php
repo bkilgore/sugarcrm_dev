@@ -53,8 +53,6 @@ class ListViewSmarty extends ListViewDisplay{
     var $delete = true;
     var $select = true;
     var $mailMerge = true;
-    var $email = true;
-    var $targetList = false;
 	var $multiSelect = true;
 	var $overlib = true;
 	var $quickViewLinks = true;
@@ -115,10 +113,9 @@ class ListViewSmarty extends ListViewDisplay{
         $this->ss->assign('recordsLinkString',$app_strings['LBL_LINK_RECORDS']);
         $this->ss->assign('selectLinkString',$app_strings['LBL_LINK_SELECT']);
         if($this->overlib) $this->ss->assign('overlib', true);
-
-        // Bug 24677 - Correct the page total amount on the last page of listviews
-        $pageTotal = $this->data['pageData']['offsets']['next']-$this->data['pageData']['offsets']['current'];
-        if ( $this->data['pageData']['offsets']['next'] < 0 ) {
+        
+        $pageTotal = $this->data['pageData']['offsets']['next'] - $this->data['pageData']['offsets']['current'];
+        if($this->data['pageData']['offsets']['next'] < 0){ // If we are on the last page, 'next' is -1, which means we have to have a custom calculation
             $pageTotal = $this->data['pageData']['offsets']['total'] - $this->data['pageData']['offsets']['current'];
         }
 		if($this->select)$this->ss->assign('selectLink', $this->buildSelectLink('select_link', $this->data['pageData']['offsets']['total'], $pageTotal));
@@ -129,7 +126,7 @@ class ListViewSmarty extends ListViewDisplay{
 		}
 		
 		$this->ss->assign('quickViewLinks', $this->quickViewLinks);
-
+		
 		// handle save checks and stuff
 		if($this->multiSelect) {
 		
@@ -143,10 +140,8 @@ class ListViewSmarty extends ListViewDisplay{
 		$this->ss->assign('multiSelectData', $this->getMultiSelectData());
 		}
 		// include button for Adding to Target List if in one of four applicable modules
-		if ( isset ( $_REQUEST['module']) && in_array ( $_REQUEST['module'] , array ( 'Contacts','Prospects','Leads','Accounts' ))
-		&& ACLController::checkAccess('ProspectLists','edit',true)) {
+		if ( isset ( $_REQUEST['module']) && in_array ( $_REQUEST['module'] , array ( 'Contacts','Prospects','Leads','Accounts' )))
 			$this->ss->assign( 'targetLink', $this->buildTargetList() ) ;
-		}
 		$this->processArrows($data['pageData']['ordering']);
 		$this->ss->assign('prerow', $this->multiSelect);
 		$this->ss->assign('clearAll', $app_strings['LBL_CLEARALL']);
@@ -202,7 +197,7 @@ class ListViewSmarty extends ListViewDisplay{
         $this->ss->assign('data', $this->data['data']);
 		$this->data['pageData']['offsets']['lastOffsetOnPage'] = $this->data['pageData']['offsets']['current'] + count($this->data['data']);
 		$this->ss->assign('pageData', $this->data['pageData']);
-
+	
         $navStrings = array('next' => $app_strings['LNK_LIST_NEXT'],
                             'previous' => $app_strings['LNK_LIST_PREVIOUS'],
                             'end' => $app_strings['LNK_LIST_END'],

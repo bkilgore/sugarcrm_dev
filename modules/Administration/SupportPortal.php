@@ -54,15 +54,9 @@ switch ($_REQUEST['view']) {
 		$GLOBALS['log']->info("Administration SupportPortal");
 
 		$iframe_url = add_http("www.sugarcrm.com/network/redirect.php?tmpl=network");
-        
-        echo getClassicModuleTitle(
-            "Administration", 
-            array(
-                "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
-               $mod_strings['LBL_SUPPORT_TITLE'],
-               ), 
-            false
-            );
+        $mod_title = $mod_strings['LBL_SUPPORT_TITLE'];
+
+        echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_title, true);
         
         $sugar_smarty = new Sugar_Smarty();
         $sugar_smarty->assign('iframeURL', $iframe_url);

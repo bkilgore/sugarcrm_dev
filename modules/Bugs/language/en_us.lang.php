@@ -105,7 +105,6 @@ $mod_strings = array (
   'LBL_ACCOUNTS_SUBPANEL_TITLE' => 'Accounts',
   'LBL_CASES_SUBPANEL_TITLE' => 'Cases',
   'LBL_PROJECTS_SUBPANEL_TITLE' => 'Projects',
-  'LBL_DOCUMENTS_SUBPANEL_TITLE' => 'Documents',
   'LBL_SYSTEM_ID' => 'System ID',
   'LBL_LIST_ASSIGNED_TO_NAME' => 'Assigned User',
 	'LBL_ASSIGNED_TO_NAME' => 'Assigned to',

@@ -41,7 +41,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc. All Rights
  * Reserved. Contributor(s): ______________________________________..
  * *******************************************************************************/
-global $current_user, $sugar_config;
+global $current_user;
 if (!is_admin($current_user)) sugar_die("Unauthorized access to administration.");
 
 require_once('modules/Configurator/Configurator.php');
@@ -53,7 +53,7 @@ echo getClassicModuleTitle(
             "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
            $mod_strings['LBL_MANAGE_LOCALE'],
            ), 
-        false
+        true
         );
 
 $cfg			= new Configurator();

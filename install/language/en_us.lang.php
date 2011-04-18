@@ -91,8 +91,7 @@ $mod_strings = array(
     'ERR_CHECKSYS_FILES_NOT_WRITABLE'   => "The files or directories listed below are not writeable or are missing and cannot be created.  Depending on your Operating System, correcting this may require you to change permissions on the files or parent directory (chmod 766), or to right click on the parent directory and uncheck the 'read only' option and apply it to all subfolders.",
 	//'ERR_CHECKSYS_SAFE_MODE'			=> 'Safe Mode is On (please disable in php.ini)',
 	'ERR_CHECKSYS_SAFE_MODE'			=> 'Safe Mode is On (you may wish to disable in php.ini)',
-    'ERR_CHECKSYS_ZLIB'					=> 'ZLib support not found: SugarCRM reaps enormous performance benefits with zlib compression.',
-    'ERR_CHECKSYS_ZIP'					=> 'ZIP support not found: SugarCRM needs ZIP support in order to process compressed files.',
+    'ERR_CHECKSYS_ZLIB'					=> 'Not Found: SugarCRM reaps enormous performance benefits with zlib compression.',
 	'ERR_DB_ADMIN'						=> 'The provided database administrator username and/or password is invalid, and a connection to the database could not be established.  Please enter a valid user name and password.  (Error: ',
     'ERR_DB_ADMIN_MSSQL'                => 'The provided database administrator username and/or password is invalid, and a connection to the database could not be established.  Please enter a valid user name and password.',
 	'ERR_DB_EXISTS_NOT'					=> 'The specified database does not exist.',
@@ -194,8 +193,7 @@ $mod_strings = array(
 	'LBL_CHECKSYS_VER'					=> 'Found: ( ver ',
 	'LBL_CHECKSYS_XML'					=> 'XML Parsing',
 	'LBL_CHECKSYS_ZLIB'					=> 'ZLIB Compression Module',
-	'LBL_CHECKSYS_ZIP'					=> 'ZIP Handling Module',
-	'LBL_CHECKSYS_FIX_FILES'            => 'Please fix the following files or directories before proceeding:',
+    'LBL_CHECKSYS_FIX_FILES'            => 'Please fix the following files or directories before proceeding:',
     'LBL_CHECKSYS_FIX_MODULE_FILES'     => 'Please fix the following module directories and the files under them before proceeding:',
     'LBL_CLOSE'							=> 'Close',
     'LBL_THREE'                         => '3',
@@ -530,35 +528,6 @@ $mod_strings = array(
 	'LBL_YOUR_PHP_VERSION' => '(Your current php version is ',
 	'LBL_RECOMMENDED_PHP_VERSION' =>' Recommended php version is 5.2.x)',
 	'LBL_BACKWARD_COMPATIBILITY_ON' => 'Php Backward Compatibility mode is turned on. Set zend.ze1_compatibility_mode to Off for proceeding further',
-
-    'advanced_password_new_account_email' => array(
-        'subject' => 'New account information',
-        'description' => 'This template is used when the System Administrator sends a new password to a user.',
-        'body' => '<div><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width="550" align=\"\&quot;\&quot;center\&quot;\&quot;\"><tbody><tr><td colspan=\"2\"><p>Here is your account username and temporary password:</p><p>Username : $contact_user_user_name </p><p>Password : $contact_user_user_hash </p><br><p>$config_site_url</p><br><p>After you log in using the above password, you may be required to reset the password to one of your own choice.</p>   </td>         </tr><tr><td colspan=\"2\"></td>         </tr> </tbody></table> </div>',
-        'txt_body' =>
-'
-Here is your account username and temporary password:
-Username : $contact_user_user_name
-Password : $contact_user_user_hash
-
-$config_site_url
-
-After you log in using the above password, you may be required to reset the password to one of your own choice.',
-        'name' => 'System-generated password email',
-        ),
-    'advanced_password_forgot_password_email' => array(
-        'subject' => 'Reset your account password',
-        'description' => "This template is used to send a user a link to click to reset the user's account password.",
-        'body' => '<div><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width="550" align=\"\&quot;\&quot;center\&quot;\&quot;\"><tbody><tr><td colspan=\"2\"><p>You recently requested on $contact_user_pwd_last_changed to be able to reset your account password. </p><p>Click on the link below to reset your password:</p><p> $contact_user_link_guid </p>  </td>         </tr><tr><td colspan=\"2\"></td>         </tr> </tbody></table> </div>',
-        'txt_body' =>
-'
-You recently requested on $contact_user_pwd_last_changed to be able to reset your account password.
-
-Click on the link below to reset your password:
-
-$contact_user_link_guid',
-        'name' => 'Forgot Password email',
-        ),
 );
 
 ?>

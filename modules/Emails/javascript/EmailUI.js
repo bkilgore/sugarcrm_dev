@@ -60,7 +60,7 @@ SE.accounts = {
     editOutbound : function(obi) {
 
             AjaxObject.startRequest(AjaxObject.accounts.callbackEditOutbound, urlStandard + "&emailUIAction=editOutbound&outbound_email=" + obi);
-
+        
     },
     deleteOutbound : function(obi) {
 
@@ -94,18 +94,18 @@ SE.accounts = {
      * Called on "Accounts" tab activation event
      */
     lazyLoad : function() {
-
+  		
     	this._setupInboundAccountTable();
-    	this._setupOutboundAccountTable();
+    	this._setupOutboundAccountTable();  	
 
     },
-
+    
     _setupInboundAccountTable: function()
     {
     	//Setup the inbound mail settings
     	if(!this.inboundAccountsSettingsTable)
     	{
-    		  this.customImageFormatter = function(elLiner, oRecord, oColumn, oData) {
+    		  this.customImageFormatter = function(elLiner, oRecord, oColumn, oData) { 
    					var clckEvent = oColumn.key;
    					var imgSrc = "";
    					var is_group = oRecord.getData("is_group");
@@ -123,8 +123,8 @@ SE.accounts = {
     		  			}
 	            		elLiner.innerHTML = '<img onclick="'+clckEvent+'" src="'+imgSrc+'" align="absmiddle" border="0"/>';
    					}
-	           };
-
+	           }; 
+	           
 	           this.showBoolean = function(el, oRecord, oColumn, oData)
 	           {
 	               var is_group = oRecord.getData("is_group");
@@ -139,50 +139,50 @@ SE.accounts = {
 	           };
 
 
-	        YAHOO.widget.DataTable.Formatter.customImage = this.customImageFormatter;
+	        YAHOO.widget.DataTable.Formatter.customImage = this.customImageFormatter; 	         
 	        YAHOO.widget.DataTable.Formatter.showBoolean = this.showBoolean;
-
+	        
 	        var typeHoverHelp = '&nbsp;<div id="rollover"><a href="#" class="rollover">'+
 	                            '<img border="0" src="themes/default/images/helpInline.gif">' +
 	                            '<div style="text-align:left"><span>' + mod_strings.LBL_EMAIL_INBOUND_TYPE_HELP + '</span></div></a></div>';
-
-
+                
+	        
     		this.ieColumnDefs = [{key:'name',label:app_strings.LBL_EMAIL_SETTINGS_NAME }, {key:'server_url',label:ie_mod_strings.LBL_SERVER_URL},
-    		                      {key:'is_active',label:ie_mod_strings.LBL_STATUS_ACTIVE,formatter:"checkbox",className:'yui-cstm-cntrd-liner'},
-    		                      {key:'is_default',label:app_strings.LBL_EMAIL_ACCOUNTS_SMTPDEFAULT,formatter:"showBoolean",className:'yui-cstm-cntrd-liner'},
+    		                      {key:'is_active',label:ie_mod_strings.LBL_STATUS_ACTIVE,formatter:"checkbox",className:'yui-cstm-cntrd-liner'}, 
+    		                      {key:'is_default',label:app_strings.LBL_EMAIL_ACCOUNTS_SMTPDEFAULT,formatter:"showBoolean",className:'yui-cstm-cntrd-liner'},	
     		                      {key:'type',label:mod_strings.LBL_LIST_TYPE + typeHoverHelp },
     		                      {key:'edit',label:mod_strings.LBL_BUTTON_EDIT,formatter:"customImage",className:'yui-cstm-cntrd-liner'},
     		                      {key:'delete',label:app_strings.LBL_EMAIL_DELETE,formatter:"customImage",className:'yui-cstm-cntrd-liner'}];
     		var query = "index.php?module=Emails&action=EmailUIAjax&to_pdf=true&emailUIAction=rebuildShowAccount";
     		this.ieDataSource = new YAHOO.util.DataSource(query);
-			this.ieDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+			this.ieDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON; 
 			this.ieDataSource.responseSchema = {
 				resultsList: "account_list",
 				fields: [{key:'id'},{key:'name'},'is_active',{key:'server_url'},'is_group','group_id','is_default','has_groupfolder','type']
 			};
     		this.inboundAccountsSettingsTable = new YAHOO.widget.DataTable("inboundAccountsTable", this.ieColumnDefs, this.ieDataSource);
-			this.inboundAccountsSettingsTable.subscribe("checkboxClickEvent", function(oArgs){
-
-	            var elCheckbox = oArgs.target;
+			this.inboundAccountsSettingsTable.subscribe("checkboxClickEvent", function(oArgs){ 
+			
+	            var elCheckbox = oArgs.target; 
 	            var oColumn = this.getColumn(elCheckbox);
 	          	if(oColumn.key == 'is_active')
 	          	{
-	          		var oRecord = this.getRecord(elCheckbox);
+	          		var oRecord = this.getRecord(elCheckbox); 
 	          		oRecord.setData("is_active",elCheckbox.checked);
 	          		var t_id = oRecord.getData('id');
 	            	var isGroupFolder = oRecord.getData('has_groupfolder');
-
+	            	
 	            	if(isGroupFolder)
 	            	    SUGAR.email2.folders.updateSubscriptions();
 	            	else
     	            	SUGAR.email2.folders.setFolderSelection();
-
+	            	
 	          	}
 	        });
 			var lastDefaultSelectedId = "";
-    		this.inboundAccountsSettingsTable.subscribe("radioClickEvent", function(oArgs){
-
-	            var elRadio = oArgs.target;
+    		this.inboundAccountsSettingsTable.subscribe("radioClickEvent", function(oArgs){ 
+	            
+	            var elRadio = oArgs.target; 
 	            var oColumn = this.getColumn(elRadio);
 	          	if(oColumn.key == 'is_default')
 	          	{
@@ -191,25 +191,25 @@ SE.accounts = {
 	          		var t_isGroup = oRecord.getData('is_group');
 	          		if(t_id != lastDefaultSelectedId && !t_isGroup)
 	          		{
-						SUGAR.default_inbound_accnt_id = t_id; //Set in the global space for access during compose
+						SUGAR.default_inbound_accnt_id = t_id; //Set in the global space for access during compose	          			
 	          			lastDefaultSelectedId = t_id;
-	          			AjaxObject.startRequest(callbackDefaultOutboundSave, urlStandard + "&emailUIAction=saveDefaultOutbound&id="+ t_id);
+	          			AjaxObject.startRequest(callbackDefaultOutboundSave, urlStandard + "&emailUIAction=saveDefaultOutbound&id="+ t_id);	          			
 	          		}
 	          		else if(t_isGroup)
 	          		   YAHOO.util.Event.preventDefault(oArgs.event); //Do not allow users to select group mailboxes as a default.
-
+	         
 	          	}
 	        });
-
-			this.inboundAccountsSettingsTable.subscribe("rowMouseoverEvent", this.inboundAccountsSettingsTable.onEventHighlightRow);
-			this.inboundAccountsSettingsTable.subscribe("rowMouseoutEvent", this.inboundAccountsSettingsTable.onEventUnhighlightRow);
+	        
+			this.inboundAccountsSettingsTable.subscribe("rowMouseoverEvent", this.inboundAccountsSettingsTable.onEventHighlightRow); 
+			this.inboundAccountsSettingsTable.subscribe("rowMouseoutEvent", this.inboundAccountsSettingsTable.onEventUnhighlightRow); 
         }
     },
      _setupOutboundAccountTable: function()
     {
     	if(!this.outboundAccountsSettingsTable)
-    	{
-	        this.obImageFormatter = function(elLiner, oRecord, oColumn, oData) {
+    	{	     
+	        this.obImageFormatter = function(elLiner, oRecord, oColumn, oData) { 
    					var clckEvent = oColumn.key;
    					var imgSrc = "";
    					var isEditable = oRecord.getData("is_editable");
@@ -229,14 +229,14 @@ SE.accounts = {
     		  			if(imgSrc != '')
 	            		    elLiner.innerHTML = '<img onclick="'+clckEvent+'" src="'+imgSrc+'" align="absmiddle" border="0"/>';
    					}
-	        };
-
+	        }; 
+	        
 	        //Custom formatter to display any error messages.
-			this.messageDisplay = function(elLiner, oRecord, oColumn, oData) {
-
+			this.messageDisplay = function(elLiner, oRecord, oColumn, oData) { 
+			    
                     if(SUGAR.email2.composeLayout.outboundAccountErrors == null)
     		  			    SUGAR.email2.composeLayout.outboundAccountErrors = {};
-
+    		  			    
     		        var id = oRecord.getData('id');
    					var message = oRecord.getData("errors");
    					if(message != '')
@@ -250,29 +250,29 @@ SE.accounts = {
    					    if(typeof(SUGAR.email2.composeLayout.outboundAccountErrors[id]) != 'undefined' )
     		  			    delete SUGAR.email2.composeLayout.outboundAccountErrors[id];
    					}
-	        };
+	        }; 
 	        YAHOO.widget.DataTable.Formatter.actionsImage = this.obImageFormatter;
 	        YAHOO.widget.DataTable.Formatter.messageDisplay = this.messageDisplay;
-
+	        
     		this.obAccntsColumnDefs = [{key:'name',label:app_strings.LBL_EMAIL_ACCOUNTS_NAME }, {key:'mail_smtpserver',label:app_strings.LBL_EMAIL_ACCOUNTS_SMTPSERVER},
     								   {key:'edit',label:mod_strings.LBL_BUTTON_EDIT,formatter:"actionsImage",className:'yui-cstm-cntrd-liner'},
-    								   {key:'delete', label:app_strings.LBL_EMAIL_DELETE,formatter:"actionsImage",className:'yui-cstm-cntrd-liner'},
+    								   {key:'delete', label:app_strings.LBL_EMAIL_DELETE,formatter:"actionsImage",className:'yui-cstm-cntrd-liner'},  
     								   {key:'messages',label:'', formatter:"messageDisplay",className:'yui-cstm-cntrd-liner'}];
-
+    								   
     		var query = "index.php?module=Emails&action=EmailUIAjax&to_pdf=true&emailUIAction=retrieveAllOutbound";
     		this.obDataSource = new YAHOO.util.DataSource(query);
-			this.obDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+			this.obDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON; 
 			this.obDataSource.responseSchema = {
-
+				
 				resultsList: "outbound_account_list",
 				fields: ['id','name','is_editable','mail_smtpserver','type','errors']
 			};
-
+			
     		this.outboundAccountsSettingsTable = new YAHOO.widget.DataTable("outboundAccountsTable", this.obAccntsColumnDefs, this.obDataSource);
-
-
-			this.outboundAccountsSettingsTable.subscribe("rowMouseoverEvent", this.outboundAccountsSettingsTable.onEventHighlightRow);
-			this.outboundAccountsSettingsTable.subscribe("rowMouseoutEvent", this.outboundAccountsSettingsTable.onEventUnhighlightRow);
+			
+    		
+			this.outboundAccountsSettingsTable.subscribe("rowMouseoverEvent", this.outboundAccountsSettingsTable.onEventHighlightRow); 
+			this.outboundAccountsSettingsTable.subscribe("rowMouseoutEvent", this.outboundAccountsSettingsTable.onEventUnhighlightRow); 
     		this.outboundAccountsSettingsTable.subscribe("postRenderEvent",this.rebuildMailerOptions);
     	}
     },
@@ -280,7 +280,7 @@ SE.accounts = {
      * Displays a modal diaglogue to edit outbound account settings
      */
     showEditInboundAccountDialogue : function(clear) {
-
+ 
         if(!this.inboundAccountEditDialog) {
         	var EAD = this.inboundAccountEditDialog = new YAHOO.widget.Dialog("editAccountDialogue", {
                 modal:true,
@@ -295,8 +295,8 @@ SE.accounts = {
                 var viewH = YAHOO.util.Dom.getViewportHeight();
                 if (this.header && el && viewH - 50 < el.clientHeight) {
                     var body = this.header.nextElementSibling;
-					body.style.overflow = "hidden";
-                    body.style.height = "100%";
+					body.style.overflow = "auto";
+                    body.style.height = (viewH - 50) + "px";
                 }
             }, EAD);
             EAD.setHeader(mod_strings.LBL_EMAIL_ACCOUNTS_INBOUND);
@@ -304,21 +304,21 @@ SE.accounts = {
 
         } // end lazy load
 
-        if(clear == undefined || clear == true)
+        if(clear == undefined || clear == true)	
         {
 	        SE.accounts.clearInboundAccountEditScreen();
 	        //Set default protocol to IMAP when creating new records
 	        document.forms['ieAccount'].elements['protocol'].value = "imap";
-        	SE.accounts.setPortDefault();
+        	SE.accounts.setPortDefault();    	
         }
-
+        
         //Check if we should display username/password fields for outbound account if errors were detected.
         this.checkOutBoundSelection();
-
+            
         this.inboundAccountEditDialog.render();
         this.inboundAccountEditDialog.show();
     },
-
+    
     /**
     *  Set all fields on the outbound edit form to either enabled/disabled
     *  except for the username/password.
@@ -335,15 +335,15 @@ SE.accounts = {
             Dom.addClass("mail_smtpssl_row", "yui-hidden");
         else
             Dom.removeClass('mail_smtpssl_row', "yui-hidden");
-
+           	
     },
     /**
     * Refresh the inbound accounts table.
     */
     refreshInboundAccountTable : function()
-    {
+    {	
 	    this.inboundAccountsSettingsTable.getDataSource().sendRequest('',
-	    	{
+	    	{ 
 	    		success: this.inboundAccountsSettingsTable.onDataReturnInitializeTable,
 				scope: this.inboundAccountsSettingsTable }
 			);
@@ -352,9 +352,9 @@ SE.accounts = {
     * Refresh the outbound accounts table.
     */
     refreshOuboundAccountTable : function()
-    {
+    {	
 	    this.outboundAccountsSettingsTable.getDataSource().sendRequest('',
-	    	{
+	    	{ 
 	    		success: this.outboundAccountsSettingsTable.onDataReturnInitializeTable,
 				scope: this.outboundAccountsSettingsTable }
 			);
@@ -385,10 +385,10 @@ SE.accounts = {
                 SE.accounts.checkOutBoundSelection();
                 return true;
             });
-
+            
             Dom.removeClass("outboundDialog", "yui-hidden");
         } // end lazy load
-
+        
         // clear out form
         var form = document.getElementById('outboundEmailForm');
         for(i=0; i<form.elements.length; i++) {
@@ -431,26 +431,15 @@ SE.accounts = {
             adv.style.display = 'none';
         }
     },
-
+    
 	smtp_authenticate_field_display : function() {
 		var smtpauth_req = document.getElementById("mail_smtpauth_req");
 		document.getElementById("smtp_auth1").style.display = smtpauth_req.checked ? "" : "none";
 		document.getElementById("smtp_auth2").style.display = smtpauth_req.checked ? "" : "none";
 	},
-	
-	smtp_setDefaultSMTPPort : function() {
-		useSSLPort = !document.getElementById("mail_smtpssl").options[0].selected;
-    
-        if ( useSSLPort && document.getElementById("mail_smtpport").value == '25' ) {
-            document.getElementById("mail_smtpport").value = '465';
-        }
-        if ( !useSSLPort && document.getElementById("mail_smtpport").value == '465' ) {
-            document.getElementById("mail_smtpport").value = '25';
-        }
-	},
 
     /**
-     * Changes the display used in the outbound email SMTP dialog to match the
+     * Changes the display used in the outbound email SMTP dialog to match the 
      */
     changeEmailScreenDisplay : function(smtptype, isSystemAccount)
     {
@@ -462,7 +451,7 @@ SE.accounts = {
         document.getElementById("mail_smtpport_label").innerHTML = mod_strings.LBL_MAIL_SMTPPORT;
         document.getElementById("mail_smtpserver_label").innerHTML = mod_strings.LBL_MAIL_SMTPSERVER;
         document.getElementById("mail_smtpuser_label").innerHTML = mod_strings.LBL_MAIL_SMTPUSER;
-
+        
         switch (smtptype) {
         case "yahoomail":
             document.getElementById("mail_smtpserver").value = 'plus.smtp.mail.yahoo.com';
@@ -477,7 +466,7 @@ SE.accounts = {
             }
             document.getElementById("mailsettings1").style.display = 'none';
             document.getElementById("mailsettings2").style.display = 'none';
-            document.getElementById("mail_smtppass_label").innerHTML =
+            document.getElementById("mail_smtppass_label").innerHTML = 
             document.getElementById("mail_smtppass_label").innerHTML = mod_strings.LBL_YAHOOMAIL_SMTPPASS;
             document.getElementById("mail_smtpuser_label").innerHTML = mod_strings.LBL_YAHOOMAIL_SMTPUSER;
             break;
@@ -498,7 +487,7 @@ SE.accounts = {
             document.getElementById("mail_smtpuser_label").innerHTML = mod_strings.LBL_GMAIL_SMTPUSER;
             break;
         case "exchange":
-            if ( document.getElementById("mail_smtpserver").value == 'plus.smtp.mail.yahoo.com'
+            if ( document.getElementById("mail_smtpserver").value == 'plus.smtp.mail.yahoo.com' 
                     || document.getElementById("mail_smtpserver").value == 'smtp.gmail.com' ) {
                 document.getElementById("mail_smtpserver").value = '';
             }
@@ -518,16 +507,15 @@ SE.accounts = {
             document.getElementById("chooseEmailProviderTD").style.display = 'none';
             document.getElementById("mailsettings2").style.display = 'none';
         }
-
+        
         SUGAR.email2.accounts.smtp_authenticate_field_display();
-        SUGAR.email2.accounts.smtp_setDefaultSMTPPort()
     },
 
     /**
     * Fill the gmail default values for inbound accounts.
     */
     fillInboundGmailDefaults: function () {
-
+        
         document.forms['ieAccount'].elements['server_url'].value = "imap.gmail.com";
         document.forms['ieAccount'].elements['ssl'].checked = true;
         document.forms['ieAccount'].elements['protocol'].value = "imap";
@@ -567,7 +555,7 @@ SE.accounts = {
                 port.value = '995';
             }
         }
-
+        
         if (prot.value == 'imap') {
         	mailboxdiv.style.display = "";
         	trashFolderdiv.style.display = "";
@@ -595,13 +583,13 @@ SE.accounts = {
         document.getElementById('protocol').className = style;
         document.getElementById('port').className = style;
     },
-
+    
     checkOutBoundSelection: function() {
     	var select = Dom.get('outbound_email');
     	if (!select || select.selectedIndex == -1) { return; }
-
+    	
     	var v = select.options[select.selectedIndex].value;
-
+    	
     	if(v == '')
     	{
     		select.options[select.selectedIndex].selected = false;
@@ -609,7 +597,7 @@ SE.accounts = {
     	}
     	else if (v == 'SYSTEM_ADD')
     		SUGAR.email2.accounts.showAddSmtp();
-
+    		
     	var foundError = false;
     	var errorAccounts = SUGAR.email2.composeLayout.outboundAccountErrors;
 		for(i in errorAccounts)
@@ -620,15 +608,15 @@ SE.accounts = {
 		        break;
 		    }
 		}
-
+		
 		//Should username/password fields for outbound account.
 		if(foundError)
 		    this.toggleInboundOutboundFields(true);
 		else
 		    this.toggleInboundOutboundFields(false);
-
-
-
+		    
+    	
+    	
     },
     toggleInboundOutboundFields : function (display)
     {
@@ -641,7 +629,7 @@ SE.accounts = {
         {
             Dom.addClass("inboundAccountRequiredUsername", "yui-hidden");
 		    Dom.addClass("inboundAccountRequiredPassword", "yui-hidden");
-        }
+        }  
     },
     /**
      * rebuilds the select options for mailer options
@@ -649,16 +637,16 @@ SE.accounts = {
     rebuildMailerOptions : function() {
         var select = document.forms['ieAccount'].elements['outbound_email'];
         SE.util.emptySelectOptions(select);
-
-        //Get the available sugar mailers
+		
+        //Get the available sugar mailers 
         var a_outbound = SE.accounts.outboundAccountsSettingsTable.getRecordSet().getRecords();
-
+ 
     	for(i=0;i<a_outbound.length;i++)
     	{
     		var t_record = a_outbound[i];
     		var key = t_record.getData('id');
     		var display = t_record.getData('name') + ' - ' + t_record.getData('mail_smtpserver');
-
+                
     		var opt = new Option(display, key);
     		select.options.add(opt);
     		if (key == SE.accounts.newAddedOutboundId) {
@@ -675,7 +663,7 @@ SE.accounts = {
      * Empties all the fields in the accounts edit view
      */
     clearInboundAccountEditScreen:function() {
-
+    	
         document.getElementById('ie_id').value = '';
         document.getElementById('ie_name').value = '';
         document.getElementById('ie_from_name').value = SE.userPrefs.current_user.full_name;
@@ -690,7 +678,7 @@ SE.accounts = {
         document.ieAccount.protocol.options[0].selected = true;
         // handle SSL
         document.getElementById('ssl').checked = false;
-
+        
     },
 
     /**
@@ -702,9 +690,9 @@ SE.accounts = {
         document.getElementById('ie_id').value = o.id;
         document.getElementById('ie_name').value = o.name;
         if (o.stored_options != null) {
-        	document.getElementById('ie_from_name').value = o.stored_options.from_name == 'undefined' ? '' : o.stored_options.from_name;
-        	document.getElementById('ie_from_addr').value = o.stored_options.from_addr == 'undefined' ? '' : o.stored_options.from_addr;
-        	document.getElementById('reply_to_addr').value = typeof(o.stored_options.reply_to_addr) == 'undefined' ? '' : o.stored_options.reply_to_addr;
+        	document.getElementById('ie_from_name').value = o.stored_options.from_name == 'undefined' ? '' : o.stored_options.from_name;	
+        	document.getElementById('ie_from_addr').value = o.stored_options.from_addr == 'undefined' ? '' : o.stored_options.from_addr;	
+        	document.getElementById('reply_to_addr').value = typeof(o.stored_options.reply_to_addr) == 'undefined' ? '' : o.stored_options.reply_to_addr;	
         	if (o.stored_options.trashFolder != null) {
         		document.getElementById('trashFolder').value = o.stored_options.trashFolder;
         	}
@@ -714,6 +702,7 @@ SE.accounts = {
         }
         document.getElementById('server_url').value = o.server_url;
         document.getElementById('email_user').value = o.email_user;
+        document.getElementById('email_password').value = o.email_password;
         document.getElementById('port').value = o.port;
         document.getElementById('group_id').value = o.group_id;
         document.getElementById('mailbox').value = o.mailbox;
@@ -748,16 +737,16 @@ SE.accounts = {
     },
 
     deleteIeAccount : function(IeAccountID,IeGroupID) {
-        if(confirm(app_strings.LBL_EMAIL_IE_DELETE_CONFIRM))
+        if(confirm(app_strings.LBL_EMAIL_IE_DELETE_CONFIRM)) 
         {
             overlay(app_strings.LBL_EMAIL_IE_DELETE, app_strings.LBL_EMAIL_ONE_MOMENT);
 
             AjaxObject.target = 'frameFlex';
             AjaxObject.startRequest(callbackAccountDelete, urlStandard + '&emailUIAction=deleteIeAccount&ie_id='+IeAccountID+'&group_id='+IeGroupID);
             SUGAR.email2.accounts.refreshInboundAccountTable();
-         }
+         }                
      },
-
+        
        // Null check for Outbound Settings.
     checkOutboundSettings: function() {
         var errorMessage = '';
@@ -766,12 +755,12 @@ SE.accounts = {
             var mailName = document.getElementById('mail_name').value;
             var smtpServer = document.getElementById('mail_smtpserver').value;
             var smtpPort = document.getElementById('mail_smtpport').value;
-
+            
             var mailsmtpauthreq = document.getElementById('mail_smtpauth_req');
             if(trim(mailName) == '') {
                 isError = true;
                 errorMessage += app_strings.LBL_EMAIL_ACCOUNTS_NAME + "<br/>";
-            }
+            }            
             if(trim(smtpServer) == '') {
                 isError = true;
                 errorMessage += app_strings.LBL_EMAIL_ACCOUNTS_SMTPSERVER + "<br/>";
@@ -785,16 +774,20 @@ SE.accounts = {
                     isError = true;
                     errorMessage += app_strings.LBL_EMAIL_ACCOUNTS_SMTPUSER + "<br/>";
                 }
+                if(trim(document.getElementById('mail_smtppass').value) == '') {
+                    isError = true;
+                    errorMessage += app_strings.LBL_EMAIL_ACCOUNTS_SMTPPASS + "<br/>";
+                }                
             }
-        }
+        } 
         if(isError) {
             overlay(mod_strings.ERR_MISSING_REQUIRED_FIELDS, errorMessage, 'alert');
-            return false;
+            return false;    
         } else {
             return true;
         }
-    },
-
+    },    
+    
     testOutboundSettings: function() {
         var errorMessage = '';
         var isError = false;
@@ -802,38 +795,38 @@ SE.accounts = {
     	if (trim(fromAddress) == "") {
             errorMessage += app_strings.LBL_EMAIL_SETTINGS_FROM_TO_EMAIL_ADDR + "<br/>";
             overlay(mod_strings.ERR_MISSING_REQUIRED_FIELDS, errorMessage, 'alert');
-            return false;
+            return false;    
 
     	}
         else if (!isValidEmail(fromAddress)) {
             errorMessage += app_strings.LBL_EMAIL_SETTINGS_FROM_TO_EMAIL_ADDR + "<br/>";
             overlay(mod_strings.ERR_INVALID_REQUIRED_FIELDS, errorMessage, 'alert');
-            return false;
+            return false;    
         }
-
+    	
         //Hide the dialogue and show an in progress indicator.
         SE.accounts.testOutboundDialog.hide();
         overlay(app_strings.LBL_EMAIL_PERFORMING_TASK, app_strings.LBL_EMAIL_ONE_MOMENT, 'plain');
-
+        
         //If the outbound mail type is a system override we need to re-enable the post fields otherwise
         //nothing is sent in the request.
         var outboundType = document.forms['outboundEmailForm'].elements['type'].value;
         SUGAR.email2.accounts.toggleOutboundAccountDisabledFields(false);
-
+            
         YAHOO.util.Connect.setForm(document.getElementById("outboundEmailForm"));
         if(outboundType == 'system-override')
             SUGAR.email2.accounts.toggleOutboundAccountDisabledFields(true);
-
+            
         var data = "&emailUIAction=testOutbound&outboundtest_from_address=" +  fromAddress;
         AjaxObject.startRequest(callbackOutboundTest, urlStandard + data);
-
+    	
     },
-
+    
     testOutboundSettingsDialog: function() {
         //Ensure that all settings are correct before proceeding to send test email.
         if(!SE.accounts.checkOutboundSettings())
-            return;
-
+            return;    
+    
         // lazy load dialogue
         if(!SE.accounts.testOutboundDialog) {
         	SE.accounts.testOutboundDialog = new YAHOO.widget.Dialog("testOutboundDialog", {
@@ -850,7 +843,7 @@ SE.accounts = {
         SE.accounts.testOutboundDialog.render();
         SE.accounts.testOutboundDialog.show();
     },
-
+    
     /**
      * Saves Outbound email settings
      */
@@ -866,12 +859,12 @@ SE.accounts = {
     },
 
     saveIeAccount : function() {
-
+        
         //Before saving check if there are any error messages associated with the outbound account.
         var outboundID = document.getElementById('outbound_email').value;
 
         if( SE.accounts.checkIeCreds({'valiateTrash': true,'validateFromAddr': true,'validateOutbound' :true,
-            'validateSMTPCreds':true}) )
+            'validateSMTPCreds':true}) ) 
         {
             document.getElementById('saveButton').disabled = true;
 
@@ -903,13 +896,13 @@ SE.accounts = {
         	} // if
             getFoldersListForInboundAccount("InboundEmail", "ShowInboundFoldersList", "Popup", 400, 300, form.server_url.value, form.protocol.value, form.port.value, form.email_user.value, Rot13.write(form.email_password.value), mailBoxValue, form.ssl.checked, true, form.searchField.value );
         } // if
-
+    	
     },
-
+    
     checkIeCreds : function(validateRules) {
-        if(typeof(validateRules) == 'undefined')
+        if(typeof(validateRules) == 'undefined')    
             validateRules = {};
-
+            
         var errors = new Array();
         var out = new String();
 
@@ -922,20 +915,20 @@ SE.accounts = {
         var port = Dom.get('port').value;
         var oe = Dom.get('outbound_email');
         var oe_value = typeof(oe.options[oe.selectedIndex]) == 'undefined' ? "" : oe.options[oe.selectedIndex].value;
-
+        
         var outboundUserName = Dom.get('inbound_mail_smtpuser').value;
         var outboundPass = Dom.get('inbound_mail_smtppass').value;
-
+        
         //If the username and password were provided then ignore the error messge
-
+        
         var outboundCredentialsFound = false;
-
+        
         if(outboundUserName != "" && outboundPass != "")
             outboundCredentialsFound = true;
-
+        
         var validateSMTPCreds = (typeof(validateRules.validateSMTPCreds) != 'undefined' && validateRules.validateSMTPCreds);
-
-        if ( SE.composeLayout.outboundAccountErrors != null && SE.composeLayout.outboundAccountErrors[oe_value] != null
+                
+        if ( SE.composeLayout.outboundAccountErrors != null && SE.composeLayout.outboundAccountErrors[oe_value] != null 
              && validateSMTPCreds)
         {
             if(trim(outboundUserName) == "") {
@@ -949,15 +942,15 @@ SE.accounts = {
         if(trim(ie_name) == "") {
             errors.push(app_strings.LBL_EMAIL_ERROR_NAME);
         }
-
+        
         if ( typeof(validateRules.validateFromAddr) != 'undefined' && validateRules.validateFromAddr)
-        {
+        {            
             if(trim(fromAddress) == "" || !isValidEmail(fromAddress) ) {
                 errors.push(app_strings.LBL_EMAIL_ERROR_FROM_ADDRESS);
             }
         }
-
-
+        
+        
         if( (typeof(validateRules.validateOutbound) != 'undefined' && validateRules.validateOutbound) && ( trim(oe_value) == ""
              || trim(oe_value) == "SYSTEM_ADD") ) {
             errors.push(app_strings.LBL_EMAIL_ERROR_NO_OUTBOUND);
@@ -967,6 +960,9 @@ SE.accounts = {
         }
         if(trim(email_user) == "") {
             errors.push(app_strings.LBL_EMAIL_ERROR_USER);
+        }
+        if(trim(email_password) == "") {
+            errors.push(app_strings.LBL_EMAIL_ERROR_PASSWORD);
         }
         if(protocol == "") {
             errors.push(app_strings.LBL_EMAIL_ERROR_PROTOCOL);
@@ -1021,7 +1017,7 @@ SE.accounts = {
         SE.util.cascadeNodes(SE.tree.getRoot(), SE.accounts.setNodeStyle);
         SE.tree.render();
     },
-
+    
     //Sets the style for any nodes that need it.
     setNodeStyle : function(node) {
     	if (!node.data.origText) {
@@ -1040,7 +1036,7 @@ SE.accounts = {
     	}
     	SE.accounts.setupDDTarget(node);
     },
-
+    
     setupDDTarget : function(node) {
     	if (node.ddTarget) {
     		node.ddTarget.removeFromGroup();
@@ -1049,9 +1045,9 @@ SE.accounts = {
     	var id = node.getElId();
     	var num = id.substring(4);
     	if (node.data.origText != SUGAR.language.get("Emails", "LNK_MY_INBOX") &&
-			node.data.origText != SUGAR.language.get("Emails", "LNK_MY_DRAFTS") &&
+			node.data.origText != SUGAR.language.get("Emails", "LNK_MY_DRAFTS") &&	
 			node.data.origText != SUGAR.language.get("Emails", "LNK_SENT_EMAIL_LIST")) {
-
+    		
     		node.ddTarget = new SUGAR.email2.folders.folderDD("ygtvcontentel" + num);
     	}
     	else if (node.data.origText == SUGAR.language.get("Emails", "LNK_MY_INBOX")){
@@ -1066,7 +1062,7 @@ SE.accounts = {
         overlay(app_strings.LBL_EMAIL_REBUILDING_FOLDERS, app_strings.LBL_EMAIL_ONE_MOMENT);
         AjaxObject.startRequest(callbackFolders, urlStandard + '&emailUIAction=rebuildFolders');
     },
-
+    
     /**
      * Returns the number of remote accounts the user has active.
      */
@@ -1092,7 +1088,7 @@ SE.accounts = {
 ///////////////////////////////////////////////////////////////////////////////
 ////    CONTEXT MENU CALLS
 SE.contextMenus = {
-
+    
     assignToDialogue : null,
     /**
      * Archives from context menu
@@ -1115,7 +1111,7 @@ SE.contextMenus = {
      */
     archiveToSugar : function(menuItem) {
         SE.contextMenus.emailListContextMenu.hide();
-
+        
         var rows = SE.grid.getSelectedRows();
         var uids = [];
         /* iterate through available rows JIC a row is deleted - use first available */
@@ -1125,7 +1121,7 @@ SE.contextMenus = {
         var data = SE.grid.getRecord(rows[0]).getData();
         SE.contextMenus._archiveToSugar(uids, data.ieId, data.mbox);
     },
-
+    
     /**
      * Popup the printable version and start system's print function.
      */
@@ -1159,12 +1155,12 @@ SE.contextMenus = {
             SE.contextMenus.assignToDialogue.setHeader(app_strings.LBL_EMAIL_ASSIGN_TO);
             enableQS(true);
         }
-
+       
         Dom.removeClass("assignToDiv", "yui-hidden");
         SE.contextMenus.assignToDialogue.render();
         SE.contextMenus.assignToDialogue.show();
     },
-
+    
     /**
      * Marks email flagged on mail server
      */
@@ -1202,7 +1198,7 @@ SE.contextMenus = {
      */
     markEmail : function(type) {
         SE.contextMenus.emailListContextMenu.hide();
-
+        
         //var dm = SE.grid.getStore();
         //var uids = SE.grid.getSelectedRowIds();
         //var indexes = SE.grid.getSelectedRowIndexes();
@@ -1210,24 +1206,24 @@ SE.contextMenus = {
         if (rows.length == 0)
         	rows = [SE.contextMenus.currentRow];
         var ser = [ ];
-
+        
         for(var i=0; i<rows.length; i++) {
             ser.push(SE.grid.getRecord(rows[i]).getData().uid);
         }
 
         ser = YAHOO.lang.JSON.stringify(ser);
-
+            
         var ieId = SE.grid.getRecord(rows[0]).getData().ieId;
         var folder = SE.grid.getRecord(rows[0]).getData().mbox;
 
 
         var count = 0;
-
-
+        
+        
         if(type == 'read' || type == 'deleted') {
             // mark read
             for(var j=0; j<rows.length; j++) {
-                if(SE.grid.getRecord(rows[j]).getData().seen == '0') {
+                if(SE.grid.getRecord(rows[j]).getData().seen == '0') { 
                     count = count + 1;
                     SE.grid.getRecord(rows[j]).setData("seen", "1");
                 }
@@ -1267,7 +1263,7 @@ SE.contextMenus = {
 	            SE.cache[folder + SE.grid.getRecord(rows[i]).getData().uid] = null;
 	        } // for
         }
-
+		
 		overlay(app_strings.LBL_EMAIL_PERFORMING_TASK, app_strings.LBL_EMAIL_ONE_MOMENT);
         AjaxObject.startRequest(callbackContextmenus.markUnread, urlStandard + '&emailUIAction=markEmail&type=' + type + '&uids=' + ser + "&ieId=" + ieId + "&folder=" + folder);
     },
@@ -1288,13 +1284,13 @@ SE.contextMenus = {
 			SE.contextMenus.assignmentDialog.show();
 		} // else
 	},
-
+	
 	/**
      * shows the import dialog with only relate visible.
      */
     relateTo : function() {
         SE.contextMenus.emailListContextMenu.hide();
-
+        
         var rows = SE.grid.getSelectedRows();
         var data = SE.grid.getRecord(rows[0]).getData();
         var ieId = data.ieId;
@@ -1305,7 +1301,7 @@ SE.contextMenus = {
             uids[i] = SE.grid.getRecord(rows[i]).getData().uid;
         }
         var ser = JSON.stringifyNoSecurity(uids);
-
+        
         AjaxObject.startRequest(callbackRelateEmail, urlStandard + '&emailUIAction=getRelateForm&uid=' + ser + "&ieId=" + ieId + "&mbox=" + folder);
     },
 
@@ -1325,7 +1321,7 @@ SE.contextMenus = {
         var uid = SE.grid.getRecord(rows[0]).getData().uid;
         SE.contextMenus.showEmailDetailViewInPopup(ieId, uid, folder);
     },
-
+    
     /**
      *
      */
@@ -1333,7 +1329,7 @@ SE.contextMenus = {
         overlay(app_strings.LBL_EMAIL_RETRIEVING_RECORD, app_strings.LBL_EMAIL_ONE_MOMENT);
         AjaxObject.startRequest(callbackEmailDetailView, urlStandard + '&emailUIAction=getEmail2DetailView&uid=' + uid + "&ieId=" + ieId + "&mbox=" + folder + "&record=" + uid);
     },
-
+    
     /**
      * Opens multiple messages from ListView context click
      */
@@ -1365,7 +1361,7 @@ SE.contextMenus = {
             SE.composeLayout.c0_replyForwardEmail(row.ieId, row.uid, row.mbox, type);
         }
     },
-
+    
     //show menu functions
     showEmailsListMenu : function(grid, row) {
 
@@ -1374,45 +1370,45 @@ SE.contextMenus = {
        var menu = SE.contextMenus.emailListContextMenu;
        var folderNode;
 
-       if (SE.tree)
-       {
-	       if (data.mbox == 'sugar::Emails')
+       if (SE.tree) 
+       {       
+	       if (data.mbox == 'sugar::Emails') 
 	           folderNode = SE.folders.getNodeFromIeIdAndMailbox('folder', data.ieId);
-	       else
+	       else 
 	           folderNode = SE.folders.getNodeFromIeIdAndMailbox(data.ieId, data.mbox);
-
-	       if (  folderNode != null && typeof(folderNode) != "undefined"  && typeof(folderNode.data) != "undefined"
-	           && ((folderNode.data.is_group != null) && (folderNode.data.is_group == 'true'))
+	           
+	       if (  folderNode != null && typeof(folderNode) != "undefined"  && typeof(folderNode.data) != "undefined" 
+	           && ((folderNode.data.is_group != null) && (folderNode.data.is_group == 'true')) 
 	          ||  (folderNode != null && folderNode.data.isGroup != null && folderNode.data.isGroup == "true"))
 	               menu.getItem(menu.itemsMapping.assignTo).cfg.setProperty("disabled", false); //Assign emails item
-	       else
-	           menu.getItem(menu.itemsMapping.assignTo).cfg.setProperty("disabled", true); //Assign emails item
-       }
-       else
+	       else 
+	           menu.getItem(menu.itemsMapping.assignTo).cfg.setProperty("disabled", true); //Assign emails item 
+       } 
+       else 
            menu.getItem(menu.itemsMapping.assignTo).cfg.setProperty("disabled", true);
-
+      
        menu.getItem(menu.itemsMapping.archive).cfg.setProperty("disabled", draft);
        menu.getItem(menu.itemsMapping.reply).cfg.setProperty("disabled", draft);
        menu.getItem(menu.itemsMapping.replyAll).cfg.setProperty("disabled", draft);
        menu.getItem(menu.itemsMapping.forward).cfg.setProperty("disabled", draft);
        menu.getItem(menu.itemsMapping.mark).cfg.setProperty("disabled", draft);
 
-
-       if (data.mbox == "sugar::Emails")
+	                          
+       if (data.mbox == "sugar::Emails") 
        {
            //Allow users to reassign imported emails
            menu.getItem(menu.itemsMapping.assignTo).cfg.setProperty("disabled", false);
        	   menu.getItem(menu.itemsMapping.archive).cfg.setProperty("disabled", true);
        	   menu.getItem(menu.itemsMapping.viewRelationships).cfg.setProperty("disabled", false);
        	   menu.getItem(menu.itemsMapping.relateTo).cfg.setProperty("disabled", false);
-       }
-       else
+       } 
+       else 
        {
        	   menu.getItem(menu.itemsMapping.viewRelationships).cfg.setProperty("disabled", true);
        	   menu.getItem(menu.itemsMapping.relateTo).cfg.setProperty("disabled", true);
        }
     },
-
+    
     showFolderMenu : function(grid, rowIndex, event) {
        event.stopEvent();
        var coords = event.getXY();
@@ -1447,10 +1443,10 @@ SE.detailView = {
     consumeMetaDetail : function(ret) {
         // handling if the Email drafts
         if(ret.type == 'draft') {
-            SE.composeLayout.c0_composeDraft();
+            SE.composeLayout.c0_composeDraft(); 
             return;
         }
-
+        
 
         // cache contents browser-side
         SE._setDetailCache(ret);
@@ -1475,7 +1471,7 @@ SE.detailView = {
         } // if
         targetDiv.set("label", tabLabel);
         targetDiv.set("content", out);
-
+        
         var displayEmailFrameDiv = document.getElementById('displayEmailFrameDiv' + targetDiv.id);
         if (SUGAR.email2.util.isIe()) {
         	displayEmailFrameDiv.style.height = "390px";
@@ -1486,24 +1482,24 @@ SE.detailView = {
         var displayFrame = document.getElementById('displayEmailFrame' + targetDiv.id);
         displayFrame.contentWindow.document.write(email.description);
         displayFrame.contentWindow.document.close();
-
+        
         // hide archive links
         if(ret.meta.is_sugarEmail) {
-			document.getElementById("archiveEmail" + targetDiv.id).style.display = "none";
+			document.getElementById("archiveEmail" + targetDiv.id).style.display = "none";			
             document.getElementById("btnEmailView" + targetDiv.id).style.display = "none";
         } else {
             if (document.getElementById("showDeialViewForEmail" + targetDiv.id))
             	document.getElementById("showDeialViewForEmail" + targetDiv.id).style.display = "none";
         } // else
-
+        
     },
 
     consumeMetaPreview : function(ret) {
         // cache contents browser-side
         SE._setDetailCache(ret);
-
-
-
+        
+        
+        
         var currrow = SE.grid.getLastSelectedRecord();
         currrow = SE.grid.getRecord(currrow);
         if (!currrow) {
@@ -1517,11 +1513,11 @@ SE.detailView = {
             }
             return;
         }
-
+        
         if (currrow.getData().uid != ret.meta.uid) {
            return;
         }
-
+        
         // remove loading sprite
         document.getElementById('_blank').innerHTML = '<iframe id="displayEmailFramePreview"/>';
         var displayTemplate = new YAHOO.SUGAR.Template(SE.templates['displayOneEmail']);
@@ -1546,11 +1542,11 @@ SE.detailView = {
             'email' :meta.email,
             'linkBeans' : linkBeans
         });*/
-
+        
         var displayFrame = document.getElementById('displayEmailFramePreview');
         displayFrame.contentWindow.document.write(email.description);
         displayFrame.contentWindow.document.close();
-
+        
         SE.listViewLayout.resizePreview();
 
         // hide archive links
@@ -1573,7 +1569,7 @@ SE.detailView = {
             var activeTabId = SE.util.getPanelId();
             if(activeTabId != 'Preview')
                 SE.innerLayout.get("activeTab").close();
-
+            
             document.getElementById('_blank').innerHTML = "";
 	        var ser = [ ];
 			ser.push(uid);
@@ -1588,7 +1584,7 @@ SE.detailView = {
      */
     emailDelete : function(ieId, uid, mbox) {
        overlay(app_strings.LBL_EMAIL_DELETING_MESSAGE, app_strings.LBL_EMAIL_ONE_MOMENT);
-       AjaxObject.startRequest(callbackContextmenus.markUnread, urlStandard + '&emailUIAction=markEmail&type=deleted&uids=' +
+       AjaxObject.startRequest(callbackContextmenus.markUnread, urlStandard + '&emailUIAction=markEmail&type=deleted&uids=' + 
            uid + "&ieId=" + ieId + "&folder=" + mbox);
     },
 
@@ -1645,7 +1641,7 @@ SE.detailView = {
         			return;
         		}
         	}
-
+        	
         	targetDiv = new YAHOO.SUGAR.ClosableTab({
 	        		label: loadingSprite,
 					scroll : true,
@@ -1654,14 +1650,14 @@ SE.detailView = {
 	        }, SE.innerLayout);
         	targetDiv.id = uid;
         	SE.innerLayout.addTab(targetDiv);
-
+	    
             // use cache if available
             if(SE.cache[compKey]) {
             	SE.detailView.consumeMetaDetail(SE.cache[compKey]);
             } else {
             	// open email as peer-tab to listView
             	SE.detailView.requestEmailContents(mboxStr, uid, mbox, ieId, AjaxObject.detailView.callback.emailDetail);
-               // AjaxObject.startRequest(AjaxObject.detailView.callback.emailDetail, null);
+               // AjaxObject.startRequest(AjaxObject.detailView.callback.emailDetail, null); 
             }
         } else {
             // loading email into preview pane
@@ -1674,11 +1670,11 @@ SE.detailView = {
                 AjaxObject.forceAbort = true;
                 // open in preview window
                 SE.detailView.requestEmailContents(mboxStr, uid, mbox, ieId, AjaxObject.detailView.callback.emailPreview);
-               // AjaxObject.startRequest(AjaxObject.detailView.callback.emailPreview, null);
+               // AjaxObject.startRequest(AjaxObject.detailView.callback.emailPreview, null); 
             }
         }
     },
-
+    
     requestEmailContents : function(mboxStr, uid, mbox, ieId, callback)
     {
     	if(mboxStr.substring(0,7) == 'sugar::') {
@@ -1696,7 +1692,7 @@ SE.detailView = {
 
         AjaxObject.forceAbort = true;
         AjaxObject.target = '_blank';
-        AjaxObject.startRequest(callback, null);
+        AjaxObject.startRequest(callback, null); 
     },
 
     /**
@@ -1744,7 +1740,7 @@ SE.detailView = {
         if(ieId == null || ieId == "null" || mailbox == 'sugar::Emails') {
             get += "&sugarEmail=true";
         }
-
+        
         AjaxObject.startRequest(callbackQuickCreate, urlStandard + '&emailUIAction=getQuickCreateForm' + get);
     },
 
@@ -1761,7 +1757,7 @@ SE.detailView = {
 	        if (qcd.ieId != 'null' && qcd.mbox != 'sugar::Emails') {
 	           accountType = '&ieId=' + qcd.ieId;
 	        }
-
+	        
             if (action == 'reply') {
 	           theCallback = callbackQuickCreateSaveAndReply;
 	        } else if (action == true) {
@@ -1796,18 +1792,18 @@ SE.detailView = {
     showQuickCreate : function(ieId, uid, mailbox) {
         var panelId = SE.util.getPanelId();
         var context = document.getElementById("quickCreateSpan" + panelId);
-
+        
         if (!SE.detailView.cqMenus)
         	SE.detailView.cqMenus = {};
-
-        if (SE.detailView.cqMenus[context])
+        
+        if (SE.detailView.cqMenus[context]) 
         	SE.detailView.cqMenus[context].destroy();
-
+        
 	    var menu = SE.detailView.cqMenus[context] = new YAHOO.widget.Menu("qcMenuDiv" + panelId, {
     		lazyload:true,
     		context: ["quickCreateSpan" + panelId, "tr","br", ["beforeShow", "windowResize"]]
         });
-
+	    
 	    for (var i=0; i < this.qcmodules.length; i++) {
             var module = this.qcmodules[i];
             menu.addItem({
@@ -1820,7 +1816,7 @@ SE.detailView = {
             	}
             });
         }
-
+		
 		menu.render(document.body);
 		menu.show();
     },
@@ -1836,17 +1832,17 @@ SE.detailView = {
         var context = "btnEmailView" + panelId;
         if (!SE.detailView.viewMenus)
         	SE.detailView.viewMenus = {};
-
-        if (SE.detailView.viewMenus[context])
+        
+        if (SE.detailView.viewMenus[context]) 
         	SE.detailView.viewMenus[context].destroy();
-
+        
 	    var menu = SE.detailView.viewMenus[context] = new YAHOO.widget.Menu("menuDiv" + panelId, {
     		lazyload:true,
     		context: ["btnEmailView" + panelId, "tl","bl", ["beforeShow", "windowResize"]],
     		clicktohide: true
         });
 		menu.addItems(
-				(ieId == 'null' || ieId == null) ?
+				(ieId == 'null' || ieId == null) ? 
 			//No ieId - Sugar Email
 			[{
 				text: app_strings.LBL_EMAIL_VIEW_RAW,
@@ -1864,7 +1860,7 @@ SE.detailView = {
         );
 		menu.render(document.body);
 		menu.show();
-
+		
 
         /*
         //#23108 jchi@07/17/2008
@@ -1903,7 +1899,7 @@ SE.detailView = {
     	var get = "&type=raw&ieId=" + ieId + "&uid=" + uid + "&mailbox=" + mailbox;
         AjaxObject.startRequest(AjaxObject.detailView.callback.viewRaw, urlStandard + "&emailUIAction=displayView" + get);
     },
-
+    
     /**
      * Display all email addresses in detailview.
      */
@@ -1960,7 +1956,7 @@ SE.folders = {
             }
         }
     },
-
+   
     /**
      * Builds and returns a new TreeView Node
      * @param string name
@@ -2018,7 +2014,7 @@ SE.folders = {
             SE.folders.checkingMail = setTimeout("SE.folders.checkEmailAccountsSilent(false);", 5000);
         }
     },
-
+    
     /**
      * Starts check of all email Accounts using a loading bar for large POP accounts
      */
@@ -2028,7 +2024,7 @@ SE.folders = {
             overlay(app_strings.LBL_EMAIL_ONE_MOMENT, app_strings.LBL_EMAIL_CHECKING_NEW, 'progress');
             SE.accounts.ieIds = SE.folders.getIeIds();
             if (SE.accounts.ieIds.length > 0) {
-            	AjaxObject.startRequest(AjaxObject.accounts.callbackCheckMailProgress, urlStandard +
+            	AjaxObject.startRequest(AjaxObject.accounts.callbackCheckMailProgress, urlStandard + 
                                 '&emailUIAction=checkEmailProgress&ieId=' + SE.accounts.ieIds[0] + "&currentCount=0");
             } else {
                hideOverlay();
@@ -2038,7 +2034,7 @@ SE.folders = {
             SE.folders.checkingMail = setTimeout("SE.folders.startEmailAccountCheck();", 5000);
         }
     },
-
+    
     /**
      * Checks a single Account check based on passed ieId
      */
@@ -2055,7 +2051,7 @@ SE.folders = {
             } // if
             overlay(app_strings.LBL_EMAIL_CHECKING_NEW, app_strings.LBL_EMAIL_CHECKING_DESC, 'progress');
             SE.accounts.ieIds = [ieId];
-            AjaxObject.startRequest(AjaxObject.accounts.callbackCheckMailProgress, urlStandard +
+            AjaxObject.startRequest(AjaxObject.accounts.callbackCheckMailProgress, urlStandard + 
                                 '&emailUIAction=checkEmailProgress&mbox=' + mbox + '&ieId=' + ieId + "&currentCount=0&synch=" + synch);
       },
 
@@ -2068,7 +2064,7 @@ SE.folders = {
         overlay(app_strings.LBL_EMAIL_EMPTYING_TRASH, app_strings.LBL_EMAIL_ONE_MOMENT);
         AjaxObject.startRequest(callbackEmptyTrash, urlStandard + '&emailUIAction=emptyTrash');
     },
-
+    
     /**
      * Clears Cache files of the inboundemail account
      */
@@ -2077,8 +2073,8 @@ SE.folders = {
         overlay(app_strings.LBL_EMAIL_CLEARING_CACHE_FILES, app_strings.LBL_EMAIL_ONE_MOMENT);
         AjaxObject.startRequest(callbackClearCacheFiles, urlStandard + '&ieId=' + ieId + '&emailUIAction=clearInboundAccountCache');
     },
-
-
+    
+    
     /**
      * Returns an array of all the active accounts in the folder view
      */
@@ -2110,7 +2106,7 @@ SE.folders = {
         AjaxObject.timeout = 300000; // 5 min timeout for long checks
         AjaxObject.startRequest(callbackLoadSettingFolder, urlStandard + '&emailUIAction=getFoldersForSettings');
     },
-
+    
     /**
      * Recursively removes nodes from the TreeView of type Sugar (data.ieId = 'folder')
      */
@@ -2126,14 +2122,14 @@ SE.folders = {
         	root.childrenRendered = true;
         }
     },
-
+    
     rebuildFolders : function(silent) {
       if (!silent) overlay(app_strings.LBL_EMAIL_REBUILDING_FOLDERS, app_strings.LBL_EMAIL_ONE_MOMENT);
        AjaxObject.startRequest(callbackFolders, urlStandard + '&emailUIAction=getAllFoldersTree');
     },
 
-
-
+    
+    
     /**
      * Updates TreeView with Sugar Folders
      */
@@ -2189,7 +2185,7 @@ SE.folders = {
     		if(is_active)
     			a_active_accnts += ("&ieIdShow[]=" + t_record.getData('id'));
     	}
-
+    	
     	if(a_active_accnts == "")
     		a_active_accnts = "&ieIdShow[]=";
 
@@ -2307,10 +2303,10 @@ SE.folders = {
      * @param count how many to decrement
      */
     decrementUnreadCount : function(ieId, mbox, count) {
-
+        
         if(mbox == null)
             return;
-
+            
         if(mbox.indexOf("sugar::") === 0) {
             var node = this.getNodeFromId(ieId);
         } else {
@@ -2348,13 +2344,13 @@ SE.folders = {
      */
     getNodeFromIeIdAndMailbox : function(id, mbox) {
 		SE.folders.focusNode = null;
-        if (mbox == "sugar::Emails") {
+        if (mbox == "sugar::Emails") {        
         	mbox = id;
         	id = "folder";
         } // if
     	SE.util.cascadeNodes(SE.tree.getRoot(), function(varsarray) {
     		if (varsarray instanceof Array) {
-            if (this.data.ieId && this.data.ieId == varsarray[0]
+            if (this.data.ieId && this.data.ieId == varsarray[0] 
                     && this.data.mbox == varsarray[1]) {
                 SE.folders.focusNode = this;
                 return false;
@@ -2368,7 +2364,7 @@ SE.folders = {
         }, null, [id, mbox]);
         return SE.folders.focusNode;
     },
-
+    
     unhighliteAll : function() {
     	SE.util.cascadeNodes(SE.tree.getRoot(), function(){this.unhighlight()});
     },
@@ -2382,8 +2378,8 @@ SE.folders = {
         var node = SE.clickedFolderNode;
 
         if(node != null && node.data) {
-            overlay(app_strings.LBL_EMAIL_FOLDERS_ADD_DIALOG_TITLE,
-                    app_strings.LBL_EMAIL_SETTINGS_NAME,
+            overlay(app_strings.LBL_EMAIL_FOLDERS_ADD_DIALOG_TITLE, 
+                    app_strings.LBL_EMAIL_SETTINGS_NAME, 
                     'prompt', {fn:SE.folders.folderAddXmlCall, beforeShow: SE.folders.folderAddRegisterEnter, beforeHide: SE.folders.folderRemoveRegisterEnter});
         } else {
             alert(app_strings.LBL_EMAIL_FOLDERS_NO_VALID_NODE);
@@ -2391,17 +2387,17 @@ SE.folders = {
     },
 
     folderAddRegisterEnter : function() {
-    	this.enterKeyListener = new YAHOO.util.KeyListener(YAHOO.util.Dom.get("sugar-message-prompt"),
+    	this.enterKeyListener = new YAHOO.util.KeyListener(YAHOO.util.Dom.get("sugar-message-prompt"), 
     															{keys: YAHOO.util.KeyListener.KEY.ENTER},
     															this.buttons[1].handler);
-
-		this.enterKeyListener.enable();
+	
+		this.enterKeyListener.enable(); 															
     },
-
+    
     folderRemoveRegisterEnter : function() {
     	this.enterKeyListener.disable();
     },
-
+    
     folderAddXmlCall : function(name) {
         if (trim(name) == "") {
         	alert(mod_strings.LBL_ENTER_FOLDER_NAME);
@@ -2412,7 +2408,7 @@ SE.folders = {
         var type = 'sugar';
 
         var parentNode = SE.clickedFolderNode;
-
+        
         this.contextMenuFocus = parentNode;
 
         if(parentNode.data.ieId) {
@@ -2447,7 +2443,7 @@ SE.folders = {
      */
     folderDelete : function() {
         SE.contextMenus.frameFoldersContextMenu.hide();
-
+        
         if(confirm(app_strings.LBL_EMAIL_FOLDERS_DELETE_CONFIRM)) {
             var post = '';
             var parentNode = SE.clickedFolderNode;
@@ -2488,11 +2484,11 @@ SE.folders = {
                 overlay(app_strings.LBL_EMAIL_ERROR_GENERAL_TITLE, app_strings.LBL_EMAIL_FOLDERS_CHANGE_HOME, 'alert');
                 return;
             }
-
-			overlay(app_strings.LBL_EMAIL_FOLDERS_RENAME_DIALOG_TITLE + " - " + node.data.text,
-                    app_strings.LBL_EMAIL_SETTINGS_NAME,
+            
+			overlay(app_strings.LBL_EMAIL_FOLDERS_RENAME_DIALOG_TITLE + " - " + node.data.text, 
+                    app_strings.LBL_EMAIL_SETTINGS_NAME, 
                     'prompt',
-                    {fn:SE.folders.submitFolderRename, beforeShow: SE.folders.folderAddRegisterEnter, beforeHide: SE.folders.folderRemoveRegisterEnter});
+                    {fn:SE.folders.submitFolderRename, beforeShow: SE.folders.folderAddRegisterEnter, beforeHide: SE.folders.folderRemoveRegisterEnter});        
         } else {
             alert(app_strings.LBL_EMAIL_FOLDERS_NO_VALID_NODE);
         }
@@ -2609,7 +2605,7 @@ SE.folders = {
        //eval(node.data.click);
        //debugger;
     },
-
+    
     /**
     * Called when a node is right-clicked on in the folder tree
     */
@@ -2618,7 +2614,7 @@ SE.folders = {
 		//Get the Tree Node
 		var node = SUGAR.email2.tree.getNodeByElement(YAHOO.util.Event.getTarget(e));
 		var menu = SUGAR.email2.contextMenus.frameFoldersContextMenu;
-
+		
 		//If the click was on a sugar folder
         SE.clickedFolderNode = node;
         var inbound = (node.data.ieId && node.data.ieId != 'folder');
@@ -2648,7 +2644,7 @@ SE.folders = {
 			menu.getItem(4).cfg.setProperty("disabled", true);
 			menu.getItem(5).cfg.setProperty("disabled", true);
 		}
-
+		
 		//For group with auto inbound, disable everything.
 		if( (typeof(node.data.is_group) != 'undefined') && node.data.is_group == 'true')
 		{
@@ -2660,11 +2656,11 @@ SE.folders = {
     		menu.getItem(5).cfg.setProperty("disabled", true);
     		menu.getItem(6).cfg.setProperty("disabled", true);
 		}
-
+		
 		menu.cfg.setProperty("xy", YAHOO.util.Event.getXY(e));
 		menu.show();
     },
-
+    
     /**
     * Called when a row is dropped on a node
     */
@@ -2682,14 +2678,14 @@ SE.folders = {
             SE.listView.moveEmails(srcIeId, srcFolder, destIeId, destFolder, uids, rows);
         }
     },
-
+    
     /**
     * Called when something is dragged over a Folder Node
     */
     dragOver : function(dragObject) {
        return true;
     },
-
+    
     /**
      * Determines if a folder name is unique to the folder tree
      * @param string name
@@ -2717,7 +2713,7 @@ SE.folders = {
         	alert(mod_strings.LBL_ENTER_FOLDER_NAME);
         	return false;
         }
-		newName = escape(newName);
+		newName = escape(newName);        
         var node = SE.clickedFolderNode;
         var origName = node.data.text
         //Ignore no change
@@ -2733,7 +2729,7 @@ SE.folders = {
             else {
                 //IMAP folder or POP mailbox
                 var nodePath = node.data.mbox.substring(0, node.data.mbox.lastIndexOf(".") + 1);
-                AjaxObject.startRequest(callbackFolderRename, urlStandard + "&emailUIAction=renameFolder&ieId="
+                AjaxObject.startRequest(callbackFolderRename, urlStandard + "&emailUIAction=renameFolder&ieId=" 
                     + node.data.ieId + "&oldFolderName=" + node.data.mbox + "&newFolderName=" + nodePath + newName);
             }
             return true;
@@ -2742,11 +2738,11 @@ SE.folders = {
             return false;
         }
     },
-
+    
     moveFolder : function(folderId, parentFolderId) {
         if (folderId != parentFolderId)
         {
-        	AjaxObject.startRequest(callbackFolderRename, urlStandard + "&emailUIAction=moveFolder&folderId="
+        	AjaxObject.startRequest(callbackFolderRename, urlStandard + "&emailUIAction=moveFolder&folderId=" 
                     + folderId + "&newParentId=" + parentFolderId);
         }
     },
@@ -2767,8 +2763,8 @@ SE.folders = {
      * @param string type of Folder selection
      */
     updateSubscriptions : function() {
-        overlay(app_strings.LBL_EMAIL_REBUILDING_FOLDERS, app_strings.LBL_EMAIL_ONE_MOMENT);
-
+        overlay(app_strings.LBL_EMAIL_REBUILDING_FOLDERS, app_strings.LBL_EMAIL_ONE_MOMENT);    
+    
         var active = "";
 
         select = document.getElementById('userFolders');
@@ -2782,14 +2778,14 @@ SE.folders = {
                  active += opt.value;
              }
         }
-
+        
         //Add the group folder ids.
         var group_folders = SUGAR.email2.folders.retrieveGroupFolderSubscriptions();
-        for(i=0; i<group_folders.length; i++)
+        for(i=0; i<group_folders.length; i++) 
         {
             active += ("::" + group_folders[i]);
         }
-
+        
         AjaxObject.startRequest(callbackFolderSubscriptions, urlStandard + '&emailUIAction=updateSubscriptions&subscriptions=' + active);
     },
     /**
@@ -2797,7 +2793,7 @@ SE.folders = {
      * @param ieID The group folder to add to the tree view
      */
     retrieveGroupFolderSubscriptions : function() {
-
+        
         var a_rs = SE.accounts.inboundAccountsSettingsTable.getRecordSet().getRecords();
     	var activeGroupFolders = "";
     	var activeGroupIds = [];
@@ -2812,8 +2808,8 @@ SE.folders = {
     		    if(is_active)
     		      activeGroupIds.push(ieID);
     		}
-        }
-
+        }         
+       
         return activeGroupIds;
     }
 
@@ -2956,7 +2952,7 @@ SE.listView = {
         }
         SE.accounts.renderTree();
 
-
+        
         // bug 15035 perhaps a heavy handed solution to stopping the loading spinner.
         if(forcePreview && ds.totalCount > 0) {
             SE.detailView.getEmailPreview();
@@ -2971,7 +2967,7 @@ SE.listView = {
         uid = new String(uid);
         uids = uid.split(',');
         var dataTableRecords = SE.grid.getRecordSet().getRecords(0, SE.grid.getRecordSet().getLength());
-
+        
         for(j=0; j<uids.length; j++) {
             var theUid = uids[j];
             for (k = 0 ; k < SE.grid.getRecordSet().getLength() ; k++) {
@@ -3047,7 +3043,7 @@ SE.listView = {
             }
         }
     },
-
+    
     /**
      * Unbolds text in the grid view to denote read status
      */
@@ -3126,9 +3122,9 @@ SE.listView = {
      */
     handleClick : function(o) {
         SUGAR.email2.grid.clearTextSelection();
-
+        
         var el = SUGAR.email2.grid.getSelectedRows();
-
+        
         //Load an email preview only if a single record is selected.  For multiple selections do nothing.
     	if ( el.length == 1)
     	{
@@ -3147,7 +3143,7 @@ SE.listView = {
     getEmail : function(e) {
         var rows = SE.grid.getSelectedRows();
     	var row = SE.grid.getRecord(rows[0]).getData();
-
+        
         clearTimeout(SE.detailView.previewTimer);
         document.getElementById("_blank").innerHTML = "";
 
@@ -3187,7 +3183,7 @@ SE.listView = {
             }
         }
     },
-
+    
     /**
      * Returns the UID's of the seleted rows
      *
@@ -3201,15 +3197,15 @@ SE.listView = {
          }
          return uids;
      },
-
+    
     refreshGrid : function() {
         SE.grid.getDataSource().sendRequest(
-    	    SUGAR.util.paramsToUrl(SE.grid.params),
+    	    SUGAR.util.paramsToUrl(SE.grid.params), 
     		SE.grid.onDataReturnInitializeTable,
     		SE.grid
     	);
     }
-
+    
 };
 ////    END SE.listView
 ///////////////////////////////////////////////////////////////////////////////
@@ -3239,7 +3235,7 @@ SE.search = {
         SE.grid.getStore().baseParams['subject'] = safeCriteria;
         SE.grid.getStore().baseParams['ieId'] = accountListSearch.options[accountListSearch.selectedIndex].value;
         SE.grid.getStore().load({params:{start:0, limit:SE.userPrefs.emailSettings.showNumInList}});
-
+        
     },
 
     /**
@@ -3252,7 +3248,7 @@ SE.search = {
         //Set assigned user id to blank if name is not present.
         if (formObject.elements['assigned_user_name'].value == "")
             formObject.elements['assigned_user_id'].value = "";
-
+            
         for(i=0; i<formObject.elements.length; i++) {
             if(formObject.elements[i].type != 'button' && formObject.elements[i].value != "") {
                 search = true;
@@ -3278,11 +3274,11 @@ SE.search = {
              }
         }
 
-        if (search)
+        if (search) 
         {
             if(! this.validateSearchFormInput() )
                 return;
-
+                                
         	SE.grid.params['emailUIAction'] = 'searchAdvanced';
         	SE.grid.params['mbox'] = app_strings.LBL_EMAIL_SEARCH_RESULTS_TITLE;
         	var accountListSearch = document.getElementById('accountListSearch');
@@ -3291,17 +3287,17 @@ SE.search = {
             alert(app_strings.LBL_EMAIL_ERROR_EMPTY);
         }
     },
-
+    
     /**
     *  Validates the search form inputs to ensure all parameters are valid
     *  @return bool
     */
     validateSearchFormInput: function()
-    {
-        addToValidate('advancedSearchForm', 'dateTo', 'date', false, app_strings.LBL_EMAIL_SEARCH_DATE_UNTIL);
-        addToValidate('advancedSearchForm', 'dateFrom', 'date', false, app_strings.LBL_EMAIL_SEARCH_DATE_FROM);
+    { 
+        addToValidate('advancedSearchForm', 'dateTo', 'date', false, app_strings.LBL_EMAIL_SEARCH_DATE_UNTIL);  
+        addToValidate('advancedSearchForm', 'dateFrom', 'date', false, app_strings.LBL_EMAIL_SEARCH_DATE_FROM); 
         var dateCheck = check_form('advancedSearchForm');
-
+       
         //If the parent type is selected ensure the user selected a parent_id.
         if( SE.composeLayout.isParentTypeAndNameValid('_search') && dateCheck)
             return true;
@@ -3317,7 +3313,7 @@ SE.search = {
 
         for(var i=0;i<el.length;i++)
         {
-            if(Dom.hasClass(el[i],"toggleClass yui-hidden" ))
+            if(Dom.hasClass(el[i],"toggleClass yui-hidden" ))    
                 Dom.replaceClass(el[i],"toggleClass yui-hidden", "toggleClass visible-search-option" )
             else
                 Dom.replaceClass(el[i],"toggleClass visible-search-option","toggleClass yui-hidden" )
@@ -3371,7 +3367,7 @@ SE.settings = {
         	AjaxObject.startRequest(callbackDeleteSignature, urlStandard + '&emailUIAction=deleteSignature&id=' + singature_id);
         } // if
     },
-
+    
     saveOptionsGeneral :  function(displayMessage) {
         var formObject = document.getElementById('formEmailSettingsGeneral');
         if (!SUGAR.collection.prototype.validateTemSet('formEmailSettingsGeneral', 'team_name')) {
@@ -3386,7 +3382,7 @@ SE.settings = {
 
         if(displayMessage)
             alert(app_strings.LBL_EMAIL_SETTINGS_SAVED);
-
+            
         SE.settings.settingsDialog.hide();
     },
 
@@ -3403,7 +3399,7 @@ SE.settings = {
             	width:"800px",
 				constraintoviewport: true
             });
-			dlg.showEvent.subscribe( function (){
+			dlg.showEvent.subscribe( function (){ 
 				var el = this.element;
 				var viewH = YAHOO.util.Dom.getViewportHeight();
                 if (this.header && el && viewH - 50 < el.clientHeight) {
@@ -3414,13 +3410,13 @@ SE.settings = {
             }, dlg);
         	dlg.setHeader(app_strings.LBL_EMAIL_SETTINGS);
         	dlg.setBody('<div id="settingsTabDiv"/>');
-        	dlg.beforeRenderEvent.subscribe(function() {
-        		var dd = new YAHOO.util.DDProxy(dlg.element);
-        		dd.setHandleElId(dlg.header);
-        		dd.on('endDragEvent', function() {
-        			dlg.show();
-        		});
-        	}, dlg, true);
+        	dlg.beforeRenderEvent.subscribe(function() { 
+        		var dd = new YAHOO.util.DDProxy(dlg.element); 
+        		dd.setHandleElId(dlg.header); 
+        		dd.on('endDragEvent', function() { 
+        			dlg.show(); 
+        		}); 
+        	}, dlg, true); 
         	dlg.render();
 
         	var tp = SE.settings.settingsTabs = new YAHOO.widget.TabView("settingsTabDiv");
@@ -3445,12 +3441,12 @@ SE.settings = {
 
 			tp.appendTo(dlg.body);
         }
-
+        
         SE.settings.settingsDialog.show();
         SE.folders.lazyLoadSettings();
         SE.accounts.lazyLoad();
     },
-
+    
 
     lazyLoadRules : function() {
         if(false/*!SE.settings.rules*/) {

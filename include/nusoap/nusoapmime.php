@@ -206,7 +206,7 @@ class nusoapclientmime extends nusoapclient {
 	 * @access private
 	 */
 	var $mimeContentType;
-
+	
 	/**
 	* adds a MIME attachment to the current request.
 	*
@@ -231,7 +231,7 @@ class nusoapclientmime extends nusoapclient {
 		$info['filename'] = $filename;
 		$info['contenttype'] = $contenttype;
 		$info['cid'] = $cid;
-
+		
 		$this->requestAttachments[] = $info;
 
 		return $cid;
@@ -277,7 +277,7 @@ class nusoapclientmime extends nusoapclient {
 			$params['encoding']     = '8bit';
 			$params['charset']      = $this->soap_defencoding;
 			$mimeMessage->addSubpart($soapmsg, $params);
-
+			
 			foreach ($this->requestAttachments as $att) {
 				unset($params);
 
@@ -288,7 +288,12 @@ class nusoapclientmime extends nusoapclient {
 				$params['cid']          = $att['cid'];
 
 				if ($att['data'] == '' && $att['filename'] <> '') {
-				    $data = file_get_contents($att['filename']);
+					if ($fd = fopen($att['filename'], 'rb')) {
+						$data = fread($fd, filesize($att['filename']));
+						fclose($fd);
+					} else {
+						$data = '';
+					}
 					$mimeMessage->addSubpart($data, $params);
 				} else {
 					$mimeMessage->addSubpart($att['data'], $params);
@@ -297,7 +302,7 @@ class nusoapclientmime extends nusoapclient {
 
 			$output = $mimeMessage->encode();
 			$mimeHeaders = $output['headers'];
-
+	
 			foreach ($mimeHeaders as $k => $v) {
 				$this->debug("MIME header $k: $v");
 				if (strtolower($k) == 'content-type') {
@@ -306,13 +311,13 @@ class nusoapclientmime extends nusoapclient {
 					$this->mimeContentType = str_replace("\r\n", " ", $v);
 				}
 			}
-
+	
 			return $output['body'];
 		}
 
 		return parent::getHTTPBody($soapmsg);
 	}
-
+	
 	/**
 	* gets the HTTP content type for the current request.
 	*
@@ -327,7 +332,7 @@ class nusoapclientmime extends nusoapclient {
 		}
 		return parent::getHTTPContentType();
 	}
-
+	
 	/**
 	* gets the HTTP content type charset for the current request.
 	* returns false for non-text content types.
@@ -365,7 +370,7 @@ class nusoapclientmime extends nusoapclient {
 			$params['include_bodies'] = true;
 			$params['decode_bodies'] = true;
 			$params['decode_headers'] = true;
-
+			
 			$structure = Mail_mimeDecode::decode($params);
 
 			foreach ($structure->parts as $part) {
@@ -381,11 +386,11 @@ class nusoapclientmime extends nusoapclient {
 					$this->responseAttachments[] = $info;
 				}
 			}
-
+		
 			if (isset($return)) {
 				return $return;
 			}
-
+			
 			$this->setError('No root part found in multipart/related content');
 			return;
 		}
@@ -421,7 +426,7 @@ class nusoapservermime extends soap_server {
 	 * @access private
 	 */
 	var $mimeContentType;
-
+	
 	/**
 	* adds a MIME attachment to the current response.
 	*
@@ -446,7 +451,7 @@ class nusoapservermime extends soap_server {
 		$info['filename'] = $filename;
 		$info['contenttype'] = $contenttype;
 		$info['cid'] = $cid;
-
+		
 		$this->responseAttachments[] = $info;
 
 		return $cid;
@@ -492,7 +497,7 @@ class nusoapservermime extends soap_server {
 			$params['encoding']     = '8bit';
 			$params['charset']      = $this->soap_defencoding;
 			$mimeMessage->addSubpart($soapmsg, $params);
-
+			
 			foreach ($this->responseAttachments as $att) {
 				unset($params);
 
@@ -503,7 +508,12 @@ class nusoapservermime extends soap_server {
 				$params['cid']          = $att['cid'];
 
 				if ($att['data'] == '' && $att['filename'] <> '') {
-				    $data = file_get_contents($att['filename']);
+					if ($fd = fopen($att['filename'], 'rb')) {
+						$data = fread($fd, filesize($att['filename']));
+						fclose($fd);
+					} else {
+						$data = '';
+					}
 					$mimeMessage->addSubpart($data, $params);
 				} else {
 					$mimeMessage->addSubpart($att['data'], $params);
@@ -512,7 +522,7 @@ class nusoapservermime extends soap_server {
 
 			$output = $mimeMessage->encode();
 			$mimeHeaders = $output['headers'];
-
+	
 			foreach ($mimeHeaders as $k => $v) {
 				$this->debug("MIME header $k: $v");
 				if (strtolower($k) == 'content-type') {
@@ -521,13 +531,13 @@ class nusoapservermime extends soap_server {
 					$this->mimeContentType = str_replace("\r\n", " ", $v);
 				}
 			}
-
+	
 			return $output['body'];
 		}
 
 		return parent::getHTTPBody($soapmsg);
 	}
-
+	
 	/**
 	* gets the HTTP content type for the current response.
 	*
@@ -542,7 +552,7 @@ class nusoapservermime extends soap_server {
 		}
 		return parent::getHTTPContentType();
 	}
-
+	
 	/**
 	* gets the HTTP content type charset for the current response.
 	* returns false for non-text content types.
@@ -580,7 +590,7 @@ class nusoapservermime extends soap_server {
 			$params['include_bodies'] = true;
 			$params['decode_bodies'] = true;
 			$params['decode_headers'] = true;
-
+			
 			$structure = Mail_mimeDecode::decode($params);
 
 			foreach ($structure->parts as $part) {
@@ -596,11 +606,11 @@ class nusoapservermime extends soap_server {
 					$this->requestAttachments[] = $info;
 				}
 			}
-
+		
 			if (isset($return)) {
 				return $return;
 			}
-
+			
 			$this->setError('No root part found in multipart/related content');
 			return;
 		}

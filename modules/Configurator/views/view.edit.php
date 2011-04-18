@@ -62,7 +62,7 @@ class ConfiguratorViewEdit extends ViewEdit
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
@@ -94,7 +94,7 @@ class ConfiguratorViewEdit extends ViewEdit
         $this->ss->assign('APP_LIST', $app_list_strings);
         $this->ss->assign('config', $configurator->config);
         $this->ss->assign('error', $configurator->errors);
-        $this->ss->assign("AUTO_REFRESH_INTERVAL_OPTIONS", get_select_options_with_id($app_list_strings['dashlet_auto_refresh_options_admin'], isset($configurator->config['dashlet_auto_refresh_min']) ? $configurator->config['dashlet_auto_refresh_min'] : 30));
+        $this->ss->assign('THEMES', SugarThemeRegistry::availableThemes());
         $this->ss->assign('LANGUAGES', get_languages());
         $this->ss->assign("JAVASCRIPT",get_set_focus_js(). get_configsettings_js());
         $this->ss->assign('company_logo', SugarThemeRegistry::current()->getImageURL('company_logo.png'));
@@ -121,7 +121,7 @@ class ConfiguratorViewEdit extends ViewEdit
             $this->ss->assign('filename_suffix', get_select_options_with_id(  SugarLogger::$filename_suffix,''));
         }
         
-        echo $this->getModuleTitle(false);
+        echo $this->getModuleTitle();
         
         $this->ss->display('modules/Configurator/tpls/EditView.tpl');
         

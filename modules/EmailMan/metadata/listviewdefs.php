@@ -46,19 +46,16 @@ $listViewDefs['EmailMan'] = array(
 		'customCode' => '<a href="index.php?module=Campaigns&action=DetailView&record={$CAMPAIGN_ID}">{$CAMPAIGN_NAME}</a>',
         'default' => true),
     'RECIPIENT_NAME' => array(
-		'sortable' => false,
         'width' => '10', 
         'label' => 'LBL_LIST_RECIPIENT_NAME',
 		'customCode' => '<a href="index.php?module={$RELATED_TYPE}&action=DetailView&record={$RELATED_ID}">{$RECIPIENT_NAME}</a>', 
         'default' => true),
     'RECIPIENT_EMAIL' => array(
-		'sortable' => false,
         'width' => '10', 
         'label' => 'LBL_LIST_RECIPIENT_EMAIL',
 		'customCode' => '{$EMAIL1_LINK}{$RECIPIENT_EMAIL}</a>',
         'default' => true),
     'MESSAGE_NAME' => array(
-		'sortable' => false,
         'width' => '10', 
         'label' => 'LBL_LIST_MESSAGE_NAME',
 		'customCode' => '<a href="index.php?module=EmailMarketing&action=DetailView&record={$MARKETING_ID}">{$MESSAGE_NAME}</a>',

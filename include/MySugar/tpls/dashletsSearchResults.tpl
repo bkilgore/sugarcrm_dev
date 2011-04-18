@@ -45,7 +45,7 @@
 	{if $rowCounter % 2 == 0}
 	<tr>
 	{/if}
-		<td width="50%" align="left"><a href="javascript:void(0)" onclick="{$module.onclick}">{$module.icon}</a>&nbsp;<a class="mbLBLL" href="#" onclick="{$module.onclick}">{$module.title}</a><br /></td>
+		<td width="50%" align="left"><a href="#" onclick="{$module.onclick}">{$module.icon}</a>&nbsp;<a class="mbLBLL" href="#" onclick="{$module.onclick}">{$module.title}</a><br /></td>
 	{if $rowCounter % 2 == 1}
 	</tr>
 	{/if}

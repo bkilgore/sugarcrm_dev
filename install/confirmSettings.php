@@ -79,7 +79,7 @@ $defaultLanguages = "";
 	$sugar_config_defaults = get_sugar_config_defaults();
 	if(isset($_REQUEST['default_language'])){
 		$defaultLanguages = $sugar_config_defaults['languages'][$_REQUEST['default_language']];
-	}
+	}	
 
 ///////////////////////////////////////////////////////////////////////////////
 ////	START OUTPUT
@@ -111,7 +111,7 @@ $out =<<<EOQ
     </tr>
     <tr>
         <td colspan="2">
-
+            
         <table width="100%" cellpadding="0" cellpadding="0" border="0" class="StyleDottedHr">
             <tr><th colspan="3" align="left">{$mod_strings['LBL_DBCONF_TITLE']}</th></tr>
             {$dbType}
@@ -146,7 +146,7 @@ $out .=<<<EOQ
                 <td>{$yesNoDropCreate}</td>
             </tr>
 EOQ;
-
+    
 }
 
 
@@ -193,7 +193,7 @@ $out .=<<<EOQ
 EOQ;
 }
 /*
-if(isset($_SESSION['licenseKey_submitted']) && ($_SESSION['licenseKey_submitted'])
+if(isset($_SESSION['licenseKey_submitted']) && ($_SESSION['licenseKey_submitted']) 
             && (isset($GLOBALS['db']) && !empty($GLOBALS['db']))){
 $out .=<<<EOQ
 
@@ -212,7 +212,7 @@ $out .=<<<EOQ
                 <td></td>
                 <td><b>{$mod_strings['LBL_DBCONF_DB_USER']}</b></td>
                 <td>
-                    {$_SESSION['setup_db_sugarsales_user']}
+                    {$_SESSION['setup_db_sugarsales_user']} 
                 </td>
             </tr>
             <tr>
@@ -220,14 +220,14 @@ $out .=<<<EOQ
                 <td><b>{$mod_strings['LBL_DBCONF_DB_PASSWORD']}</b></td>
                 <td>
                     <span id='hide_db_admin_pass'>{$mod_strings['LBL_HIDDEN']}</span>
-                    <span style='display:none' id='show_db_admin_pass'>{$_SESSION['setup_db_sugarsales_password']}</span>
+                    <span style='display:none' id='show_db_admin_pass'>{$_SESSION['setup_db_sugarsales_password']}</span> 
                 </td>
-            </tr>
+            </tr>            
             <tr>
                 <td></td>
                 <td><b>{$mod_strings['LBL_SITECFG_ADMIN_Name']}</b></td>
                 <td>
-                    Admin
+                    Admin 
                 </td>
             </tr>
             <tr>
@@ -235,27 +235,27 @@ $out .=<<<EOQ
                 <td><b>{$mod_strings['LBL_SITECFG_ADMIN_PASS']}</b></td>
                 <td>
                     <span id='hide_site_admin_pass'>{$mod_strings['LBL_HIDDEN']}</span>
-                    <span style='display:none' id='show_site_admin_pass'>{$_SESSION['setup_site_admin_password']}</span>
+                    <span style='display:none' id='show_site_admin_pass'>{$_SESSION['setup_site_admin_password']}</span> 
                 </td>
-            </tr>
-
+            </tr>                        
+                
 EOQ;
 
 
 
-
-
-
+    
+    
+    
 $envString = '
-	   <tr><td colspan="3" align="left"></td></tr><tr><th colspan="3" align="left">'.$mod_strings['LBL_SYSTEM_ENV'].'</th></tr>';
+	   <tr><td colspan="3" align="left"></td></tr><tr><th colspan="3" align="left">'.$mod_strings['LBL_SYSTEM_ENV'].'</th></tr>';    
 
     // PHP VERSION
         $envString .='
-          <tr>
+          <tr> 
              <td></td>
             <td><b>'.$mod_strings['LBL_CHECKSYS_PHPVER'].'</b></td>
             <td >'.constant('PHP_VERSION').'</td>
-          </tr>';
+          </tr>';   
 
 
 //Begin List of already known good variables.  These were checked during the initial sys check
@@ -265,7 +265,7 @@ $envString = '
         <td></td>
         <td><strong>'.$mod_strings['LBL_CHECKSYS_XML'].'</strong></td>
         <td  >'.$mod_strings['LBL_CHECKSYS_OK'].'</td>
-      </tr>';
+      </tr>';    
 
 
 
@@ -276,7 +276,7 @@ $envString = '
         <td></td>
         <td><strong>'.$mod_strings['LBL_CHECKSYS_MBSTRING'].'</strong></td>
         <td  >'.$mod_strings['LBL_CHECKSYS_OK'].'</td>
-      </tr>';
+      </tr>';    
 
 // config.php
         $envString .='
@@ -284,7 +284,7 @@ $envString = '
         <td></td>
         <td><strong>'.$mod_strings['LBL_CHECKSYS_CONFIG'].'</strong></td>
         <td  >'.$mod_strings['LBL_CHECKSYS_OK'].'</td>
-      </tr>';
+      </tr>';    
 
 // custom dir
 
@@ -294,7 +294,7 @@ $envString = '
         <td></td>
         <td><strong>'.$mod_strings['LBL_CHECKSYS_CUSTOM'].'</strong></td>
         <td  >'.$mod_strings['LBL_CHECKSYS_OK'].'</td>
-      </tr>';
+      </tr>';    
 
 
 // modules dir
@@ -303,7 +303,7 @@ $envString = '
         <td></td>
         <td><strong>'.$mod_strings['LBL_CHECKSYS_MODULE'].'</strong></td>
         <td  >'.$mod_strings['LBL_CHECKSYS_OK'].'</td>
-      </tr>';
+      </tr>';    
 
 // data dir
 
@@ -312,16 +312,16 @@ $envString = '
         <td></td>
         <td><strong>'.$mod_strings['LBL_CHECKSYS_DATA'].'</strong></td>
         <td  >'.$mod_strings['LBL_CHECKSYS_OK'].'</td>
-      </tr>';
+      </tr>';    
 
 // cache dir
     $error_found = true;
         $envString .='
       <tr>
         <td></td>
-        <td><strong>'.$mod_strings['LBL_CHECKSYS_CACHE'].'</strong></td>
+        <td><strong>'.$mod_strings['LBL_CHECKSYS_CACHE'].'</strong></td>        
         <td  >'.$mod_strings['LBL_CHECKSYS_OK'].'</td>
-      </tr>';
+      </tr>';    
 // End already known to be good
 
 // memory limit
@@ -352,13 +352,13 @@ if( $memory_limit == "" ){          // memory_limit disabled at compile time, no
         $memory_msg = "{$mod_strings['LBL_CHECKSYS_OK']} ({$memory_limit})";
     }
 }
-
+        
           $envString .='
       <tr>
         <td></td>
         <td><strong>'.$mod_strings['LBL_CHECKSYS_MEM'].'</strong></td>
         <td  >'.$memory_msg.'</td>
-      </tr>';
+      </tr>';    
 
     // zlib
     if(function_exists('gzclose')) {
@@ -369,92 +369,80 @@ if( $memory_limit == "" ){          // memory_limit disabled at compile time, no
             $envString .='
           <tr>
             <td></td>
-            <td><strong>'.$mod_strings['LBL_CHECKSYS_ZLIB'].'</strong></td>
+            <td><strong>'.$mod_strings['LBL_CHECKSYS_ZLIB'].'</strong></td>        
             <td  >'.$zlibStatus.'</td>
-          </tr>';
-
-    // zip
-    if(class_exists("ZipArchive")) {
-        $zipStatus = "{$mod_strings['LBL_CHECKSYS_OK']}";
-    } else {
-        $zipStatus = "<span class='stop'><b>{$mod_strings['ERR_CHECKSYS_ZIP']}</b></span>";
-    }
-            $envString .='
-          <tr>
-            <td></td>
-            <td><strong>'.$mod_strings['LBL_CHECKSYS_ZIP'].'</strong></td>
-            <td  >'.$zipStatus.'</td>
-          </tr>';
-
-
-
+          </tr>';    
+    
+    
+    
+    
     // imap
     if(function_exists('imap_open')) {
         $imapStatus = "{$mod_strings['LBL_CHECKSYS_OK']}";
     } else {
         $imapStatus = "<span class='stop'><b>{$mod_strings['ERR_CHECKSYS_IMAP']}</b></span>";
     }
-
+    
             $envString .='
           <tr>
             <td></td>
-            <td><strong>'.$mod_strings['LBL_CHECKSYS_IMAP'].'</strong></td>
+            <td><strong>'.$mod_strings['LBL_CHECKSYS_IMAP'].'</strong></td>        
             <td  >'.$imapStatus.'</td>
-          </tr>';
-
-
+          </tr>';    
+    
+    
     // cURL
     if(function_exists('curl_init')) {
         $curlStatus = "{$mod_strings['LBL_CHECKSYS_OK']}";
     } else {
         $curlStatus = "<span class='stop'><b>{$mod_strings['ERR_CHECKSYS_CURL']}</b></span>";
     }
-
+    
             $envString .='
           <tr>
             <td></td>
-            <td><strong>'.$mod_strings['LBL_CHECKSYS_CURL'].'</strong></td>
+            <td><strong>'.$mod_strings['LBL_CHECKSYS_CURL'].'</strong></td>        
             <td  >'.$curlStatus.'</td>
-          </tr>';
-
-
+          </tr>';    
+    
+    
       //CHECK UPLOAD FILE SIZE
         $upload_max_filesize = ini_get('upload_max_filesize');
         $upload_max_filesize_bytes = return_bytes($upload_max_filesize);
         if(!defined('SUGARCRM_MIN_UPLOAD_MAX_FILESIZE_BYTES')){
             define('SUGARCRM_MIN_UPLOAD_MAX_FILESIZE_BYTES', 6 * 1024 * 1024);
         }
-
+        
         if($upload_max_filesize_bytes > constant('SUGARCRM_MIN_UPLOAD_MAX_FILESIZE_BYTES')) {
             $fileMaxStatus = "{$mod_strings['LBL_CHECKSYS_OK']}</font>";
         } else {
             $fileMaxStatus = "<span class='stop'><b>{$mod_strings['ERR_UPLOAD_MAX_FILESIZE']}</font></b></span>";
         }
-
+    
             $envString .='
           <tr>
             <td></td>
-            <td><strong>'.$mod_strings['LBL_UPLOAD_MAX_FILESIZE_TITLE'].'</strong></td>
+            <td><strong>'.$mod_strings['LBL_UPLOAD_MAX_FILESIZE_TITLE'].'</strong></td>        
             <td  >'.$fileMaxStatus.'</td>
-          </tr>';
-
-
-
+          </tr>';    
+    
+    
+    
 
 
 // PHP.ini
 $phpIniLocation = get_cfg_var("cfg_file_path");
-          $envString .='
+          $envString .='        
       <tr>
         <td></td>
         <td><strong>'.$mod_strings['LBL_CHECKSYS_PHP_INI'].'</strong></td>
         <td  >'.$phpIniLocation.'</td>
-      </tr>';
-
-$out .= $envString;
-
+      </tr>';    
+    
+$out .= $envString;          
+              
 $out .=<<<EOQ
-
+    
         </table>
         </td>
     </tr>
@@ -496,7 +484,7 @@ $cronString = '
 						<br>'.$error.'
 				</td>
 			</tr>
-';
+';          
 } else {
 if(isset($_SERVER['Path']) && !empty($_SERVER['Path'])) { // some Linux servers do not make this available
     if(!strpos($_SERVER['PATH'], 'php')) {
@@ -516,28 +504,28 @@ $cronString = '
 				</td>
 			</tr>
 ';
-}
+}          
 
-$out .= $cronString;
-
+$out .= $cronString;        
+        
 $out .=<<<EOQ
         </table>
         </td>
-    </tr>
-    <tr>
+    </tr>    
+    <tr>    
         <td colspan='3' align='right'>
-                <input type="button" class="button" name="print_summary" value="{$mod_strings['LBL_PRINT_SUMM']}"
+                <input type="button" class="button" name="print_summary" value="{$mod_strings['LBL_PRINT_SUMM']}" 
                 onClick='window.print()' onCluck='window.open("install.php?current_step="+(document.setConfig.current_step.value -1)+"&goto={$mod_strings["LBL_NEXT"]}&print=true");' />&nbsp;
       	</td>
-    </tr>
+    </tr>    
     <tr>
         <td align="right" colspan="2">
         <hr>
         <table cellspacing="0" cellpadding="0" border="0" class="stdTable">
             <tr>
               <td align=right>
-                    <input type="button" class="button" id="show_pass_button" value="{$mod_strings['LBL_SHOW_PASS']}"
-                    onClick='togglePass();' />
+                    <input type="button" class="button" id="show_pass_button" value="{$mod_strings['LBL_SHOW_PASS']}" 
+                    onClick='togglePass();' />           
               </td>
                 <td>
                 	<input type="hidden" name="goto" id="goto">
@@ -558,17 +546,17 @@ function togglePass(){
     if(document.getElementById('show_site_admin_pass').style.display == ''){
         document.getElementById('show_pass_button').value = "{$mod_strings['LBL_SHOW_PASS']}";
         document.getElementById('hide_site_admin_pass').style.display = '';
-        document.getElementById('hide_db_admin_pass').style.display = '';
+        document.getElementById('hide_db_admin_pass').style.display = '';   
         document.getElementById('show_site_admin_pass').style.display = 'none';
-        document.getElementById('show_db_admin_pass').style.display = 'none';
+        document.getElementById('show_db_admin_pass').style.display = 'none';   
 
     }else{
         document.getElementById('show_pass_button').value = "{$mod_strings['LBL_HIDE_PASS']}";
         document.getElementById('show_site_admin_pass').style.display = '';
         document.getElementById('show_db_admin_pass').style.display = '';
         document.getElementById('hide_site_admin_pass').style.display = 'none';
-        document.getElementById('hide_db_admin_pass').style.display = 'none';
-
+        document.getElementById('hide_db_admin_pass').style.display = 'none';   
+        
     }
 }
 </script>

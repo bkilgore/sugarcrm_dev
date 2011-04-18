@@ -60,8 +60,6 @@ $GLOBALS['tabStructure'] = array(
             "Contacts",
             "Leads",    
             "Campaigns",
-            "Prospects",
-            "ProspectLists",
         )
     ),
     "LBL_TABGROUP_SUPPORT" => array(
@@ -93,6 +91,14 @@ $GLOBALS['tabStructure'] = array(
             "Emails",
             "Documents",
             "Project",
+        )
+    ),
+    "LBL_TABGROUP_REPORTS"=>array(
+        'label' => 'LBL_TABGROUP_REPORTS',
+        'modules' => array(
+            "Home",
+            "Reports",
+            "Forecasts",
         )
     ),
 );

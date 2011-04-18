@@ -324,7 +324,9 @@ class PackageManagerDisplay{
     function getLicenseDisplay($license_file, $form_action, $next_step, $zipFile, $type, $manifest, $modify_field){
     	global $current_language;
         $mod_strings = return_module_language($current_language, "Administration");
-        $contents = sugar_file_get_contents($license_file);
+        $fh = sugar_fopen($license_file, 'r');
+        $contents = fread($fh, filesize($license_file));
+        fclose($fh);
         $div_id = urlencode($zipFile);
         $display = "<form name='delete{$zipFile}' action='{$form_action}' method='POST'>";
         $display .= "<input type='hidden' name='current_step' value='{$next_step}'>";

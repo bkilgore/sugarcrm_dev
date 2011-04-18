@@ -91,10 +91,6 @@ if(typeof(SimpleList) == 'undefined'){
                 alert("Key already exists in list");
                 return;
             }
-            if((!SimpleList.isBlank(drop_name.value) && SimpleList.isBlank(drop_value.value)) || (SimpleList.isBlank(drop_name.value) && !SimpleList.isBlank(drop_value.value))){
-                alert(SUGAR.language.get('ModuleBuilder', 'LBL_DROPDOWN_BLANK_WARNING'));
-                return;
-            }
         }
 
         liObj = document.createElement('li');

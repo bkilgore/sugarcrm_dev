@@ -53,7 +53,8 @@ require_once('include/EditView/EditView2.php');
  	}
 
  	function preDisplay(){
- 		$metadataFile = $this->getMetaDataFile();
+ 		
+ 	    $metadataFile = $this->getMetaDataFile();
  		$this->ev = new EditView();
  		$this->ev->ss =& $this->ss;
  		$this->ev->setup($this->module, $this->bean, $metadataFile, 'include/EditView/EditView.tpl');
@@ -64,5 +65,7 @@ require_once('include/EditView/EditView2.php');
 		$this->ev->process();
 		echo $this->ev->display($this->showTitle);
  	}
+
+
  }
 ?>

@@ -72,7 +72,7 @@ $mod_strings = array (
   'LBL_START_DATE' => 'Start Date:',
   'LBL_LIST_START_DATE' => 'Start Date',
   'LBL_START_TIME' => 'Start Time:',
-  'LBL_LIST_START_TIME' => 'Start Time',
+  'LBL_LIST_START_TIME' => 'Start Time',  
   'DATE_FORMAT' => '(yyyy-mm-dd)',
   'LBL_NONE' => 'None',
   'LBL_CONTACT' => 'Contact:',
@@ -89,6 +89,7 @@ $mod_strings = array (
   'LBL_DATE_START_FLAG' => 'No Start Date',
   'ERR_DELETE_RECORD' => 'You must specify a record number to delete the contact.',
   'ERR_INVALID_HOUR' => 'Please enter an hour between 0 and 24',
+  'LBL_DEFAULT_STATUS' => 'Not Started',
   'LBL_DEFAULT_PRIORITY' => 'Medium',
   'LBL_LIST_MY_TASKS' => 'My Open Tasks',
   'LNK_NEW_TASK' => 'Create Task',
@@ -103,7 +104,7 @@ $mod_strings = array (
   'LBL_PARENT_ID' => 'Parent ID:',
   'LBL_CONTACT_PHONE' => 'Contact Phone:',
   'LBL_PARENT_NAME' => 'Parent Type:',
-  'LBL_ACTIVITIES_REPORTS' => 'Activities Report',
+  'LBL_ACTIVITIES_REPORTS' => 'Activities Report',    
   'LBL_TASK_INFORMATION' => 'Task Overview',
 );
 

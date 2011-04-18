@@ -70,7 +70,7 @@ if (isset($_REQUEST['offset']) or isset($_REQUEST['record'])) {
 } else {
 	header("Location: index.php?module=Accounts&action=index");
 }
-echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$focus->get_summary_text()), true);
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME']. ": " . $focus->get_summary_text(), true);
 
 
 $GLOBALS['log']->info("Role detail view");

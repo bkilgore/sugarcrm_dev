@@ -118,11 +118,6 @@ class SugarWidgetSubPanelTopSelectUsersButton extends SugarWidgetSubPanelTopSele
 				}
 			}
 		}
-		
-		if (!empty($widget_data['filter_out_is_admin'])) {
-            $initial_filter.="&is_admin_advanced=0";
-        }
-		
 		$create="true";
 		if(isset($widget_data['create'])){
 			$create=$widget_data['create'];

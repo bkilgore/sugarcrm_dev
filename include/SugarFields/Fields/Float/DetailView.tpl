@@ -35,7 +35,7 @@
  ********************************************************************************/
 
 *}
-<span class="sugar_field" id="{{if empty($displayParams.idName)}}{{sugarvar key='name'}}{{else}}{{$displayParams.idName}}{{/if}}">
+<span id='{{sugarvar key='name'}}'>
 {sugar_number_format var={{sugarvar key='value' stringFormat='false'}} {{if !empty($vardef.precision)}}precision={{$vardef.precision}}{{/if}} }
 </span>
 {{if !empty($displayParams.enableConnectors)}}

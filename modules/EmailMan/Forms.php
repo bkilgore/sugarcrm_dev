@@ -116,6 +116,10 @@ function verify_data(button) {
 					isError = true;
 					errorMessage += "\\n$err_smtpuser";
 		        }
+		        if(trim(document.getElementById('mail_smtppass').value) == "") {
+					isError = true;
+					errorMessage += "\\n$err_smtppass";
+		        }
 	        }
 
         } // if

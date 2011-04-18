@@ -38,31 +38,21 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 
+
 require_once('include/Dashlets/Dashlet.php');
 
-class MyClosedOpportunitiesDashlet extends Dashlet 
-{ 
-	protected $total_opportunities;
-	protected $total_opportunities_won;
+
+class MyClosedOpportunitiesDashlet extends Dashlet { 
+	var $total_opportunities;
+	var $total_opportunities_won;
 	
-	/**
-	 * @see Dashlet::Dashlet()
-	 */
-	public function __construct($id, $def = null) 
-	{
+	function MyClosedOpportunitiesDashlet($id, $def = null) {
         global $current_user, $app_strings;
         parent::Dashlet($id);
-        $this->isConfigurable = true;
+        $this->isConfigurable = false;
         $this->isRefreshable = true;        
 
-        if(empty($def['title'])) { 
-            $this->title = translate('LBL_MY_CLOSED_OPPORTUNITIES', 'Opportunities'); 
-        } 
-        else {
-            $this->title = $def['title'];
-        }
-        
-        if(isset($def['autoRefresh'])) $this->autoRefresh = $def['autoRefresh'];
+        if(empty($def['title'])) $this->title = translate('LBL_MY_CLOSED_OPPORTUNITIES', 'Opportunities');
         
         $this->seedBean = new Opportunity();      
 
@@ -78,11 +68,9 @@ class MyClosedOpportunitiesDashlet extends Dashlet
 		$this->total_opportunities_won = $row['c'];
     }
     
-    /**
-	 * @see Dashlet::display()
-	 */
-	public function display()
-    {	
+    function display(){
+    	
+    	
     	$ss = new Sugar_Smarty();
     	$ss->assign('lblTotalOpportunities', translate('LBL_TOTAL_OPPORTUNITIES', 'Opportunities'));
     	$ss->assign('lblClosedWonOpportunities', translate('LBL_CLOSED_WON_OPPORTUNITIES', 'Opportunities'));    	
@@ -93,38 +81,6 @@ class MyClosedOpportunitiesDashlet extends Dashlet
     	return parent::display() . $ss->fetch('modules/Opportunities/Dashlets/MyClosedOpportunitiesDashlet/MyClosedOpportunitiesDashlet.tpl');
     }
     
-    /**
-	 * @see Dashlet::displayOptions()
-	 */
-	public function displayOptions() 
-    {
-        $ss = new Sugar_Smarty();
-        $ss->assign('titleLBL', translate('LBL_DASHLET_OPT_TITLE', 'Home'));
-        $ss->assign('title', $this->title);
-        $ss->assign('id', $this->id);
-        $ss->assign('saveLBL', $GLOBALS['app_strings']['LBL_SAVE_BUTTON_LABEL']);
-        if($this->isAutoRefreshable()) {
-       		$ss->assign('isRefreshable', true);
-			$ss->assign('autoRefresh', $GLOBALS['app_strings']['LBL_DASHLET_CONFIGURE_AUTOREFRESH']);
-			$ss->assign('autoRefreshOptions', $this->getAutoRefreshOptions());
-			$ss->assign('autoRefreshSelect', $this->autoRefresh);
-		}
-        
-		return $ss->fetch('modules/Opportunities/Dashlets/MyClosedOpportunitiesDashlet/MyClosedOpportunitiesDashletConfigure.tpl');        
-    }
-
-    /**
-	 * @see Dashlet::saveOptions()
-	 */
-	public function saveOptions($req) 
-    {
-        $options = array();
-        
-        if ( isset($req['title']) ) {
-            $options['title'] = $req['title'];
-        }
-        $options['autoRefresh'] = empty($req['autoRefresh']) ? '0' : $req['autoRefresh'];
-        
-        return $options;
-    }   
 }
+
+?>

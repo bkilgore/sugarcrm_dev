@@ -529,6 +529,12 @@ alert(str);
  
 
 
+jsolait.baseURL = 'include/jsolait/lib';
+urllib = importModule('urllib');
+
+var global_request_registry = new Object();
+
+
 ///////////////////////////////////////////////
 // Class SugarClass
 // superclass for all Sugar* sub-classes
@@ -558,7 +564,11 @@ SugarClass.inherit = function(className,parentClassName) {
 }
 
 
-//Root class of Sugar JS Application:
+var jsolait_baseURL = 'include/jsolait/lib';
+var jsonrpc = jsonrpclite; //inline the module
+//var jsonrpc = importModule("jsonrpclite");
+
+// Root class of Sugar JS Application:
 
 SugarClass.inherit("SugarContainer","SugarClass");
 
@@ -579,16 +589,6 @@ SugarContainer.prototype.start = function(root_widget) {
       this.root_widget.load(this.root_div);
    
 }
-
-jsolait.baseURL = 'include/jsolait/lib';
-urllib = importModule('urllib');
-
-var global_request_registry = new Object();
-
-
-var jsolait_baseURL = 'include/jsolait/lib';
-var jsonrpc = jsonrpclite; //inline the module
-//var jsonrpc = importModule("jsonrpclite");
 
 var req_count = 0;
 

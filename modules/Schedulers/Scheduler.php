@@ -40,6 +40,11 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * Description:
  ********************************************************************************/
 
+
+
+
+
+
 class Scheduler extends SugarBean {
 	// table columns
 	var $id;
@@ -87,7 +92,7 @@ class Scheduler extends SugarBean {
 		parent::SugarBean();
 
 		if($init) {
-
+			
 			$user = new User();
 			$user->retrieve('1'); // Scheduler jobs run as Admin
 			$this->user = $user;
@@ -109,16 +114,16 @@ class Scheduler extends SugarBean {
 		$exJob = explode('::', $this->job);
 		if(is_array($exJob)) {
 			// instantiate a new SchedulersJob object and prep it
-
-
+			
+			
 			$trackerManager = TrackerManager::getInstance();
-			$trackerManager->pause();
+			$trackerManager->pause();			
 			$job				= new SchedulersJob();
 			$job->scheduler_id	= $this->id;
-			$job->scheduler		= $this;
+			$job->scheduler		=& $this;
 			$job->execute_time	= $job->handleDateFormat('now');
 			$jobId = $job->save();
-			$trackerManager->unPause();
+			$trackerManager->unPause();			
 			$job->retrieve($jobId);
 
 			if($exJob[0] == 'function') {
@@ -169,7 +174,7 @@ class Scheduler extends SugarBean {
 		$GLOBALS['log']->debug('-----> Scheduler flushing dead jobs');
 
 		$lowerLimit = mktime(0, 0, 0, 1, 1, 2005); // jan 01, 2005, GMT-0
-		$now = TimeDate::getInstance()->getNow()->ts; // current timestamp
+		$now = strtotime(gmdate('Y-m-d H:i:s', strtotime('now'))); // this garbage to make sure we're getting comprable data to the DB output
 
 		$q = "	SELECT s.id, s.name FROM schedulers s WHERE s.deleted=0 AND s.status = 'In Progress'";
 		$r = $this->db->query($q);
@@ -218,9 +223,9 @@ class Scheduler extends SugarBean {
 			return false;
 		}
 
-		$now = TimeDate::getInstance()->getNow();
-		$now = $now->setTime($now->hour, $now->min)->asDb();
+		$now = gmdate('Y-m-d H:i', strtotime('now'));
 		$validTimes = $this->deriveDBDateTimes($this);
+		//_pp('now: '.$now); _pp($validTimes);
 
 		if(is_array($validTimes) && in_array($now, $validTimes)) {
 			$GLOBALS['log']->debug('----->Scheduler found valid job ('.$this->name.') for time GMT('.$now.')');
@@ -230,6 +235,103 @@ class Scheduler extends SugarBean {
 			return false;
 		}
 	}
+
+
+
+
+
+
+
+
+	/**
+	 * Checks if any jobs qualify to run at this moment
+	 */
+	function checkPendingJobs2() {
+		$this->cleanJobLog();
+		$allSchedulers = $this->get_full_list('', 'schedulers.status=\'Active\'');
+
+
+		if(!empty($allSchedulers)) {
+
+			// cURL inits
+			$ch = curl_init();
+////			curl_setopt($ch, CURLOPT_FAILONERROR, true); // silent failure (code >300);
+////			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false); // do not follow location(); inits - we always use the current
+////			curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
+////			curl_setopt($ch, CURLOPT_DNS_USE_GLOBAL_CACHE, false);  // not thread-safe
+//			curl_setopt($ch, CURLOPT_TIMEOUT, 5); // never times out - bad idea?
+//			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5); // 5 secs for connect timeout
+//			curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);  // open brand new conn
+////			curl_setopt($ch, CURLOPT_NOPROGRESS, true); // do not have progress bar
+////			curl_setopt($ch, CURLOPT_PORT, $_SERVER['SERVER_PORT']); // set port as reported by Server
+////			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // most customers will not have Certificate Authority account
+////			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // most customers will not have Certificate Authority account
+//			if(constant('PHP_VERSION') > '5.0.0') {
+////				curl_setopt($ch, CURLOPT_NOSIGNAL, true); // ignore any cURL signals to PHP (for multi-threading)
+//			}
+//			/* play with these options */
+////			curl_setopt($ch, CURLOPT_HEADER, false); // do not return header info with result
+////			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // return into a variable to continue program execution
+//
+//
+//			foreach($allSchedulers as $focus) {
+//				if($focus->fireQualified()) {
+//					$GLOBALS['log']->debug('---------------------- GOT A JOB FOR CURL -----------');
+//					curl_setopt($ch, CURLOPT_URL, 'http://127.0.0.1/headdev/cronJob.php?id='.$focus->id); // set url
+//				}
+//			}
+			curl_setopt($ch, CURLOPT_URL, 'http://127.0.0.1/headdev/cronJob.php?id=82a9421a-9c60-111b-7212-4412394279e4'); // set url
+			curl_setopt($ch, CURLOPT_URL, 'http://127.0.0.1/headdev/cronJob.php?id=82a9421a-9c60-111b-7212-4412394279e4');
+
+			$result = curl_exec($ch);
+			$cInfo = curl_getinfo($ch);/* url,content_type,header_size,request_size,filetime,http_code,ssl_verify_result,total_time,namelookup_time,connect_time,pretransfer_time,size_upload,size_download,speed_download,speed_upload,download_content_length,upload_content_length,starttransfer_time,redirect_time */
+			curl_close($ch);
+
+			if($cInfo['http_code'] < 400) {
+				$GLOBALS['log']->debug('----->Firing was successful: ('.$focus->id.') at');
+				$GLOBALS['log']->debug('----->WTIH RESULT: '.strip_tags($result).' AND '.strip_tags(print_r($cInfo)));
+				return true;
+			} else {
+				$GLOBALS['log']->fatal('Job errored: ('.$focus->id.')');
+				return false;
+			}
+
+
+
+		} else {
+			$GLOBALS['log']->debug('----->No Schedulers found');
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/**
 	 * Checks if any jobs qualify to run at this moment
@@ -267,7 +369,6 @@ class Scheduler extends SugarBean {
 	 * @return	false		If we the Scheduler is not in scope, return false.
 	 */
 	function deriveDBDateTimes($focus) {
-        global $timedate;
 		$GLOBALS['log']->debug('----->Schedulers->deriveDBDateTimes() got an object of type: '.$focus->object_name);
 		/* [min][hr][dates][mon][days] */
 		$dateTimes = array();
@@ -277,7 +378,7 @@ class Scheduler extends SugarBean {
 		$dates	= $ints[2];
 		$hrs	= $ints[1];
 		$mins	= $ints[0];
-		$today	= getdate(TimeDate::getInstance()->getNow()->ts);
+		$today	= getdate(gmmktime());
 
 		// derive day part
 		if($days == '*') {
@@ -324,7 +425,7 @@ class Scheduler extends SugarBean {
 			$GLOBALS['log']->debug('----->got * months');
 		} elseif(strstr($mons, '*/')) {
 			$mult = str_replace('*/','',$mons);
-			$startMon = $timedate->fromDb(date_time_start)->month;
+			$startMon = date('m', strtotime($focus->date_time_start));
 			$startFrom = ($startMon % $mult);
 
 			for($i=$startFrom;$i<=12;$i+$mult) {
@@ -368,7 +469,7 @@ class Scheduler extends SugarBean {
 			$GLOBALS['log']->debug('----->got * dates');
 		} elseif(strstr($dates, '*/')) {
 			$mult = str_replace('*/','',$dates);
-			$startDate = $timedate->fromDb($focus->date_time_start)->day;
+			$startDate = date('d', strtotime($focus->date_time_start));
 			$startFrom = ($startDate % $mult);
 
 			for($i=$startFrom; $i<=31; $i+$mult) {
@@ -446,7 +547,7 @@ class Scheduler extends SugarBean {
 		//_pp($hrName);
 		// derive minutes
 		//$currentMin = date('i');
-		$currentMin = $timedate->getNow()->minute;
+		$currentMin = date('i', strtotime($this->date_time_start));
 		if(substr($currentMin, 0, 1) == '0') {
 			$currentMin = substr($currentMin, 1, 1);
 		}
@@ -461,7 +562,7 @@ class Scheduler extends SugarBean {
 			}
 		} elseif(strstr($mins,'*/')) {
 			$mult = str_replace('*/','',$mins);
-			$startMin = $timedate->fromDb($focus->date_time_start)->minute;
+			$startMin = date('i',strtotime($focus->date_time_start));
 			$startFrom = ($startMin % $mult);
 			for($i=$startFrom; $i<=59; $i) {
 				if(($currentMin + $i) > 59) {
@@ -525,13 +626,13 @@ class Scheduler extends SugarBean {
 		if(!empty($focus->date_time_end)) { // do the same for date_time_end if not empty
 			$dateTimeEnd = $focus->date_time_end;
 		} else {
-			$dateTimeEnd = $timedate->getNow()+get('+1 day')->asDb();
+			$dateTimeEnd = gmdate('Y-m-d H:i:s', strtotime('+1 day'));
 //			$dateTimeEnd = '2020-12-31 23:59:59'; // if empty, set it to something ridiculous
 		}
 		$timeEndTs = strtotime($dateTimeEnd.' UTC'); // GMT end timestamp if necessary
 		$timeEndTs++;
 		/*_pp('hours:'); _pp($hrName);_pp('mins:'); _pp($minName);*/
-		$nowTs = $timedate->getNow()->ts;
+		$nowTs = mktime();
 
 //		_pp('currentHour: '. $currentHour);
 //		_pp('timeStartTs: '.date('r',$timeStartTs));
@@ -550,9 +651,9 @@ class Scheduler extends SugarBean {
 			$hourSeen++;
 			foreach($minName as $kMin=>$min) {
 				if($hourSeen == 25) {
-					$theDate = TimeDate::getInstance()->asDbDate(TimeDate::getInstance()->getNow()->get('+1 day'));
+					$theDate = date('Y-m-d', strtotime('+1 day'));
 				} else {
-					$theDate = TimeDate::getInstance()->nowDbDate();
+					$theDate = date('Y-m-d');
 				}
 
 				$tsGmt = strtotime($theDate.' '.str_pad($hr,2,'0',STR_PAD_LEFT).":".str_pad($min,2,'0',STR_PAD_LEFT).":00"); // this is LOCAL
@@ -562,9 +663,9 @@ class Scheduler extends SugarBean {
                         if($tsGmt > $lastRunTs) { // start from last run, last run should not be included
                             if( $tsGmt <= $timeEndTs ) { // this is taken care of by the initial query - start is less than the date spec'd by admin
                                 if( $tsGmt <= $timeToTs ) { // start is less than the time_to
-                                    $validJobTime[] = $timedate->asDb($timedate->fromTimestamp($tsGmt));
+                                    $validJobTime[] = gmdate('Y-m-d H:i', $tsGmt);
                                 } else {
-                                    //_pp('Job Time is NOT smaller that TimeTO: '.$tsGmt .'<='. $timeToTs);
+                                    //_pp('Job Time is NOT smaller that TimeTO: '.$tsGmt .'<='. $timeToTs);	
                                 }
                             } else {
                                 //_pp('Job Time is NOT smaller that DateTimeEnd: '.date('Y-m-d H:i:s',$tsGmt) .'<='. $dateTimeEnd); //_pp( $tsGmt .'<='. $timeEndTs );
@@ -587,14 +688,14 @@ class Scheduler extends SugarBean {
 		if($focus->catch_up == 1) {
 			if($focus->last_run == null) {
 				// always "catch-up"
-				$validJobTime[] = $timedate->nowDb();
+				$validJobTime[] = gmdate('Y-m-d H:i', strtotime('now'));
 			} else {
 				// determine what the interval in min/hours is
 				// see if last_run is in it
 				// if not, add NOW
-                $now = $timedate->nowDb();
+                $now = gmdate('Y-m-d H:i', strtotime('now'));
 				if(!empty($validJobTime) && ($focus->last_run < $validJobTime[0]) && ($now > $validJobTime[0])) {
-				// cn: empty() bug 5914;
+				// cn: empty() bug 5914; 
 				//if(!empty) should be checked, becasue if a scheduler is defined to run every day 4pm, then after 4pm, and it runs as 4pm, the $validJobTime will be empty, and it should not catch up
 				//if $focus->last_run is the the day before yesterday,  it should run yesterday and tomorrow,  but it hadn't run yesterday, then it should catch up today. But today is already filtered out when doing date check before. The catch up will not work on this occasion. If the scheduler runs at least one time on each day, I think this bug can be avoided.
 					$validJobTime[] = $now;
@@ -781,7 +882,7 @@ class Scheduler extends SugarBean {
 	 * soft-deletes all job logs older than 24 hours
 	 */
 	function cleanJobLog() {
-		$this->db->query('DELETE FROM schedulers_times WHERE date_entered < '.db_convert('\''.TimeDate::getInstance()->nowDb(), strtotime('-24 hours')).'\'', 'datetime'.'');
+		$this->db->query('DELETE FROM schedulers_times WHERE date_entered < '.db_convert('\''.gmdate($GLOBALS['timedate']->get_db_date_time_format(), strtotime('-24 hours')).'\'', 'datetime').'');
 	}
 
 	/**

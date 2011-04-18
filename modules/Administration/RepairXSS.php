@@ -79,7 +79,7 @@ if(isset($runSilent) && $runSilent == true) {
 	$options = get_select_options_with_id($options, '');
 	$beanDropDown = "<select onchange='SUGAR.Administration.RepairXSS.refreshEstimate(this);' id='repairXssDropdown'>{$options}</select>";
 	
-	echo getClassicModuleTitle('Administration', array($mod_strings['LBL_REPAIRXSS_TITLE']), false);
+	echo get_module_title('Administration', $mod_strings['LBL_REPAIRXSS_TITLE'].":", true);
 	echo "<script>var done = '{$mod_strings['LBL_DONE']}';</script>";
 	
 	$smarty = new Sugar_Smarty(); 

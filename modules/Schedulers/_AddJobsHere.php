@@ -348,7 +348,7 @@ function pruneDatabase() {
 
 function trimTracker()
 {
-    global $sugar_config, $timedate;
+    global $sugar_config;
 	$GLOBALS['log']->info('----->Scheduler fired job of type trimTracker()');
 	$db = DBManagerFactory::getInstance();
 	
@@ -366,7 +366,7 @@ function trimTracker()
 		   continue;
 		}
 
-	    $timeStamp = db_convert("'". $timedate->asDb($timedate->getNow()->get("+"+$prune_interval+" days")) ."'" ,"datetime");
+	    $timeStamp = db_convert("'".gmdate($GLOBALS['timedate']->get_db_date_time_format(),time()+(86400 * -$prune_interval))."'" ,"datetime");
 		if($tableName == 'tracker_sessions') {
 		   $query = "DELETE FROM $tableName WHERE date_end < $timeStamp";
 		} else {

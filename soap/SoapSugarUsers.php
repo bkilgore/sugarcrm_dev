@@ -99,9 +99,9 @@ function login($user_auth, $application){
 	$isLoginSuccess = $authController->login($user_auth['user_name'], $user_auth['password'], array('passwordEncrypted' => true));
 	$usr_id=$user->retrieve_user_id($user_auth['user_name']);
 	if($usr_id) {
-		$user->retrieve($usr_id);
+		$user->retrieve($usr_id);	
 	}
-
+		
 	if ($isLoginSuccess) {
 		if ($_SESSION['hasExpiredPassword'] =='1') {
 			$error->set_error('password_expired');
@@ -189,7 +189,7 @@ function validate_authenticated($session_id){
 		if(!empty($_SESSION['is_valid_session']) && is_valid_ip_address('ip_address') && $_SESSION['type'] == 'user'){
 
 			global $current_user;
-
+			
 			$current_user = new User();
 			$current_user->retrieve($_SESSION['user_id']);
 			login_success();
@@ -452,7 +452,7 @@ function get_entries($session, $module_name, $ids,$select_fields ){
 		if ($seed->retrieve($id) == null)
 			$seed->deleted = 1;
     }
-
+    
     if ($seed->deleted == 1) {
     	$list = array();
     	$list[] = array('name'=>'warning', 'value'=>'Access to this object is denied since it has been deleted or does not exist');
@@ -630,7 +630,7 @@ function get_note_attachment($session,$id)
 		$error->set_error('invalid_login');
 		return array('result_count'=>-1, 'entry_list'=>array(), 'error'=>$error->get_soap_array());
 	}
-
+	
 	$note = new Note();
 
 	$note->retrieve($id);
@@ -830,13 +830,13 @@ function get_module_fields($session, $module_name){
 		return array('module_fields'=>$module_fields, 'error'=>$error->get_soap_array());
 	}
 	$class_name = $beanList[$module_name];
-
+	
 	if(empty($beanFiles[$class_name]))
 	{
        $error->set_error('no_file');
-       return array('module_fields'=>$module_fields, 'error'=>$error->get_soap_array());
+       return array('module_fields'=>$module_fields, 'error'=>$error->get_soap_array());		
 	}
-
+	
 	require_once($beanFiles[$class_name]);
 	$seed = new $class_name();
 	if($seed->ACLAccess('ListView', true) || $seed->ACLAccess('DetailView', true) || 	$seed->ACLAccess('EditView', true) )
@@ -994,7 +994,7 @@ $server->register(
  * @return String -- The current date/time 'Y-m-d H:i:s'
  */
 function get_gmt_time(){
-	return TimeDate::getInstance()->nowDb();
+	return gmdate('Y-m-d H:i:s');
 }
 
 $server->register(
@@ -1012,7 +1012,7 @@ $server->register(
  */
 function get_sugar_flavor(){
  global $sugar_flavor;
-
+ 
  return $sugar_flavor;
 }
 
@@ -1030,7 +1030,7 @@ $server->register(
  *                   '1.0' on error.
  */
 function get_server_version(){
-
+	
 	$admin  = new Administration();
 	$admin->retrieveSettings('info');
 	if(isset($admin->settings['info_sugar_version'])){
@@ -1314,7 +1314,7 @@ function handle_set_relationship($set_relationship_value)
     		} // if
         }
     }
-
+    
     if(!$key)
     {
         $error->set_error('no_module');
@@ -1401,7 +1401,7 @@ function search_by_module($user_name, $password, $search_string, $modules, $offs
  							'Project'=>array('where'=>array('Project' => array(0 => "project.name like '{0}%'")), 'fields'=>"project.id, project.name"),
                             'ProjectTask'=>array('where'=>array('ProjectTask' => array(0 => "project.id = '{0}'")), 'fields'=>"project_task.id, project_task.name"),
 							'Contacts'=>array('where'=>array('Contacts' => array(0 => "contacts.first_name like '{0}%'", 1 => "contacts.last_name like '{0}%'"), 'EmailAddresses' => array(0 => "ea.email_address like '{0}%'")),'fields'=>"contacts.id, contacts.first_name, contacts.last_name"),
-							'Opportunities'=>array('where'=>array('Opportunities' => array(0 => "opportunities.name like '{0}%'")), 'fields'=>"opportunities.id, opportunities.name"),
+							'Opportunities'=>array('where'=>array('Opportunities' => array(0 => "opportunities.name like '{0}%'")), 'fields'=>"opportunities.id, opportunities.name"),                           
 							'Users'=>array('where'=>array('EmailAddresses' => array(0 => "ea.email_address like '{0}%'")),'fields'=>"users.id, users.user_name, users.first_name, ea.email_address"),
 						);
 
@@ -1432,12 +1432,12 @@ function search_by_module($user_name, $password, $search_string, $modules, $offs
 							$tmpQuery = ' UNION ';
 						$tmpQuery .= "SELECT ".$query_array[$module_name]['fields']." FROM $seed->table_name ";
 						// We need to confirm that the user is a member of the team of the item.
-
+						
 
 		                if($module_name == 'ProjectTask'){
 		                    $tmpQuery .= "INNER JOIN project ON $seed->table_name.project_id = project.id ";
 		                }
-
+		                
 		               	if(isset($seed->emailAddress) && $key == 'EmailAddresses'){
 		               		$tmpQuery .= " INNER JOIN email_addr_bean_rel eabl  ON eabl.bean_id = $seed->table_name.id and eabl.deleted=0";
 		              		$tmpQuery .= " INNER JOIN email_addresses ea ON (ea.id = eabl.email_address_id) ";
@@ -1790,14 +1790,18 @@ function get_document_revision($session,$id)
         return array('id'=>-1, 'error'=>$error->get_soap_array());
     }
 
-
+    
     $dr = new DocumentRevision();
     $dr->retrieve($id);
     if(!empty($dr->filename)){
         $filename = $sugar_config['upload_dir']."/".$dr->id;
-        $contents = base64_encode(sugar_file_get_contents($filename));
-//        $fh = sugar_fopen($sugar_config['upload_dir']."/rogerrsmith.doc", 'w');
-//        fwrite($fh, base64_decode($contents));
+        $handle = sugar_fopen($filename, "r");
+        $contents = fread($handle, filesize($filename));
+        fclose($handle);
+        $contents = base64_encode($contents);
+
+        $fh = sugar_fopen($sugar_config['upload_dir']."/rogerrsmith.doc", 'w');
+        fwrite($fh, base64_decode($contents));
         return array('document_revision'=>array('id' => $dr->id, 'document_name' => $dr->document_name, 'revision' => $dr->revision, 'filename' => $dr->filename, 'file' => $contents), 'error'=>$error->get_soap_array());
     }else{
         $error->set_error('no_records');
@@ -2005,7 +2009,7 @@ function handle_set_entries($module_name, $name_value_lists, $select_fields = FA
 		           	if (!empty($parsedItems)) {
 						$val = encodeMultienumValue($parsedItems);
 		           	}
-		        }
+		        }					
 			}
 			$seed->$value['name'] = $val;
 		}

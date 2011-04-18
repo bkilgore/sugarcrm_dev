@@ -72,23 +72,11 @@ else{
 	$uids = explode ( ',', $_POST['uids'] );
 }
 
-// find the relationship to use
-$relationship = '';
-foreach($focus->get_linked_fields() as $field => $def) {
-    if ($focus->load_relationship($field)) {
-        if ( $focus->$field->getRelatedModuleName() == 'ProspectLists' ) {
-            $relationship = $field;
-            break;
-        }
-    }
-}
-
-if ( $relationship != '' ) {
-    foreach ( $uids as $id) {
-        $focus->retrieve($id);
-        $focus->load_relationship($relationship);
-        $focus->prospect_lists->add( $_REQUEST['prospect_list'] );
-    }
+foreach ( $uids as $id)
+{
+	$focus->retrieve($id);
+	$focus->load_relationship('prospect_lists');
+	$focus->prospect_lists->add( $_REQUEST['prospect_list'] );
 }
 handleRedirect();
 exit;

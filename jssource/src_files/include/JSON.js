@@ -119,7 +119,7 @@ var JSON = function () {
                 v = f(v);
                 if (typeof v === 'string') {
                     // cn: bug 12274 - add a security envelope to protect against CSRF
-					var securityEnvelope = '{"asynchronous_key": "' + asynchronous_key +'", "jsonObject": '+ v +'}';
+					var securityEnvelope = "{asynchronous_key:'" + asynchronous_key +"', jsonObject:" + v + "}";
 					return securityEnvelope;
                 }
             }

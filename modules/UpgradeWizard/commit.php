@@ -42,9 +42,9 @@ if(!defined('sugarEntry') || !sugarEntry)
  * Portions created by SugarCRM are Copyright(C) SugarCRM, Inc. All Rights
  * Reserved. Contributor(s): ______________________________________..
  * *******************************************************************************/
-require_once('include/SugarLogger/SugarLogger.php');
+require_once('include/SugarLogger/SugarLogger.php');	
 
-$trackerManager = TrackerManager::getInstance();
+$trackerManager = TrackerManager::getInstance();	
 $trackerManager->pause();
 $trackerManager->unsetMonitors();
 
@@ -320,6 +320,14 @@ $uwMain = $upgrade_directories_not_found;
        if($_SESSION['current_db_version'] != $_SESSION['target_db_version']){
 			logThis('Performing UWrebuild()...');
 			UWrebuild();
+
+		    global $sugar_version;
+		    $origVersion = substr(preg_replace("/[^0-9]/", "", $_SESSION['current_db_version']),0,3);
+
+		    if($origVersion < '600') {
+				_logThis('Check to hide iFrames and Feeds modules', $path);
+				hide_iframes_and_feeds_modules();
+			}
 			logThis('UWrebuild() done.');
        }
 
@@ -642,7 +650,7 @@ foreach($_SESSION['sugarMergeRunResults'] as $mergeModule => $mergeModuleFileLis
         $skipLayouts = false;
     }
 }
-$stepNext = $skipLayouts ? $_REQUEST['step'] + 2 : $_REQUEST['step'] + 1;
+$stepNext = $skipLayouts ? $_REQUEST['step'] + 2 : $_REQUEST['step'] + 1; 
 $stepCancel = -1;
 $stepRecheck = $_REQUEST['step'];
 

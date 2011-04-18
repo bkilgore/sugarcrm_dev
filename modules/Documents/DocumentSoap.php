@@ -43,7 +43,7 @@ require_once('include/upload_file.php');
 class DocumentSoap{
 var $upload_file;
 	function DocumentSoap(){
-		$this->upload_file = new UploadFile('filename_file');
+		$this->upload_file = new UploadFile('uploadfile');	
 	}
 	
 	function saveFile($document, $portal = false){

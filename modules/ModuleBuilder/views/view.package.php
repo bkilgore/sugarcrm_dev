@@ -41,13 +41,13 @@ class Viewpackage extends SugarView
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
     	return array(
     	   translate('LBL_MODULE_NAME','Administration'),
-    	   ModuleBuilderController::getModuleTitle(),
+    	   $mod_strings['LBL_MODULEBUILDER'],
     	   );
     }
 
@@ -72,29 +72,8 @@ class Viewpackage extends SugarView
 			echo $ajax->getJavascript();
  		}
  		else {
- 			
  			$name = (!empty($_REQUEST['package']))?$_REQUEST['package']:'';
 			$mb->getPackage($name);
-			
-            require_once ('modules/ModuleBuilder/MB/MBPackageTree.php') ;
-            $mbt = new MBPackageTree();
-            $nodes = $mbt->fetchNodes();
-            
-			$package_labels = array();
-			if(!empty($nodes['tree_data']['nodes']))
-			{
-				foreach($nodes['tree_data']['nodes'] as $entry) 
-				{
-					if(!empty($entry['data']['label']) && $name != $entry['data']['label'])
-					{
-						$package_labels[] = strtoupper($entry['data']['label']);
-					}
-				}
-			}
-			
-			$json = getJSONobj();
-			$smarty->assign('package_labels', $json->encode($package_labels));            	
-			
 	 		$this->package =& $mb->packages[$name];
 	 		$this->loadModuleTypes();
 	 		$this->loadPackageHelp($name);

@@ -233,7 +233,7 @@ require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
     }
 
     function setCredentials($username, $password, $systemname){
-
+         
         $admin = new Administration();
         $admin->retrieveSettings();
          $admin->saveSetting(CREDENTIAL_CATEGORY, CREDENTIAL_USERNAME, $username);
@@ -244,7 +244,7 @@ require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
     }
 
     function getCredentials(){
-
+         
         $admin = new Administration();
         $admin->retrieveSettings(CREDENTIAL_CATEGORY, true);
         $credentials = array();
@@ -619,7 +619,7 @@ require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
     }
 
     function getImageForType( $type ){
-
+        
         $icon = "";
         switch( $type ){
             case "full":
@@ -664,7 +664,7 @@ require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
         		$alreadyProcessed["$val"] = true;
         	}
         }
-
+        
         $upgrades_available = 0;
         $packages = array();
         $mod_strings = return_module_language($current_language, "Administration");
@@ -703,7 +703,7 @@ require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
 
 				//check dependencies first
 				if(!empty($dependencies)){
-
+					
 					$uh = new UpgradeHistory();
 					$not_found = $uh->checkDependencies($dependencies);
 					if(!empty($not_found) && count($not_found) > 0){
@@ -736,7 +736,7 @@ require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
 		        $c = count($fileS);
 		        $fileName = (isset($fileS[$c-1]) && !empty($fileS[$c-1])) ? $fileS[$c-1] : $fileS[$c-2];
 		        $upload_file = $sugar_config['upload_dir'].$fileName;
-
+        
                 $upgrade_content = urlencode($upgrade_content);
                 $upload_content = urlencode($upload_file);
                 $packages[] = array('name' => $name, 'version' => $version, 'published_date' => $published_date, 'description' => $description, 'uninstallable' =>$uninstallable, 'type' => $type, 'file_install' => fileToHash($file_install), 'file' => fileToHash($upgrade_content), 'upload_file' => $upload_content);
@@ -751,7 +751,9 @@ require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
         $base_tmp_upgrade_dir   = "$base_upgrade_dir/temp";
         $license_file = $this->extractFile($file, 'LICENSE.txt', $base_tmp_upgrade_dir);
         if(is_file($license_file)){
-            $contents = file_get_contents($license_file);
+             $fh = sugar_fopen($license_file, 'r');
+            $contents = fread($fh, filesize($license_file));
+            fclose($fh);
             return $contents;
         }else{
             return null;
@@ -854,15 +856,15 @@ require_once('ModuleInstall/PackageManager/PackageManagerComm.php');
 					} else {
 						$file_uninstall = fileToHash( $file_uninstall );
 					}
-
+					
 				$packages[] = array(
-				    'name' => $name,
-				    'version' => $version,
-				    'type' => $type,
-				    'published_date' => $date_entered,
-				    'description' => $description,
-				    'uninstallable' =>$uninstallable,
-				    'file_install' =>  $file_uninstall ,
+				    'name' => $name, 
+				    'version' => $version, 
+				    'type' => $type, 
+				    'published_date' => $date_entered, 
+				    'description' => $description, 
+				    'uninstallable' =>$uninstallable, 
+				    'file_install' =>  $file_uninstall , 
 				    'file' =>  fileToHash($filename),
 				    'enabled' => $enabled_string
 				);

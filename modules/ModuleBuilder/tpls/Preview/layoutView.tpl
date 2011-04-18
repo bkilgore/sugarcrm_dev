@@ -78,24 +78,17 @@
             {counter name='idCount' assign='idCount' print=false}
 
             {foreach from=$row item='col' key='cid'}
-            {assign var="field" value=$col.name}
                 <div class='le_field' id='{$idCount}'>
                     {if ! $fromModuleBuilder && ($col.name != '(filler)')}
+                       
                     {/if}
+
                     {if isset($col.type) && ($col.type == 'address')}
                         {$icon_address}
                     {/if}
                     {if isset($col.type) && ($col.type == 'phone')}
                         {$icon_phone}
                     {/if}
-                    {* BEGIN SUGARCRM flav=pro ONLY *}
-                    {if isset($field_defs.$field.calculated) && $field_defs.$field.calculated}
-                        <img src="{sugar_getimagepath file='SugarLogic/icon_calculated.png'}" class="right_icon" />
-                    {/if}
-                    {if isset($field_defs.$field.dependency) && $field_defs.$field.dependency}
-                        <img src="{sugar_getimagepath file='SugarLogic/icon_dependent.png'}" class="right_icon" />
-                    {/if}
-                    {* END SUGARCRM flav=pro ONLY *}
                     <span id='le_label_{$idCount}'>
                     {eval var=$col.label assign='label'}
                     {if !empty($translate) && !empty($col.label)}

@@ -64,6 +64,31 @@ if(ACLController::checkAccess('Campaigns', 'list', true))
 		"index.php?module=Campaigns&action=newsletterlist&return_module=Campaigns&return_action=index", 
 		$mod_strings['LBL_NEWSLETTERS'], "Newsletters"
 	);
+if(ACLController::checkAccess('ProspectLists', 'edit', true))
+	$module_menu[]=	array(
+		"index.php?module=ProspectLists&action=EditView&return_module=ProspectLists&return_action=DetailView", 
+		$mod_strings['LNK_NEW_PROSPECT_LIST'],"CreateProspectLists"
+	);
+if(ACLController::checkAccess('ProspectLists', 'list', true))
+	$module_menu[]=	array(
+		"index.php?module=ProspectLists&action=index&return_module=ProspectLists&return_action=index", 
+		$mod_strings['LNK_PROSPECT_LIST_LIST'],"ProspectLists"
+	);
+if(ACLController::checkAccess('Prospects', 'edit', true))
+	$module_menu[]=	array(
+		"index.php?module=Prospects&action=EditView&return_module=Prospects&return_action=DetailView",
+		$mod_strings['LNK_NEW_PROSPECT'],"CreateProspects"
+	);
+if(ACLController::checkAccess('Prospects', 'list', true))
+	$module_menu[]=	array(
+		"index.php?module=Prospects&action=index&return_module=Prospects&return_action=index",
+		$mod_strings['LNK_PROSPECT_LIST'],"Prospects"
+	);
+if(ACLController::checkAccess('Prospects', 'import', true))
+	$module_menu[] = array(
+		"index.php?module=Import&action=Step1&import_module=Prospects&return_module=Campaigns&return_action=index", 
+		$mod_strings['LBL_IMPORT_PROSPECTS'],"Import"
+	);
 if(ACLController::checkAccess('EmailTemplates', 'edit', true))
 	$module_menu[] = array(
 		"index.php?module=EmailTemplates&action=EditView&return_module=EmailTemplates&return_action=DetailView",

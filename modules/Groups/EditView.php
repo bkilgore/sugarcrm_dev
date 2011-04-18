@@ -58,7 +58,7 @@ if(isset($_REQUEST['isDuplicate']) && $_REQUEST['isDuplicate'] == 'true') {
 	$focus->user_name = "";
 }
 
-echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$focus->last_name." (".$focus->user_name.")"), true);
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'].": ".$focus->last_name." (".$focus->user_name.")", true);
 
 $GLOBALS['log']->info("Groups edit view");
 $xtpl= new XTemplate ('modules/Groups/EditView.html');

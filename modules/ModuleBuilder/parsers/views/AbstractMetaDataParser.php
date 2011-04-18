@@ -59,11 +59,6 @@ abstract class AbstractMetaDataParser
     {
         return $this->implementation->getHistory () ;
     }
-
-    public function getFieldDefs()
-    {
-        return $this->_fielddefs;
-    }
     
     function removeField ($fieldName)
     {

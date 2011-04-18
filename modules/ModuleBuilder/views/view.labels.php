@@ -42,28 +42,26 @@
  */
 require_once('modules/ModuleBuilder/MB/AjaxCompose.php');
 require_once('modules/ModuleBuilder/views/view.modulefields.php');
-class ViewLabels extends ViewModulefields
+class ViewLabels extends ViewModulefields 
 {
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
-
+	    
     	return array(
     	   translate('LBL_MODULE_NAME','Administration'),
-    	   ModuleBuilderController::getModuleTitle(),
+    	   $mod_strings['LBL_MODULEBUILDER'],
     	   );
     }
-
+	
  	//STUDIO LABELS ONLY//
  	//TODO Bundle Studio and ModuleBuilder label handling to increase maintainability.
  	function display()
  	{
 		$editModule = $_REQUEST['view_module'];
-		$allLabels = (!empty($_REQUEST['labels']) && $_REQUEST['labels']== 'all');
-
  		if (!isset($_REQUEST['MB']))
 		{
 		    global $app_list_strings;
@@ -141,14 +139,14 @@ class ViewLabels extends ViewModulefields
  	    //return_module_language($selected_lang, $editModule,false) : the mod_strings will be included from cache files here.
         foreach(return_module_language($selected_lang, $editModule,false) as $name=>$label) {
         		//#25294
-        	 	if($allLabels || isset($vnames[$name]) || preg_match( '/lbl_city|lbl_country|lbl_billing_address|lbl_alt_address|lbl_shipping_address|lbl_postal_code|lbl_state$/si' , $name)) {
+        	 	if(isset($vnames[$name]) || preg_match( '/lbl_city|lbl_country|lbl_billing_address|lbl_alt_address|lbl_shipping_address|lbl_postal_code|lbl_state$/si' , $name)) {
                     $formatted_mod_strings[$name] = htmlentities($label, ENT_QUOTES, 'UTF-8');
         	 	}
         }
         //Grab everything from the custom files
         $mod_bak = $mod_strings;
         $files = array(
-            "custom/modules/$editModule/language/$selected_lang.lang.php",
+            "custom/modules/$editModule/language/$selected_lang.lang.php", 
             "custom/modules/$editModule/Ext/Language/$selected_lang.lang.ext.php"
         );
         foreach($files as $langfile){
@@ -170,8 +168,6 @@ class ViewLabels extends ViewModulefields
 		$smarty->assign('selected_lang', $selected_lang);
 		$smarty->assign('defaultHelp', 'labelsBtn');
 		$smarty->assign('assistant', array('key'=>'labels', 'group'=>'module'));
-		$smarty->assign('labels_choice', $mod_strings['labelTypes']);
-		$smarty->assign('labels_current', $allLabels?"all":"");
 
 		$ajax = new AjaxCompose();
 		$ajax->addCrumb($mod_strings['LBL_STUDIO'], 'ModuleBuilder.getContent("module=ModuleBuilder&action=wizard")');

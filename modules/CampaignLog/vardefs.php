@@ -38,7 +38,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $dictionary['CampaignLog'] = array ('audited'=>false,
 	'comment' => 'Tracks items of interest that occurred after you send an email campaign',
 	'table' => 'campaign_log',
-
+	
 	'fields' => array (
 		'id' => array (
 			'name' => 'id',
@@ -108,7 +108,7 @@ $dictionary['CampaignLog'] = array ('audited'=>false,
 			'reportable'=>false,
 			'default'=>'0',
 			'comment' => 'Indicates if item has been archived'
- 		),
+ 		),	
 		'hits' => array (
 			'name' => 'hits',
 			'vname' => 'LBL_HITS',
@@ -116,7 +116,7 @@ $dictionary['CampaignLog'] = array ('audited'=>false,
 			'default'=>'0',
 			'reportable'=>true,
 			'comment' => 'Number of times the item has been invoked (e.g., multiple click-thrus)'
-		),
+		),	 		
 		'list_id' => array(
 			'name' => 'list_id',
 			'vname' => 'LBL_LIST_ID',
@@ -131,7 +131,7 @@ $dictionary['CampaignLog'] = array ('audited'=>false,
 			'type' => 'bool',
 			'reportable'=>false,
 			'comment' => 'Record deletion indicator'
-		),
+		),	
 		'recipient_name' => array(
 			'name' => 'recipient_name',
 			'type' => 'varchar',
@@ -169,26 +169,26 @@ $dictionary['CampaignLog'] = array ('audited'=>false,
 			'type' => 'varchar',
 			'len' => '255',
 			'source'=>'non-db',
-		),
+		),		
 		'campaign_objective' => array(
 			'name' => 'campaign_objective',
 			'type' => 'varchar',
 			'len' => '255',
 			'source'=>'non-db',
-		),
+		),		
 		'campaign_content' => array(
 			'name' => 'campaign_content',
 			'type' => 'varchar',
 			'len' => '255',
 			'source'=>'non-db',
-		),
+		),		
 		'campaign'=> array (
   			'name' => 'campaign',
     		'type' => 'link',
     		'relationship' => 'campaign_campaignlog',
     		'source'=>'non-db',
 		    'vname'=> 'LBL_CAMPAIGNS',
-  		),
+  		),  
   		'related_name'=>array (
   			'source'=>'function',
 		  	'function_name'=>'get_related_name',
@@ -203,7 +203,7 @@ $dictionary['CampaignLog'] = array ('audited'=>false,
 	    	'name' => 'date_modified',
     		'vname' => 'LBL_DATE_MODIFIED',
     		'type' => 'datetime',
-    	),
+    	),  	
     	'more_information'=> array(
 			'name'=>'more_information',
 			'vname'=>'LBL_MORE_INFO',
@@ -223,7 +223,7 @@ $dictionary['CampaignLog'] = array ('audited'=>false,
             'type' => 'link',
             'relationship' => 'campaignlog_contact',
             'source'=>'non-db',
-        ),
+        ),  
         'created_lead'=> array (
             'name' => 'created_lead',
             'vname' => 'LBL_CREATED_LEAD',
@@ -235,55 +235,49 @@ $dictionary['CampaignLog'] = array ('audited'=>false,
 	'indices' => array (
 		array (
 			'name' =>'campaign_log_pk',
-
+			
 			'type' =>'primary',
 			'fields'=>array('id')
 		),
 		array (
 			'name' =>'idx_camp_tracker',
-
+			
 			'type' =>'index',
 			'fields'=>array('target_tracker_key')
 		),
 
 		array (
 			'name' =>'idx_camp_campaign_id',
-
+			
 			'type' =>'index',
 			'fields'=>array('campaign_id')
 		),
 
 		array (
 			'name' =>'idx_camp_more_info',
-
+			
 			'type' =>'index',
 			'fields'=>array('more_information')
-		),
-		array (
-			'name' =>'idx_target_id',
-
-			'type' =>'index',
-			'fields'=>array('target_id')
-		),
+		),		
 	),
 	'relationships' => array (
-        'campaignlog_contact' => array( 'lhs_module'=> 'CampaignLog',
-								        'lhs_table'=> 'campaign_log',
+        'campaignlog_contact' => array( 'lhs_module'=> 'CampaignLog', 
+								        'lhs_table'=> 'campaign_log', 
 								        'lhs_key' => 'related_id',
-								        'rhs_module'=> 'Contacts',
-								        'rhs_table'=> 'contacts',
+								        'rhs_module'=> 'Contacts', 
+								        'rhs_table'=> 'contacts', 
 								        'rhs_key' => 'id',
 								        'relationship_type'=>'one-to-many'),
-        'campaignlog_lead' => array('lhs_module'=> 'CampaignLog',
-							        'lhs_table'=> 'campaign_log',
+        'campaignlog_lead' => array('lhs_module'=> 'CampaignLog', 
+							        'lhs_table'=> 'campaign_log', 
 							        'lhs_key' => 'related_id',
-							        'rhs_module'=> 'Leads',
-							        'rhs_table'=> 'leads',
+							        'rhs_module'=> 'Leads', 
+							        'rhs_table'=> 'leads', 
 							        'rhs_key' => 'id',
 							        'relationship_type'=>'one-to-many'),
 
         )
 
-
+	
 );
 ?>

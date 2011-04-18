@@ -65,42 +65,37 @@ class CampaignsViewClassic extends SugarView
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
     	$params = array();
-    	$params[] = $this->_getModuleTitleListParam($browserTitle);
+    	$params[] = $this->_getModuleTitleListParam();
     	if (isset($this->action)){
     		switch($_REQUEST['action']){
     				case 'WizardHome':
-				    	if(!empty($this->bean->id))
-				    	{
+				    	if(!empty($this->bean->id)){
 				    		$params[] = "<a href='index.php?module={$this->module}&action=DetailView&record={$this->bean->id}'>".$this->bean->name."</a>";
+				    		$params[] = $GLOBALS['mod_strings']['LBL_CAMPAIGN_WIZARD'];
+				 		}else{
+				    		$params[] = $GLOBALS['mod_strings']['LBL_CAMPAIGN_WIZARD'];
 				    	}
-				    	$params[] = $GLOBALS['mod_strings']['LBL_CAMPAIGN_WIZARD'];
 				    	break;
 				    case 'WebToLeadCreation':
     					$params[] = $GLOBALS['mod_strings']['LBL_LEAD_FORM_WIZARD'];
     					break;
     				case 'WizardNewsletter':
-				    	if(!empty($this->bean->id))
-				    	{
+				    	if(!empty($this->bean->id)){
 				    		$params[] = "<a href='index.php?module={$this->module}&action=DetailView&record={$this->bean->id}'>".$GLOBALS['mod_strings']['LBL_NEWSLETTER_TITLE']."</a>";
+				    		$params[] = $GLOBALS['mod_strings']['LBL_CREATE_NEWSLETTER'];
+				 		}else{
+				    		$params[] = $GLOBALS['mod_strings']['LBL_CREATE_NEWSLETTER'];
 				    	}
-				    	$params[] = $GLOBALS['mod_strings']['LBL_CREATE_NEWSLETTER'];
 				    	break;
     				case 'CampaignDiagnostic':
     					$params[] = $GLOBALS['mod_strings']['LBL_CAMPAIGN_DIAGNOSTICS'];
     					break;  
     				case 'WizardEmailSetup':
     					$params[] = $GLOBALS['mod_strings']['LBL_EMAIL_SETUP_WIZARD_TITLE'];
-    					break;    
-    				case 'TrackDetailView':
-    					if(!empty($this->bean->id))
-    					{
-	    					$params[] = "<a href='index.php?module={$this->module}&action=DetailView&record={$this->bean->id}'>".$this->bean->name."</a>";
-    					}
-	    				$params[] = $GLOBALS['mod_strings']['LBL_LIST_TO_ACTIVITY'];
-    					break;			  					    					
+    					break;      					  					    					
     		}//switch
     	}//fi
  		

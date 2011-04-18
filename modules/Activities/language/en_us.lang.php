@@ -68,6 +68,7 @@ $mod_strings = array (
   'LBL_DESCRIPTION_INFORMATION' => 'Description Information',
   'LBL_DESCRIPTION' => 'Description:',
   'LBL_COLON' => ':',
+  'LBL_DEFAULT_STATUS' => 'Planned',
   'LNK_NEW_CALL' => 'Log Call',
   'LNK_NEW_MEETING' => 'Schedule Meeting',
   'LNK_NEW_TASK' => 'Create Task',

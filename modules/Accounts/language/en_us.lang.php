@@ -49,7 +49,6 @@ $mod_strings = array (
 	'db_website' => 'LBL_LIST_WEBSITE',
 	'db_billing_address_city' => 'LBL_LIST_CITY',
 	// END DON'T CONVERT
-    'LBL_DOCUMENTS_SUBPANEL_TITLE' => 'Documents',
 	// Dashlet Categories
 	'LBL_CHARTS'    => 'Charts',
 	'LBL_DEFAULT' => 'Views',
@@ -166,8 +165,8 @@ $mod_strings = array (
 	'LNK_ACCOUNT_LIST' => 'View Accounts',
 	'LNK_NEW_ACCOUNT' => 'Create Account',
 	'LNK_IMPORT_ACCOUNTS' => 'Import Accounts',
-	'MSG_DUPLICATE' => 'The account record you are about to create might be a duplicate of an account record that already exists. Account records containing similar names are listed below.<br>Click Create Account to continue creating this new account, or select an existing account listed below.',
-	'MSG_SHOW_DUPLICATES' => 'The account record you are about to create might be a duplicate of an account record that already exists. Account records containing similar names are listed below.<br>Click Save to continue creating this new account, or click Cancel to return to the module without creating the account.',
+	'MSG_DUPLICATE' => 'The account record you are about to create might be a duplicate of a account record that already exists. Account records containing similar names are listed below.<br>Click Save to continue creating this new account, or click Cancel to return to the module without creating the account.',
+	'MSG_SHOW_DUPLICATES' => 'The account record you are about to create might be a duplicate of a account record that already exists. Account records containing similar names are listed below.<br>Click Save to continue creating this new account, or click Cancel to return to the module without creating the account.',
 	'NTC_COPY_BILLING_ADDRESS' => 'Copy billing address to shipping address',
 	'NTC_COPY_BILLING_ADDRESS2' => 'Copy to shipping',
 	'NTC_COPY_SHIPPING_ADDRESS' => 'Copy shipping address to billing address',

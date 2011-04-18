@@ -46,15 +46,11 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 //Shorten name.
 $data = $_REQUEST;
 
-if (!empty($data['listViewExternalClient'])) {
-    $email = new Email();
-    echo $email->getNamePlusEmailAddressesForCompose($_REQUEST['action_module'], (explode(",", $_REQUEST['uid'])));
-}
 //For the full compose/email screen, the compose package is generated and script execution
-//continues to the Emails/index.php page.
-else if(!isset($data['forQuickCreate'])) {
+//continues to the Emails/index.php page.  
+
+if(!isset($data['forQuickCreate']))
 	$ret = generateComposeDataPackage($data);
-}
 
 /**
  * Initialize the full compose window by creating the compose package 

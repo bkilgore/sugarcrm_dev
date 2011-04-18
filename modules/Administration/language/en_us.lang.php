@@ -73,13 +73,13 @@ $mod_strings = array (
     'LOADING_CATEGORIES' => 'Loading categories...',
     'SEARCHING_PACKAGES' => 'Searching for packages...',
     'AUTHENTICATING' => 'Authenticating...',
-
+    
     'LBL_MINUTES'=>'Minutes',
     'LBL_HOURS'=>'Hours',
     'LBL_DAYS'=>'Days',
     'LBL_WEEKS'=>'Weeks',
     'LBL_MONTHS'=>'Months',
-
+    
     'LBL_PUBLIC_KEY'=>'Public Key',
     'LBL_PRIVATE_KEY'=>'Private Key',
 
@@ -201,9 +201,8 @@ $mod_strings = array (
     'LBL_CLEAR_PDF_FONT_CACHE_TITLE'=>'Clear PDF Font File Cache',
     'LBL_CLEAR_PDF_FONT_CACHE_DESC'=>'Removes cached file used to store PDF fonts data',
     'LBL_CONFIG_CHECK' =>'Config Check',
-    'LBL_CONFIG_TABS'=>'Display Module Tabs and Subpanels',
+    'LBL_CONFIG_TABS'=>'Select Module Tabs and Subpanels',
 	'LBL_CONFIG_TABS_DESC'=>'Drag and Drop the names of the modules below to set tabs or subpanels to be displayed or to be hidden.',
-	'LBL_CONFIG_LANGS_DESC'=>'Drag and Drop the names of the languages below to enable and disable them.',
 	'LBL_CONFIG_TABS_ALLOW_USERS_HIDE_TABS_HELP'=>'Select this option to allow users to choose which module tabs they can view. When selected, users will be able to choose which module tabs are visible by managing the tabs within their User Settings.',
 	'LBL_CONFIGURATOR_DESC'=>'Set up Config.php',
     'LBL_CONFIGURATOR_TITLE'=>'Configurator',
@@ -216,7 +215,7 @@ $mod_strings = array (
     'LBL_CONTRACT_TITLE'=>'Contracts',
     'LBL_CONTRACT_DESC'=>'Define contract types for the Contracts module. When users create a contract, the Types drop-down menu displays the contract types for selection.',
     'LBL_CONTRACT_TYPES'=>'Manage contract types',
-    'LBL_COULD_NOT_CONNECT'=>'Error: Could not connect to the Sugar Server.
+    'LBL_COULD_NOT_CONNECT'=>'Error: Could not connect to the Sugar Server. 
 	Please check your Proxy Settings value in the <a href="index.php?module=Configurator&action=EditView">System Settings</a> admin panel.
 	 Last attempted connection @ ',
     'LBL_CREATE_RESOTRE_FILE' => 'restoreExpand.sql file was successfully created.  Please use this file to revert column changes.',
@@ -312,8 +311,6 @@ $mod_strings = array (
     'LBL_EXTERNAL_DEV_TITLE'=> 'Migrate Custom Fields',
     'LBL_FORECAST_TITLE'=> 'Forecast',
     'LBL_FORECAST_DESC'=> 'Define time periods for the Forecasts module. These time periods display in the Time Periods drop-down menus in the Forecasts Module.',
-    'LBL_GLOBAL_SEARCH_SETTINGS' => 'Global Search',
-	'LBL_GLOBAL_SEARCH_SETTINGS_DESC' => 'Configure the global search options for the system.',
     'LBL_GLOBAL_TEAM_DESC' => 'Globally Visible',
     'LBL_GLOBAL_TEAM_SELECT' => 'A default global team was not found. Please select a team from this list.',
     'LBL_GLOBAL_TEAM' => 'Rebuild access to global team.',
@@ -339,7 +336,6 @@ $mod_strings = array (
     'LBL_IMPORT_CUSTOM_FIELDS'=> 'Import custom field definitions from a .sugar file',
     'LBL_IMPORT_VALIDATION_KEY' =>'Import Validation Key',
     'LBL_INBOUND_EMAIL_TITLE' => 'Inbound Email',
-    'LBL_LANGUAGES' => 'Manage which languages are available for users',
     'LBL_LAYOUT' => 'Add, remove, change fields, and layout fields and panels across the application',
     'LBL_LICENSE_EXPIRE_DATE'   => 'Expiration Date',
     'LBL_LICENSE_KEY'          => 'Download Key',
@@ -357,7 +353,7 @@ $mod_strings = array (
     'LBL_LIST_SYSTEM_KEY' => 'System Key',
     'LBL_LIST_SYSTEM_NAME' => 'System Name',
     'LBL_LIST_VIEW'          => 'List',
-
+    
     'LBL_LDAP_TITLE'=>'LDAP Support',
     'LBL_LDAP_ENABLE'=>'Enable LDAP Authentication',
     'LBL_LDAP_HELP_TXT'=>'When LDAP authentication is enabled, passwords can only be handled through LDAP. None of the Sugar Password Management feature settings will apply.',
@@ -417,8 +413,7 @@ $mod_strings = array (
     'LBL_MANAGE_CURRENCIES' => 'Currencies',
     'LBL_MANAGE_GROUPS_TITLE'   => 'Manage Groups',
     'LBL_MANAGE_GROUPS'         => 'Manage groups queues',
-    'LBL_MANAGE_LANGUAGES' => 'Languages',
-	'LBL_MANAGE_LAYOUT' => 'Field Layout',
+    'LBL_MANAGE_LAYOUT' => 'Field Layout',
     'LBL_MANAGE_LICENSE_TITLE'  => 'License Management',
     'LBL_MANAGE_LICENSE'        => 'Manage license properties',
     'LBL_MANAGE_LOCALE' => 'Locale',
@@ -439,7 +434,7 @@ $mod_strings = array (
     'LBL_MANAGE_WORKFLOW'                   => 'Workflow Management',
     'LBL_MANUAL_VALIDATION_TXT' => 'Manual Validation',
     'LBL_MANUAL_VALIDATION'=>'
-	If you experience persistent problems with automatic validation, please check your Proxy configuration in the <a href="index.php?module=Configurator&action=EditView">System Settings</a> admin panel.
+	If you experience persistent problems with automatic validation, please check your Proxy configuration in the <a href="index.php?module=Configurator&action=EditView">System Settings</a> admin panel. 
 	If your system environment prohibits your system from communicating to the license validation server through the internet, you should proceed with the <a href="#" onclick="toggleDisplay(\'mainbody\');toggleDisplay(\'manualbody\');">Manual Validation</a> steps. ',
     'LBL_MANUAL_VALIDATION1'=> 'Step 1: Generate a license key information file by clicking the following button. ',
     'LBL_MANUAL_VALIDATION2'=> 'Then save the file (sugarkey.lic) on your local file system.',
@@ -634,7 +629,7 @@ $mod_strings = array (
     'LBL_REPAIR_JS_FILES_PROCESSING' => 'Processing files. This may take several minutes.  Going away from this page will not cancel the process, so feel free to move on or wait for confirmation...',
     'LBL_REPAIR_JS_FILES_DONE_PROCESSING' => 'Done Processing files.',
     'LBL_REPAIR_FIELD_CASING_TITLE' => 'Repair Non-Lowercase Fields',
-    'LBL_REPAIR_FIELD_CASING_DESC_SHORT' => 'Repair mixed-case custom table(s) and metadata file(s) to fix issues where code expects lowercase field names',
+    'LBL_REPAIR_FIELD_CASING_DESC_SHORT' => 'Repair mixed-case custom table(s) and metadata file(s) to fix issues where code expects lowercase field names', 
 	'LBL_REPAIR_FIELD_CASING_PROCESSING' => 'Scanning custom fields and files...',
     'LBL_REPAIR_FIELD_CASING_SQL_FIELD_META_DATA' => 'Updating row entry {0} in table fields_meta_data',
     'LBL_REPAIR_FIELD_CASING_SQL_CUSTOM_TABLE' => 'Updating column {0} in table {1}',
@@ -759,8 +754,8 @@ $mod_strings = array (
     'LBL_TO'    => ' to ',
     'LBL_TRACKER_SETTINGS' => 'Tracker',
 	'LBL_TRACKER_SETTINGS_DESC' => 'Select what system and user data is tracked',
-    'LBL_SUGARFEED_SETTINGS' => 'Activity Streams',
-	'LBL_SUGARFEED_SETTINGS_DESC' => 'Enable the user feed and module feeds for the My Activity Stream dashlet.',
+    'LBL_SUGARFEED_SETTINGS' => 'Sugar Feed',
+	'LBL_SUGARFEED_SETTINGS_DESC' => 'Enable User Feed and select modules to post updates ',
     'LBL_UPDATE_CHECK_AUTO'=>'Automatically',
     'LBL_UPDATE_CHECK_MANUAL'=>'Manually',
     'LBL_UPDATE_CHECK_TYPE'=>'<B>Automatically Check For Updates</B> - If checked, the system will periodically check to see if updated versions of the application are available.',
@@ -804,7 +799,7 @@ $mod_strings = array (
 
     'LBL_USERS_DESC' => 'Create, edit, activate and deactivate users in Sugar.',
 
-
+    
 
     'LBL_UW_BTN_BACK_TO_MOD_LOADER'         => 'Back to Module Loader',
     'LBL_UW_BTN_BACK_TO_UW'                     => 'Back to Upgrade Wizard',
@@ -905,10 +900,10 @@ $mod_strings = array (
  	'WARN_LICENSE_EXPIRED'=> "Notice: Your license expires in ",
     'WARN_LICENSE_EXPIRED2' =>" day(s). Please go to the <a href='index.php?action=LicenseSettings&module=Administration'>'\"License Management\"</a>  in the Admin screen.",
     'WARN_LICENSE_SEATS'=>  "Warning: User licenses exceeded by ",
-    'WARN_LICENSE_SEATS2' => ".  Please contact your sales representative or email <a href='mailto:cagroup@sugarcrm.com'>cagroup@sugarcrm.com</a>.",
-    'WARN_LICENSE_SEATS_MAXED'=>  "Warning: The number of active users is already the maximum number of licenses allowed: ",
+    'WARN_LICENSE_SEATS2' => ".  Please contact your sales representative or email <a href='mailto:cagroup@sugarcrm.com'>cagroup@sugarcrm.com</a>.",    
+    'WARN_LICENSE_SEATS_MAXED'=>  "Warning: The number of active users is already the maximum number of licenses allowed: ",    
     'WARN_LICENSE_SEATS_EDIT_USER'=>  "Warning: The number of active users is already the maximum number of licenses allowed",
-    'WARN_LICENSE_SEATS_USER_CREATE'=>"Warning: The number of active users allowed by your license matches the number of active users in the system. You will not be able to create additional active users.",
+    'WARN_LICENSE_SEATS_USER_CREATE'=>"Warning: The number of active users allowed by your license matches the number of active users in the system. You will not be able to create additional active users.", 
     'WARN_REPAIR_CONFIG' => 'Warning: The config.php file needs to be repaired.  Please use the <a href=\'index.php?module=Administration&action=RebuildConfig\'>Rebuild Config File</a> script in the Repair page in the Admin area to repair the config file.',
     'WARN_UPGRADE_APP'=> "An updated version of the application is now available. ",
     'WARN_UPGRADE' => 'Warning: Please upgrade ',
@@ -932,7 +927,7 @@ $mod_strings = array (
 	'LBL_FAILED_CONNECTION'=> 'Failed to connect :',
 	'LBL_QUICK_REPAIR_AND_REBUILD_DESC'=>'Repairs and rebuilds DB, Extensions, Vardefs, Sugar Dashlets etc.',
 	'LBL_ALL_MODULES'=>'All Modules',
-    'LBL_CAMPAIGN_CONFIG_TITLE'=>'Campaign Email Settings',
+    'LBL_CAMPAIGN_CONFIG_TITLE'=>'Campaign Email Setttings',
 	'LBL_CAMPAIGN_CONFIG_DESC'=>'Configure email settings for campaigns',
     'LBL_REPAIR_ORACLE_FULLTEXT'             => 'Rebuild fulltext indices',
 	'LBL_REPAIR_ORACLE_FULLTEXT_DESC'        => 'Triggers a rebuild of fulltext indices. Oracle 9i owners should run this frequently.',
@@ -968,7 +963,6 @@ $mod_strings = array (
     'LBL_FOR'=>'for',
     'LBL_QR_CBOX_CLEARPDFFONT'=> 'Clear PDF Font Cache File',
     'LBL_QR_CLEARPDFFONT'=>'Clearing PDF Font Cache File...done',
-    'LBL_QR_CLEAR_EXT_API'=>'Clearing External API Cache File...done',
 	'LBL_TRACKER_SETTINGS' => 'Tracker',
 	'LBL_TRACKER_SETTINGS_DESC' => 'Enable/Disable tracking',
 	'LBL_REPAIR_SEED_USERS_TITLE'	=> 'Enable/Disable Seed Users',
@@ -1006,10 +1000,7 @@ $mod_strings = array (
 	'LBL_SAVING' => 'Saving...',
 	'LBL_ACTIVE_THEMES' => 'Enabled Themes',
 	'LBL_DISABLED_THEMES' => 'Disabled Themes',
-	'DEFAULT_THEME'=> 'Default theme',
-	'LBL_DEFAULT_THEME_IS_DISABLED' => 'The Default Theme you have chosen is disabled. Click "OK" to continue saving the theme changes or "Cancel" to pick a different default theme.',
-	'LBL_ENABLED_LANGS' => 'Enabled Languages',
-	'LBL_DISABLED_LANGS' => 'Disabled Languages',
+
 
 	//language changed
 	'LBL_CURRENT_LANGUAGE_CHANGE' => 'Your current language is changed to ',
@@ -1052,7 +1043,7 @@ $mod_strings = array (
 
 	'Relationships' => 'Relationship',
 	'Releases'       => 'Release',
-	'ReportMaker'  => 'Advanced Reports',
+	'ReportMaker'  => 'ReportMaker',
 	'Reports_1'      => 'SavedReport',
 	'Roles'  => 'Role',
 	'Schedulers'  => 'Scheduler',
@@ -1082,12 +1073,5 @@ $mod_strings = array (
    'LBL_SAML_CERT' => 'X509 Certificate',
    'LBL_SAML_CERT_DESC' => 'Enter X509 Certificate',
    'LBL_SAML_LOGIN_URL' => 'Login URL',
-   'LBL_SAML_LOGIN_URL_DESC' => 'Enter Login URL',
-
-   'LBL_GLOBAL_SEARCH_SETTINGS_TITLE' => 'Select the module(s) that users will be able to search against using the Global Search.',
-   'LBL_SELECT_MODULES' => 'Advanced',
-   'LBL_SELECT_MODULES_TITLE' => 'Drag and drop to select modules and to change the display order. Perform a search to apply the changes.',
-   'LBL_EAPM_SETTINGS' => 'External Accounts',
-   'LBL_EAPM_SETTINGS_DESC' => 'Select external applications for which users can provide their account information in order to access from within Sugar.',
-
+   'LBL_SAML_LOGIN_URL_DESC' => 'Enter Login URL'
 	);

@@ -40,6 +40,11 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 require_once('modules/Activities/config.php');
+
+
+
+
+
 require_once('include/json_config.php');
 $json_config = new json_config();
 
@@ -73,18 +78,27 @@ if (empty($_REQUEST['appointment_filter'])) {
 } else {
 	$appointment_filter = $_REQUEST['appointment_filter'];
 	$current_user->setPreference('appointment_filter', $_REQUEST['appointment_filter']);
-}
+}	
 
 if ($appointment_filter == 'last this_month') {
-    $laterDate = $timedate->getNow(true)->get("last day of this month");
+	$next_month		= strftime("%B %Y", strtotime("+1 month"));
+	$first_day		= strftime("%d %B %Y", strtotime("1 $next_month"));
+	$appt_filter	= strftime("%d %B %Y", strtotime("-1 day", strtotime($first_day)));
 } elseif ($appointment_filter == 'last next_month') {
-    $laterDate = $timedate->getNow(true)->get("last day of next month");
+	$next_month		= strftime("%B %Y", strtotime("+2 month"));
+	$first_day		= strftime("%d %B %Y", strtotime("1 $next_month"));
+	$appt_filter	= strftime("%d %B %Y", strtotime("-1 day", strtotime($first_day)));
+	$GLOBALS['log']->debug("next_month is '$next_month'; first_day is '$first_day';");
 } else {
-	$laterDate = $timedate->fromString($appointment_filter);
+	$appt_filter = $appointment_filter;
 }
 
-$dayEnd = $timedate->asDb($laterDate->get_day_end_time());
-$GLOBALS['log']->debug("filter $appointment_filter date $dayEnd");
+$gm_later	= gmdate($GLOBALS['timedate']->get_db_date_time_format(), strtotime($appt_filter));
+$later		= $timedate->handle_offset($gm_later, $timedate->dbDayFormat, true);
+$db_later	= $timedate->handle_offset($gm_later, $timedate->dbDayFormat, true);
+$laterWhere = $timedate->handleOffsetMax($later, $timedate->dbDayFormat, false);
+
+$GLOBALS['log']->debug("appt_filter is '$appt_filter'; later is '$later'");
 
 if(ACLController::checkAccess('Meetings', 'list', true)){
 	$meeting = new Meeting();
@@ -93,20 +107,20 @@ if(ACLController::checkAccess('Meetings', 'list', true)){
 	foreach ($open_status as $status) {
 		if ($or) $where .= ' OR ';
 		$or = true;
-		$where .= " meetings.status = '$status' ";
+		$where .= " meetings.status = '$status' "; 
 	}
 	$where .= ") ";
 	$where .= " AND meetings_users.user_id='$current_user->id' ";
 	$where .= " AND meetings_users.accept_status != 'decline'";
-
+	
 	// allow for differences between MySQL and Oracle 9
 	if($sugar_config["dbconfig"]["db_type"] == "mysql") {
-		$where .= " HAVING datetime <= '$dayEnd' ";
+		$where .= " HAVING datetime <= '".$laterWhere["date"]." ".$laterWhere["time"]."' ";
 	} elseif ($sugar_config["dbconfig"]["db_type"] == "oci8") {
 	}
-	else if ($sugar_config["dbconfig"]["db_type"] == "mssql")
-	{
-		$where .= " AND meetings.date_start + ' ' +  meetings.time_start <= '$dayEnd' ";
+	else if ($sugar_config["dbconfig"]["db_type"] == "mssql")  
+	{	
+		$where .= " AND meetings.date_start + ' ' +  meetings.time_start <= '".$laterWhere["date"]." ".$laterWhere["time"]."' ";
 	}
 	else {
 		$GLOBALS['log']->fatal("No database type identified.");
@@ -124,21 +138,21 @@ if(ACLController::checkAccess('Calls', 'list', true)) {
 	foreach ($open_status as $status) {
 		if ($or) $where .= ' OR ';
 		$or = true;
-		$where .= " calls.status = '$status' ";
+		$where .= " calls.status = '$status' "; 
 	}
-
+	
 	$where .= ") ";
 	$where .= " AND calls_users.user_id='$current_user->id' ";
 	$where .= " AND calls_users.accept_status != 'decline'";
-
+	
 	// allow for differences between MySQL and Oracle 9
 	if($sugar_config["dbconfig"]["db_type"] == "mysql") {
-		$where .= " HAVING datetime <= '$dayEnd' ";
+		$where .= " HAVING datetime <= '".$laterWhere["date"]." ".$laterWhere["time"]."' ";
 	} elseif ($sugar_config["dbconfig"]["db_type"] == "oci8") {
-	}else if ($sugar_config["dbconfig"]["db_type"] == "mssql")
-	{
-		//add condition for MS Sql server.
-		$where .= " AND calls.date_start + ' ' + calls.time_start <= '$dayEnd' ";
+	}else if ($sugar_config["dbconfig"]["db_type"] == "mssql")  
+	{	
+		//add condition for MS Sql server.  
+		$where .= " AND calls.date_start + ' ' + calls.time_start <= '".$laterWhere["date"]." ".$laterWhere["time"]."' ";
 	} else {
 		$GLOBALS['log']->fatal("No database type identified.");
 	}
@@ -181,14 +195,14 @@ if(count($focus_meetings_list)>0) {
 
 if (count($focus_calls_list)>0) {
 	foreach ($focus_calls_list as $call) {
-
+	 	
 	 	$td = $timedate->merge_date_time(from_db_convert($call->date_start,'date'),from_db_convert($call->time_start, 'time'));
 		$tag = 'span';
 
 	 	if($call->ACLAccess('view', $call->isOwner($current_user->id))) {
 			$tag = 'a';
 		}
-
+		
 	 	$open_activity_list[] = array(
 			'name'				=> $call->name,
 			'id'				=> $call->id,
@@ -243,13 +257,13 @@ $todayOffset = $timedate->handleOffsetMax('today', $timedate->dbDayFormat.' '.$t
 
 foreach($open_activity_list as $activity) {
 	$concatActDate = $activity['normal_date_start'].' '.$activity['normal_time_start'];
-
+	
 	if($concatActDate < $today) {
 		$time = "<font class='overdueTask'>".$activity['date_start'].' '.$activity['time_start']."</font>";
 	} elseif(($concatActDate >= $todayOffset['min']) && ($concatActDate <= $todayOffset['max'])) {
 		$time = "<font class='todaysTask'>".$activity['date_start'].' '.$activity['time_start']."</font>";
 	} else {
-		$time = "<font class='futureTask'>".$activity['date_start'].' '.$activity['time_start']."</font>";
+		$time = "<font class='futureTask'>".$activity['date_start'].' '.$activity['time_start']."</font>";	
 	}
 
 	$activity_fields = array(
@@ -266,7 +280,7 @@ foreach($open_activity_list as $activity) {
 		'TIME'			=> $time,
 		'TAG'			=> $activity['tag'],
 	);
-
+	
 	switch ($activity['parent_type']) {
 		case 'Accounts':
 			$activity_fields['PARENT_MODULE'] = 'Accounts';
@@ -305,12 +319,12 @@ foreach($open_activity_list as $activity) {
 	if (!empty($activity['parent_name'])) {
 		$activity_fields['TITLE'] .= "\n".$app_list_strings['record_type_display'][$activity['parent_type']].": ".$activity['parent_name'];
 	}
-
+	
 	$xtpl->assign("ACTIVITY_MODULE_PNG", SugarThemeRegistry::current()->getImage($activity_fields['MODULE'].'','border="0" alt="'.$activity_fields['NAME'].'"'));
 	$xtpl->assign("ACTIVITY", $activity_fields);
 	$xtpl->assign("BG_HILITE", $hilite_bg);
 	$xtpl->assign("BG_CLICK", $click_bg);
-
+	
 	if($oddRow) {
 		$xtpl->assign("ROW_COLOR", 'oddListRow');
 		$xtpl->assign("BG_COLOR", $odd_bg);

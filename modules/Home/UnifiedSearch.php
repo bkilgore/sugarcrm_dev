@@ -49,8 +49,12 @@ require_once('modules/Home/UnifiedSearchAdvanced.php');
 if(!empty($_REQUEST['usa_form'])) {
 	$usa = new UnifiedSearchAdvanced();
 	echo $usa->getDropDownDiv();
-} else {
+}
+else {
 	global $mod_strings, $modListHeader, $app_strings, $beanList, $beanFiles;
+		
+	echo get_module_title("Search", $mod_strings['LBL_SEARCH_RESULTS'], true);
+
 	$usa = new UnifiedSearchAdvanced();
 	$usa->search();
 }	

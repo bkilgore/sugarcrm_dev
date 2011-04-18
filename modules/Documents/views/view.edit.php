@@ -47,12 +47,12 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/View/views/view.edit.php');
 
-class DocumentsViewEdit extends ViewEdit
+class DocumentsViewEdit extends ViewEdit 
 {
  	/**
 	 * @see SugarView::display()
 	 */
-	public function display()
+	public function display() 
  	{
 		global $app_list_strings, $mod_strings;
 		/*
@@ -67,30 +67,34 @@ class DocumentsViewEdit extends ViewEdit
         */
 		$load_signed=false;
 		if ((isset($_REQUEST['load_signed_id']) && !empty($_REQUEST['load_signed_id']))) {
-
+			
 			$load_signed=true;
 			if (isset($_REQUEST['record'])) {
 				$this->bean->related_doc_id=$_REQUEST['record'];
 			}
-			if (isset($_REQUEST['selected_revision_id'])) {
+			if (isset($_REQUEST['selected_revision_id'])) {	
 				$this->bean->related_doc_rev_id=$_REQUEST['selected_revision_id'];
 			}
-
+			
 			$this->bean->id=null;
 			$this->bean->document_name=null;
 			$this->bean->filename=null;
 			$this->bean->is_template=0;
 		} //if
-
+		
 		if (!empty($this->bean->id)) {
 			$this->ss->assign("FILE_OR_HIDDEN", "hidden");
 			if (!$this->ev->isDuplicate) {
 				$this->ss->assign("DISABLED", "disabled");
 			}
-		} else {	    
+		} else {
+			global $timedate;
+		    $format = $timedate->get_cal_date_format();
+		    $format = str_replace('%', '', $format);
+		    $this->bean->active_date = date($format);
 			$this->bean->revision = 1;
 		    $this->ss->assign("FILE_OR_HIDDEN", "file");
-		}
+		} 		
 
 		$popup_request_data = array(
 			'call_back_function' => 'document_set_return',
@@ -111,28 +115,28 @@ class DocumentsViewEdit extends ViewEdit
 			if (!empty($this->bean->related_doc_rev_id)) {
 				$this->ss->assign("RELATED_DOCUMENT_REVISION_OPTIONS", get_select_options_with_id(DocumentRevision::get_document_revisions($this->bean->related_doc_id), $this->bean->related_doc_rev_id));
 			} else {
-				$this->ss->assign("RELATED_DOCUMENT_REVISION_OPTIONS", get_select_options_with_id(DocumentRevision::get_document_revisions($this->bean->related_doc_id), ''));
+				$this->ss->assign("RELATED_DOCUMENT_REVISION_OPTIONS", get_select_options_with_id(DocumentRevision::get_document_revisions($this->bean->related_doc_id), ''));	
 			}
 		} else {
-			$this->ss->assign("RELATED_DOCUMENT_REVISION_DISABLED", "disabled");
+			$this->ss->assign("RELATED_DOCUMENT_REVISION_DISABLED", "disabled");	
 		}
 
 
 		//set parent information in the form.
 		if (isset($_REQUEST['parent_id'])) {
-			$this->ss->assign("PARENT_ID",$_REQUEST['parent_id']);
+			$this->ss->assign("PARENT_ID",$_REQUEST['parent_id']);	
 		} //if
-
+		
 		if (isset($_REQUEST['parent_name'])) {
 			$this->ss->assign("PARENT_NAME", $_REQUEST['parent_name']);
-
+			
 			if (!empty($_REQUEST['parent_type'])) {
 				switch (strtolower($_REQUEST['parent_type'])) {
-
+				
 					case "contracts" :
 						$this->ss->assign("LBL_PARENT_NAME",$mod_strings['LBL_CONTRACT_NAME']);
 						break;
-
+					
 					//todo remove leads case.
 					case "leads" :
 						$this->ss->assign("LBL_PARENT_NAME",$mod_strings['LBL_CONTRACT_NAME']);
@@ -140,36 +144,36 @@ class DocumentsViewEdit extends ViewEdit
 				} //switch
 			} //if
 		} //if
-
+			
 		if (isset($_REQUEST['parent_type'])) {
-			$this->ss->assign("PARENT_TYPE",$_REQUEST['parent_type']);
+			$this->ss->assign("PARENT_TYPE",$_REQUEST['parent_type']);	
 		}
 
 		if ($load_signed) {
-			$this->ss->assign("RELATED_DOCUMENT_REVISION_DISABLED", "disabled");
-			$this->ss->assign("RELATED_DOCUMENT_BUTTON_AVAILABILITY", "hidden");
+			$this->ss->assign("RELATED_DOCUMENT_REVISION_DISABLED", "disabled");	
+			$this->ss->assign("RELATED_DOCUMENT_BUTTON_AVAILABILITY", "hidden");	
 			$this->ss->assign("LOAD_SIGNED_ID",$_REQUEST['load_signed_id']);
 		} else {
-			$this->ss->assign("RELATED_DOCUMENT_BUTTON_AVAILABILITY", "button");
+			$this->ss->assign("RELATED_DOCUMENT_BUTTON_AVAILABILITY", "button");	
 		} //if-else
 
  		parent::display();
  	}
-
+ 	
 	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
     	$params = array();
-    	$params[] = $this->_getModuleTitleListParam($browserTitle);
+    	$params[] = $this->_getModuleTitleListParam();
     	if(!empty($this->bean->id)){
 			$params[] = "<a href='index.php?module={$this->module}&action=DetailView&record={$this->bean->id}'>".$this->bean->document_name."</a>";
 			$params[] = $GLOBALS['app_strings']['LBL_EDIT_BUTTON_LABEL'];
 		}else{
 			$params[] = $GLOBALS['app_strings']['LBL_CREATE_BUTTON_LABEL'];
 		}
-
+		
 		return $params;
     }
 }

@@ -189,8 +189,8 @@ abstract class source{
 
  	public function getProperty($name){
  		$properties = $this->getProperties();
- 		if(!empty($properties[$name])){
- 			return $properties[$name];
+ 		if(!empty($properties['name'])){
+ 			return $properties['name'];
  		}else{
  			return '';
  		}

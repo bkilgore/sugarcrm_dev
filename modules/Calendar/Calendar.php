@@ -40,6 +40,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 
+require_once('modules/Calendar/DateTimeUtil.php');
+
 require_once('include/utils/activity_utils.php');
 
 function sort_func_by_act_date($act0,$act1)
@@ -54,11 +56,7 @@ function sort_func_by_act_date($act0,$act1)
 
 class Calendar
 {
-    var $view = 'month';
-	/**
-	 * Current date
-	 * @var SugarDateTime
-	 */
+	var $view = 'month';
 	var $date_time;
 	var $slices_arr = array();
         // for monthly calendar view, if you want to see all the
@@ -73,9 +71,9 @@ class Calendar
 	var $slice_hash = array();
 	var $shared_users_arr = array();
 
-	function __construct($view,$time_arr=array())
+	function Calendar($view,$time_arr=array())
 	{
-		global $current_user, $timedate;
+		global $current_user;
 		global $sugar_config;
 		if ( $current_user->getPreference('time'))
 		{
@@ -91,11 +89,6 @@ class Calendar
 			$this->use_24 = 0;
 		}
 
-		if (!( $view == 'day' || $view == 'month' || $view == 'year' || $view == 'week' || $view == 'shared') )
-		{
-			sugar_die ("view needs to be one of: day, week, month, shared, or year");
-		}
-
 		$this->view = $view;
 
 		if ( isset($time_arr['activity_focus']))
@@ -105,20 +98,39 @@ class Calendar
 		}
 		else
 		{
-		    if(!empty($time_arr)) {
-		        // FIXME: what format?
-			    $this->date_time = $timedate->fromTimeArray($time_arr);
-		    } else {
-		        $this->date_time = $timedate->getNow();
-		    }
+			$this->date_time = new DateTimeUtil($time_arr,true);
 		}
 
-		$timedate->tzUser($this->date_time, $current_user);
-        $GLOBALS['log']->debug("CALENDATE: ".$this->date_time->format('r'));
+		if (!( $view == 'day' || $view == 'month' || $view == 'year' || $view == 'week' || $view == 'shared') )
+		{
+			sugar_die ("view needs to be one of: day, week, month, shared, or year");
+		}
+
+		if ( empty($this->date_time->year))
+		{
+			sugar_die ("all views: year was not set");
+		}
+		else if ( $this->view == 'month' &&  empty($this->date_time->month))
+		{
+			sugar_die ("month view: month was not set");
+		}
+		else if ( $this->view == 'week' && empty($this->date_time->week))
+		{
+			sugar_die ("week view: week was not set");
+		}
+		else if ( $this->view == 'shared' && empty($this->date_time->week))
+		{
+			sugar_die ("shared view: shared was not set");
+		}
+		else if ( $this->view == 'day' &&  empty($this->date_time->day) && empty($this->date_time->month))
+		{
+			sugar_die ("day view: day and month was not set");
+		}
+
 		$this->create_slices();
 
 	}
-	function add_shared_users($shared_users_arr)
+	function add_shared_users(&$shared_users_arr)
 	{
 		$this->shared_users_arr = $shared_users_arr;
 	}
@@ -163,11 +175,14 @@ class Calendar
 
 	function create_slices()
 	{
+
 		global $current_user;
+
 
 		if ( $this->view == 'month')
 		{
 			$days_in_month = $this->date_time->days_in_month;
+
 
 			$first_day_of_month = $this->date_time->get_day_by_index_this_month(0);
 			$num_of_prev_days = $first_day_of_month->day_of_week;
@@ -221,9 +236,8 @@ class Calendar
 	}
 
 	function add_activities($user,$type='sugar') {
-	    global $timedate;
 		if ( $this->view == 'week' || $this->view == 'shared') {
-			$end_date_time = $this->date_time->get("+7 days");
+			$end_date_time = $this->date_time->get_first_day_of_next_week();
 		} else {
 			$end_date_time = $this->date_time;
 		}
@@ -236,11 +250,10 @@ class Calendar
     	}
 
 	    // loop thru each activity for this user
-		foreach ($acts_arr as $act) {
+		for ($i = 0;$i < count($acts_arr);$i++) {
+			$act = $acts_arr[$i];
 			// get "hashed" time slots for the current activity we are looping through
-			$start = $timedate->tzUser($act->start_time);
-			$end = $timedate->tzUser($act->end_time);
-			$hash_list = SugarDateTime::getHashList($this->view, $start, $end);
+			$hash_list =DateTimeUtil::getHashList($this->view,$act->start_time,$act->end_time);
 
 			for($j=0;$j < count($hash_list); $j++) {
 				if(!isset($this->slice_hash[$hash_list[$j]]) || !isset($this->slice_hash[$hash_list[$j]]->acts_arr[$user->id])) {
@@ -251,7 +264,7 @@ class Calendar
 		}
 	}
 
-	function occurs_within_slice($slice, $act)
+	function occurs_within_slice(&$slice,&$act)
 	{
 		// if activity starts within this slice
 		// OR activity ends within this slice
@@ -266,6 +279,10 @@ class Calendar
 			$act->end_time->ts >= $slice->end_time->ts )
 		)
 		{
+			//print "act_start:{$act->start_time->ts}<BR>";
+			//print "act_end:{$act->end_time->ts}<BR>";
+			//print "slice_start:{$slice->start_time->ts}<BR>";
+			//print "slice_end:{$slice->end_time->ts}<BR>";
 			return true;
 		}
 
@@ -277,20 +294,19 @@ class Calendar
 	{
 		if ($this->view == 'month')
 		{
-		    $day = $this->date_time->get("-1 month")->get_day_begin(1);
+			$day = $this->date_time->get_first_day_of_last_month();
 		}
 		else if ($this->view == 'week' || $this->view == 'shared')
 		{
-		    // first day last week
-			$day = $this->date_time->get("-7 days")->get_day_by_index_this_week(0)->get_day_begin();
+			$day = $this->date_time->get_first_day_of_last_week();
 		}
 		else if ($this->view == 'day')
 		{
-			$day = $this->date_time->get("yesterday")->get_day_begin();
+			$day = $this->date_time->get_yesterday();
 		}
 		else if ($this->view == 'year')
 		{
-			$day = $this->date_time->get_year_begin($this->year-1);
+			$day = $this->date_time->get_first_day_of_last_year();
 		}
 		else
 		{
@@ -303,22 +319,22 @@ class Calendar
 	{
 		if ($this->view == 'month')
 		{
-			$day = $this->date_time->get("+1 month")->get_day_begin(1);
+			$day = $this->date_time->get_first_day_of_next_month();
 		}
 		else
 		if ($this->view == 'week' || $this->view == 'shared' )
 		{
-			$day = $this->date_time->get("+7 days")->get_day_by_index_this_week(0)->get_day_begin();
+			$day = $this->date_time->get_first_day_of_next_week();
 		}
 		else
 		if ($this->view == 'day')
 		{
-			$day = $this->date_time->get("tomorrow")->get_day_begin();
+			$day = $this->date_time->get_tomorrow();
 		}
 		else
 		if ($this->view == 'year')
 		{
-			$day = $this->date_time->get_year_begin($this->year+1);
+			$day = $this->date_time->get_first_day_of_next_year();
 		}
 		else
 		{
@@ -428,79 +444,84 @@ class CalendarActivity
     // if we've passed in an array, then this is a free/busy slot
     // and does not have a sugarbean associated to it
 		global $DO_USER_TIME_OFFSET;
-		global $timedate;
 
-        if ( is_array ( $args ))
-        {
-           $this->start_time = clone $args[0];
-           $this->end_time = clone $args[1];
-           $this->sugar_bean = null;
-           $timedate->tzGMT($this->start_time);
-           $timedate->tzGMT($this->end_time);
-           return;
-        }
+    if ( is_array ( $args ))
+    {
+       $this->start_time = $args[0];
+       $this->end_time = $args[1];
+       $this->sugar_bean = null;
+       return;
+    }
 
     // else do regular constructor..
 
     	$sugar_bean = $args;
+		global $timedate;
 		$this->sugar_bean = $sugar_bean;
 
 
 		if ($sugar_bean->object_name == 'Task')
 		{
-		    $this->start_time = $timedate->fromUser($this->sugar_bean->date_due);
+
+			$newdate = $timedate->merge_date_time($this->sugar_bean->date_due, $this->sugar_bean->time_due);
+			$tempdate  = $timedate->to_db_date($newdate,$DO_USER_TIME_OFFSET);
+
+			if($newdate != $tempdate){
+				$this->sugar_bean->date_due = $tempdate;
+			}
+			$temptime = $timedate->to_db_time($newdate, $DO_USER_TIME_OFFSET);
+			if($newdate != $temptime){
+				$this->sugar_bean->time_due = $temptime;
+			}
+			$this->start_time =DateTimeUtil::get_time_start(
+				$this->sugar_bean->date_due,
+				$this->sugar_bean->time_due
+			);
 			if ( empty($this->start_time))
 			{
 				return null;
 			}
 
-			$this->end_time = $timedate->fromUser($this->sugar_bean->date_due);
+			$this->end_time = $this->start_time;
 		}
 		else
 		{
-            $this->start_time = $timedate->fromUser($this->sugar_bean->date_start);
-			if ( empty($this->start_time))
-			{
-			    return null;
-			}
-			$hours = $this->sugar_bean->duration_hours;
-			if(empty($hours)) {
-			    $hours = 0;
-			}
-			$mins = $this->sugar_bean->duration_minutes;
-			if(empty($mins)) {
-			    $mins = 0;
-			}
-			$this->end_time = $this->start_time->get("+$hours hours $mins minutes");
+            // Convert it back to database time so we can properly manage it for getting the proper start and end dates
+            $dbDate = $timedate->to_db($this->sugar_bean->date_start);
+            $this->start_time =DateTimeUtil::get_time_start($dbDate);
+		    $this->end_time =DateTimeUtil::get_time_end(
+			    $this->start_time,
+         		$this->sugar_bean->duration_hours,
+        		$this->sugar_bean->duration_minutes
+			);
 		}
-        // Convert it back to database time so we can properly manage it for getting the proper start and end dates
-		$timedate->tzGMT($this->start_time);
-        $timedate->tzGMT($this->end_time);
+
 	}
 
-	function get_occurs_within_where_clause($table_name, $rel_table, $start_ts_obj, $end_ts_obj, $field_name='date_start', $view)
-	{
+	function get_occurs_within_where_clause($table_name, $rel_table, $start_ts_obj, $end_ts_obj, $field_name='date_start', $view) {
 		global $timedate;
-        // ensure we're working with user TZ
-		$start_ts_obj = $timedate->tzUser($start_ts_obj);
-		$end_ts_obj = $timedate->tzUser($end_ts_obj);
+		$dtUtilArr = array();
 		switch ($view) {
 			case 'month':
-				$start = $start_ts_obj->get_day_begin(1);
-				$end = $end_ts_obj->get("first day of next month")->get_day_begin();
+				$start_ts = $start_ts_obj->get_first_day_of_this_month();
+				$end_ts = $end_ts_obj->get_first_day_of_next_month();
 				break;
 			default:
 				// Date for the past 5 days as that is the maximum duration of a single activity
-				$start = $start_ts_obj->get("-5 days")->get_day_begin();
-				$end =  $start_ts_obj->get("+5 days")->get_day_begin();
+				$dtUtilArr['ts'] = $start_ts_obj->ts - (86400*5);
+				$start_ts = new DateTimeUtil($dtUtilArr, false);
+				// Date for the next 5 days as that is the maximum duration of a single activity
+				$dtUtilArr['ts'] = $end_ts_obj->ts + (86400*5);
+				$end_ts = new DateTimeUtil($dtUtilArr, false);
 				break;
 		}
 
-		$field_date = $GLOBALS['db']->convert($table_name.'.'.$field_name,'datetime');
-        $start_day = $start->asDb();
-        $end_day = $end->asDb();
+		$start_day = $timedate->getDayStartEndGMT(date($timedate->get_date_format(), $start_ts->ts));
+		$end_day = $timedate->getDayStartEndGMT(date($timedate->get_date_format(), $end_ts->ts));
 
-		$where = "($field_date >= '{$start_day}' AND $field_date < '{$end_day}'";
+		$field_date = $GLOBALS['db']->convert($table_name.'.'.$field_name,'datetime');
+
+		$where = "($field_date >= '{$start_day['start']}' AND $field_date < '{$end_day['start']}'";
         if($rel_table != '') {
             $where .= " AND $rel_table.accept_status != 'decline'";
         }
@@ -509,20 +530,23 @@ class CalendarActivity
 		return $where;
 	}
 
-  function get_freebusy_activities($user_focus, $start_date_time, $end_date_time)
+  function get_freebusy_activities(&$user_focus,&$start_date_time,&$end_date_time)
   {
-	  $act_list = array();
+
+
+		  $act_list = array();
       $vcal_focus = new vCal();
       $vcal_str = $vcal_focus->get_vcal_freebusy($user_focus);
 
       $lines = explode("\n",$vcal_str);
-      $utc = new DateTimeZone("UTC");
+
       foreach ($lines as $line)
       {
+        $dates_arr = array();
         if ( preg_match('/^FREEBUSY.*?:([^\/]+)\/([^\/]+)/i',$line,$matches))
         {
-          $dates_arr = array(SugarDateTime::createFromFormat(vCal::UTC_FORMAT, $matches[1], $utc),
-                              SugarDateTime::createFromFormat(vCal::UTC_FORMAT, $matches[2], $utc));
+          $dates_arr[] =DateTimeUtil::parse_utc_date_time($matches[1]);
+          $dates_arr[] =DateTimeUtil::parse_utc_date_time($matches[2]);
           $act_list[] = new CalendarActivity($dates_arr);
         }
       }
@@ -531,7 +555,7 @@ class CalendarActivity
   }
 
 
- 	function get_activities($user_id, $show_tasks, $view_start_time, $view_end_time, $view) {
+ 	function get_activities($user_id, $show_tasks, &$view_start_time, &$view_end_time, $view) {
 		global $current_user;
 		$act_list = array();
 		$seen_ids = array();

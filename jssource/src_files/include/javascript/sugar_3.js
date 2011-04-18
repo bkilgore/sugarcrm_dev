@@ -272,14 +272,10 @@ function addToValidateMoreThan(formname, name, type, required, msg, min) {
 	validate[formname][validate[formname].length - 1][jstypeIndex] = 'more';
     validate[formname][validate[formname].length - 1][minIndex] = min;
 }
-
-
 function removeFromValidate(formname, name) {
-	for(i = 0; i < validate[formname].length; i++)
-	{
-		if(validate[formname][i][nameIndex] == name)
-		{
-			validate[formname].splice(i--,1); // We subtract 1 from i since the slice removed an element, and we'll skip over the next item we scan
+	for(i = 0; i < validate[formname].length; i++){
+		if(validate[formname][i][nameIndex] == name){
+			validate[formname].splice(i, 1);
 		}
 	}
 }
@@ -425,8 +421,6 @@ function getDateObject(dtStr) {
     if(typeof(dtar[1])!='undefined' && isTime(dtar[1])) {//if it is a timedate, we should make date1 to have time value
         var t1 = dtar[1].replace(/am/i,' AM');
         var t1 = t1.replace(/pm/i,' PM');
-        //bug #37977: where time format 23.00 causes java script error
-        t1=t1.replace(/\./, ':');
         date1 = new Date(Date.parse(mh+'/'+dy+ '/'+yr+' '+t1));
     }
     else
@@ -596,14 +590,7 @@ function add_error_style(formname, input, txt, flash) {
 	if ( txt.substring(txt.length-1) == ':' )
 	    txt = txt.substring(0,txt.length-1)
 	
-	// Bug 28249 - To help avoid duplicate messages for an element, strip off extra messages and
-	// match on the field name itself
-	requiredTxt = SUGAR.language.get('app_strings', 'ERR_MISSING_REQUIRED_FIELDS');
-    invalidTxt = SUGAR.language.get('app_strings', 'ERR_INVALID_VALUE');
-    nomatchTxt = SUGAR.language.get('app_strings', 'ERR_SQS_NO_MATCH_FIELD');
-    matchTxt = txt.replace(requiredTxt,'').replace(invalidTxt,'').replace(nomatchTxt,'');
-	
-	if(inputHandle.parentNode.innerHTML.search(matchTxt) == -1) {
+	if(inputHandle.parentNode.innerHTML.search(txt) == -1) {
         errorTextNode = document.createElement('span');
         errorTextNode.className = 'required';
         errorTextNode.innerHTML = '<br />' + txt;
@@ -726,17 +713,7 @@ function fade_error_style(normalStyle, percent) {
 	}
 }
 
-function isFieldTypeExceptFromEmptyCheck(fieldType)
-{
-    var results = false;
-    var exemptList = ['bool','file'];
-    for(var i=0;i<exemptList.length;i++)
-    {
-        if(fieldType == exemptList[i])
-            return true;
-    }
-    return results;
-}
+
 function validate_form(formname, startsWith){
     requiredTxt = SUGAR.language.get('app_strings', 'ERR_MISSING_REQUIRED_FIELDS');
     invalidTxt = SUGAR.language.get('app_strings', 'ERR_INVALID_VALUE');
@@ -773,12 +750,10 @@ function validate_form(formname, startsWith){
                     //Example of binary dependant fields would be the hour/min/meridian dropdowns in a date time combo widget, which require further processing than a blank check
                     if(!validate[formname][i][requiredIndex] && trim(form[validate[formname][i][nameIndex]].value) == '' && (typeof(validate[formname][i][jstypeIndex]) != 'undefined' && validate[formname][i][jstypeIndex]  != 'binarydep'))
                     {
-                       continue;
-                    }					
-					
-					if(validate[formname][i][requiredIndex]
-						&& !isFieldTypeExceptFromEmptyCheck(validate[formname][i][typeIndex])
-					){
+                        continue;
+                    }
+
+					if(validate[formname][i][requiredIndex] && validate[formname][i][typeIndex] != 'bool'){
 						if(typeof form[validate[formname][i][nameIndex]] == 'undefined' || trim(form[validate[formname][i][nameIndex]].value) == ""){
 							add_error_style(formname, validate[formname][i][nameIndex], requiredTxt +' ' + validate[formname][i][msgIndex]);
 							isError = true;
@@ -811,12 +786,6 @@ function validate_form(formname, startsWith){
 							break;
 						case 'alphanumeric':
 							break;
-						case 'file':
-						    if( validate[formname][i][requiredIndex] && typeof( form[validate[formname][i][nameIndex] + '_file'] ) != 'undefined' && trim( form[validate[formname][i][nameIndex] + '_file'].value) == "" && !form[validate[formname][i][nameIndex] + '_file'].disabled ) {
-						          isError = true;
-						          add_error_style(formname, validate[formname][i][nameIndex], requiredTxt + " " +	validate[formname][i][msgIndex]);
-						      }					      
-						  break;	
 						case 'int':
 							if(!isInteger(trim(form[validate[formname][i][nameIndex]].value))){
 								isError = true;
@@ -914,7 +883,6 @@ function validate_form(formname, startsWith){
 										date1 = trim(form[validate[formname][i][nameIndex]].value);
 
 										if(trim(date1).length != 0 && !isBefore(date1,date2)){
-										
 											isError = true;
 											//jc:#12287 - adding translation for the is not before message
 											add_error_style(formname, validate[formname][i][nameIndex], validate[formname][i][msgIndex] + "(" + date1 + ") " + SUGAR.language.get('app_strings', 'MSG_IS_NOT_BEFORE') + ' ' +date2);
@@ -1295,7 +1263,7 @@ function http_fetch_sync(url,post_data) {
 	
 	var args = {"responseText" : global_xmlhttp.responseText,
 				"responseXML" : global_xmlhttp.responseXML,
-				"request_id" : typeof(request_id) != "undefined" ? request_id : 0};
+				"request_id" : request_id};
 	return args;
 
 }
@@ -1619,10 +1587,6 @@ function initEditView(theForm) {
     }
 
     // console.log('DEBUG: Adding checks for '+theForm.id);
-    if ( theForm == null || theForm.id == null ) {
-        // Not much we can do here.
-        return;
-    }
     editViewSnapshots[theForm.id] = snapshotForm(theForm);
     SUGAR.loadedForms[theForm.id] = true;
     
@@ -1632,7 +1596,7 @@ function onUnloadEditView(theForm) {
 	
 	var dataHasChanged = false;
 
-    if ( typeof editViewSnapshots == 'undefined' ) { 
+    if ( typeof editViewSnapshots == 'undefined' ) {
         // No snapshots, move along
         return;
     }
@@ -1657,7 +1621,7 @@ function onUnloadEditView(theForm) {
         }
     } else {
         // Just need to check a single form for changes
-		if ( editViewSnapshots == null  || typeof theForm.id == 'undefined' || typeof editViewSnapshots[theForm.id] == 'undefined' || editViewSnapshots[theForm.id] == null ) {
+		if ( editViewSnapshots == null  || typeof editViewSnapshots[theForm.id] == 'undefined' || editViewSnapshots[theForm.id] == null ) {
             return;
         }
 
@@ -1678,7 +1642,7 @@ function onUnloadEditView(theForm) {
 
 function disableOnUnloadEditView(theForm) {
     // If you don't pass anything in, it disables all checking
-    if ( typeof theForm == 'undefined' || typeof editViewSnapshots == 'undefined' || theForm == null || editViewSnapshots == null) {
+    if ( typeof theForm == 'undefined' || typeof editViewSnapshots == 'undefined' || editViewSnapshots == null ) {
         window.onbeforeunload = null;
         editViewSnapshots = null;
         
@@ -1780,59 +1744,15 @@ sugarListView.update_count = function(count, add) {
 		}
 	}
 }
-sugarListView.prototype.use_external_mail_client = function(no_record_txt, module) {
+sugarListView.prototype.use_external_mail_client = function(no_record_txt) {
 	selected_records = sugarListView.get_checks_count();
 	if(selected_records <1) {
 		alert(no_record_txt);
-        return false;
+	} else {
+		location.href = 'mailto:';
 	}
-
-    if (document.MassUpdate.select_entire_list.value == 1) {
-		if (totalCount > 10) {
-			alert(totalCountError);
-			return;
-		} // if
-		select = false;
-	}
-	else if (document.MassUpdate.massall.checked == true)
-		select = false;
-	else
-		select = true;
-    sugarListView.get_checks();
-    var ids = "";
-    if(select) { // use selected items
-		ids = document.MassUpdate.uid.value;
-	}
-	else { // use current page
-		inputs = document.MassUpdate.elements;
-		ar = new Array();
-		for(i = 0; i < inputs.length; i++) {
-			if(inputs[i].name == 'mass[]' && inputs[i].checked && typeof(inputs[i].value) != 'function') {
-				ar.push(inputs[i].value);
-			}
-		}
-		ids = ar.join(',');
-	}
-    YAHOO.util.Connect.asyncRequest("POST", "index.php?", {
-        success: this.use_external_mail_client_callback
-    }, SUGAR.util.paramsToUrl({
-        module: "Emails",
-        action: "Compose",
-        listViewExternalClient: 1,
-        action_module: module,
-        uid: ids,
-        to_pdf:1
-    }));
-
 	return false;
 }
-
-sugarListView.prototype.use_external_mail_client_callback = function(o)
-{
-    if (o.responseText)
-        location.href = 'mailto:' + o.responseText;
-}
-
 sugarListView.prototype.send_form_for_emails = function(select, currentModule, action, no_record_txt,action_module,totalCount, totalCountError) {
 	if (document.MassUpdate.select_entire_list.value == 1) {
 		if (totalCount > 10) {
@@ -2416,14 +2336,8 @@ function unformatNumberNoParse(n, num_grp_sep, dec_sep) {
 	if(typeof num_grp_sep == 'undefined' || typeof dec_sep == 'undefined') return n;
 	n = n ? n.toString() : '';
 	if(n.length > 0) {
-	
-	    if(num_grp_sep != '')
-	    {
-	       num_grp_sep_re = new RegExp('\\'+num_grp_sep, 'g');
-		   n = n.replace(num_grp_sep_re, '');
-	    }
-	    
-		n = n.replace(dec_sep, '.');
+	    num_grp_sep_re = new RegExp('\\'+num_grp_sep, 'g');
+	    n = n.replace(num_grp_sep_re, '').replace(dec_sep, '.');
 
         if(typeof CurrencySymbols != 'undefined') {
             // Need to strip out the currency symbols from the start.
@@ -2466,7 +2380,7 @@ function formatNumber(n, num_grp_sep, dec_sep, round, precision) {
   }
 
   regex = /(\d+)(\d{3})/;
-  while(num_grp_sep != '' && regex.test(n[0])) n[0] = n[0].toString().replace(regex, '$1' + num_grp_sep + '$2');
+  while(num_grp_sep != '' && regex.test(n[0])) n[0] = n[0].replace(regex, '$1' + num_grp_sep + '$2');
   return n[0] + (n.length > 1 && n[1] != '' ? dec_sep + n[1] : '');
 }
 
@@ -3514,19 +3428,13 @@ SUGAR.language = function() {
         },
 
         get: function(module, str) {
-            if(typeof SUGAR.language.languages[module] == 'undefined' || typeof SUGAR.language.languages[module][str] == 'undefined')
-            {
+            if(typeof SUGAR.language.languages[module] == 'undefined'
+            || typeof SUGAR.language.languages[module][str] == 'undefined')
                 return 'undefined';
-            }
+
             return SUGAR.language.languages[module][str];
-        },
-        
-        translate: function(module, str)
-        {
-            text = this.get(module, str);
-            return text != 'undefined' ? text : this.get('app_strings', str);  	
         }
-    }
+    };
 }();
 
 SUGAR.contextMenu = function() {
@@ -3731,11 +3639,7 @@ function open_popup(module_name, width, height, initial_filter, close_popup, hid
 	// set the variables that the popup will pull from
 	window.document.popup_request_data = popup_request_data;
 	window.document.close_popup = close_popup;
-	
-	//globally changing width and height of standard pop up window from 600 x 400 to 800 x 800 
-	width = (width == 600) ? 800 : width;
-	height = (height == 400) ? 800 : height;
-	
+
 	// launch the popup
 	URL = 'index.php?'
 		+ 'module=' + module_name
@@ -4064,16 +3968,6 @@ SUGAR.util.isPackageManager=function(){
 
 SUGAR.util.ajaxCallInProgress = function(){
 	return SUGAR_callsInProgress != 0;
-}
-
-SUGAR.util.callOnChangeListers = function(field){
-	var listeners = YAHOO.util.Event.getListeners(field, 'change');
-	if (listeners != null) {
-		for (var i = 0; i < listeners.length; i++) {
-			var l = listeners[i];
-			l.fn.call(l.scope ? l.scope : this, l.obj);
-		}
-	}
 }
 
 SUGAR.util.closeActivityPanel = {

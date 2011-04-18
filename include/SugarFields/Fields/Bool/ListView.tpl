@@ -35,8 +35,7 @@
  ********************************************************************************/
 
 *}
-
-    {if strval($parentFieldArray.$col) == "1" || strval($parentFieldArray.$col) == "yes" || strval($parentFieldArray.$col) == "on"}
+{if strval($parentFieldArray.$col) == "1" || strval($parentFieldArray.$col) == "yes" || strval($parentFieldArray.$col) == "on"} 
 {assign var="checked" value="CHECKED"}
 {else}
 {assign var="checked" value=""}

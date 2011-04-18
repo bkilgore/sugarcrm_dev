@@ -60,7 +60,7 @@ r8230 - 2005-10-03 17:47:19 -0700 (Mon, 03 Oct 2005) - majed - Added Sugar_Smart
  * @param Smarty
  * @return string
  */
-function smarty_function_html_select_date($params, $smarty)
+function smarty_function_html_select_date($params, &$smarty)
 {
     require_once $smarty->_get_plugin_filepath('shared','escape_special_chars');
     require_once $smarty->_get_plugin_filepath('shared','make_timestamp');
@@ -170,7 +170,7 @@ function smarty_function_html_select_date($params, $smarty)
     }
     // Now split this in pieces, which later can be used to set the select
     $time = explode("-", $time);
-
+    
     // make syntax "+N" or "-N" work with start_year and end_year
     if (preg_match('!^(\+|\-)\s*(\d+)$!', $end_year, $match)) {
         if ($match[1] == '+') {
@@ -186,7 +186,7 @@ function smarty_function_html_select_date($params, $smarty)
             $start_year = strftime('%Y') - $match[2];
         }
     }
-    if (strlen($time[0]) > 0) {
+    if (strlen($time[0]) > 0) { 
         if ($start_year > $time[0] && !isset($params['start_year'])) {
             // force start year to include given date if not explicitly set
             $start_year = $time[0];

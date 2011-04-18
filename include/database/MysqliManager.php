@@ -171,18 +171,6 @@ class MysqliManager extends MysqlManager
         $this->query_time = microtime(true) - $this->query_time;
         $GLOBALS['log']->info('Query Execution Time:'.$this->query_time);
 
-        // This is some heavy duty debugging, leave commented out unless you need this:
-        /*
-        $bt = debug_backtrace();
-        for ( $i = count($bt) ; $i-- ; $i > 0 ) {
-            if ( strpos('MysqliManager.php',$bt[$i]['file']) === false ) {
-                $line = $bt[$i];
-            }
-        }
-
-        $GLOBALS['log']->fatal("${line['file']}:${line['line']} ${line['function']} \nQuery: $sql\n");
-        */
-
 
 		$this->checkError($msg.' Query Failed: ' . $sql, $dieOnError);
         if($autofree)

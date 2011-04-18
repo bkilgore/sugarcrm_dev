@@ -41,10 +41,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 require_once( 'include/utils/progress_bar_utils.php' );
 require_once( 'include/utils/zip_utils.php' );
 
-global $current_user;
-
-
-if (!is_admin($current_user)) sugar_die("Unauthorized access to administration.");
 
 
 global $skip_md5_diff;
@@ -263,7 +259,7 @@ function prepareDiag()
             "<a href='index.php?module=Administration&action=index'>{$mod_strings['LBL_MODULE_NAME']}</a>",
            translate('LBL_DIAGNOSTIC_TITLE')
            ), 
-        false
+        true
         );
 	echo "<BR>";
 	echo $mod_strings['LBL_DIAGNOSTIC_EXECUTING'];
@@ -735,9 +731,8 @@ function finishDiag(){
 	chdir(RETURN_FROM_DIAG_DIR);
 
 	deleteDir($cacheDir);
-	
-	
-	print "<a href=\"index.php?module=Administration&action=DiagnosticDownload&guid=$sod_guid&time=$curdatetime&to_pdf=1\">".$mod_strings['LBL_DIAGNOSTIC_DOWNLOADLINK']."</a><BR>";
+
+	print "<a href=\"{$GLOBALS['sugar_config']['cache_dir']}diagnostic/".$sod_guid."/diagnostic".$curdatetime.".zip\">".$mod_strings['LBL_DIAGNOSTIC_DOWNLOADLINK']."</a><BR>";
 
 	print "<a href=\"index.php?module=Administration&action=DiagnosticDelete&file=diagnostic".$curdatetime."&guid=".$sod_guid."\">".$mod_strings['LBL_DIAGNOSTIC_DELETELINK']."</a><br>";
 

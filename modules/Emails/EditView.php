@@ -153,7 +153,7 @@ $from = $current_user->getEmailInfo();
 ///////////////////////////////////////////////////////////////////////////////
 ////	XTEMPLATE ASSIGNMENT
 if($email_type == 'archived') {
-	echo getClassicModuleTitle('Emails', array($mod_strings['LBL_ARCHIVED_MODULE_NAME']), true);
+	echo get_module_title('Emails', $mod_strings['LBL_ARCHIVED_MODULE_NAME'].":", true);
 	$xtpl=new XTemplate('modules/Emails/EditViewArchive.html');
 } else {
 
@@ -184,7 +184,7 @@ if($email_type == 'archived') {
 	header("Location: index.php?module=Emails&action=Compose&record=$focus->id&replyForward=true&reply=$replyType");
 	return;
 
-	echo getClassicModuleTitle('Emails', array($mod_strings['LBL_COMPOSE_MODULE_NAME']), true);
+	echo get_module_title('Emails', $mod_strings['LBL_COMPOSE_MODULE_NAME'].":", true);
 	$xtpl=new XTemplate('modules/Emails/EditView.html');
 }
 echo "\n</p>\n";

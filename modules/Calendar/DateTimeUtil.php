@@ -39,10 +39,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
  ********************************************************************************/
 
-/**
- * @deprecated Phased out, should not be used anymore
- * Use SugarDateTime instead
- */
 class DateTimeUtil
 {
 		var $timezone;

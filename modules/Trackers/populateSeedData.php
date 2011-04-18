@@ -38,7 +38,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
-
+	
 
 require_once('modules/Trackers/TrackerUtility.php');
 
@@ -60,7 +60,7 @@ function start() {
     $this->db = DBManagerFactory::getInstance();
     $this->userDemoData = new UserDemoData($this->user, false);
     $this->trackerManager = TrackerManager::getInstance();
-
+    
 	foreach($this->modules as $mod) {
 		$query = "select id from $mod";
 		$result = $this->db->limitQuery($query, 0, 50);
@@ -70,7 +70,7 @@ function start() {
 		} //while
 		$this->beanIdMap[$mod] = $ids;
 	}
-
+	
 	while($this->monitorIds-- > 0) {
 		$this->monitorId = create_guid();
 		$this->trackerManager->setMonitorId($this->monitorId);
@@ -88,27 +88,27 @@ function populate_tracker() {
 	    $monitor->setValue('user_id', $this->user);
 	    $monitor->setValue('module_name', $this->module);
 	    $monitor->setValue('action', $this->action);
-	    $monitor->setValue('visible', (($monitor->action == 'detailview') || ($monitor->action == 'editview')) ? 1 : 0);
+	    $monitor->setValue('visible', (($monitor->action == 'detailview') || ($monitor->action == 'editview')) ? 1 : 0);        
 	    $monitor->setValue('date_modified', $this->randomTimestamp());
 	    $monitor->setValue('session_id', $this->getSessionId());
 	    if($this->action != 'settimezone' && isset($this->beanIdMap[$this->module][array_rand($this->beanIdMap[$this->module])])) {
 	       $monitor->setValue('item_id', $this->beanIdMap[$this->module][array_rand($this->beanIdMap[$this->module])]);
 	       $monitor->setValue('item_summary', 'random stuff'); //don't really need this
-	    }
+	    }  	
 	}
 }
 
 
 function randomTimestamp() {
-   global $timedate;
-   // 1201852800 is 1 Feb 2008
-   return $timedate->fromTimestamp(rand(1201852800, $timedate->getNow()->ts))->asDb();
+   $now = strtotime(date('D M Y'));
+   $lastYear = strtotime('01 February 2008');
+   return gmdate("Y-m-d H:i:s", rand($lastYear, $now));
 }
 
 function getSessionId() {
    if(isset($this->userSessions[$this->user])) {
    	  return $this->userSessions[$this->user];
-   }
+   } 
    $this->userSessions[$this->user] = $this->monitorId;
    return $this->monitorId;
 }

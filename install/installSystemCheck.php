@@ -59,8 +59,8 @@ $error_txt = '';
 
 // check IIS and FastCGI
 $server_software = $_SERVER["SERVER_SOFTWARE"];
-if ((strpos($_SERVER["SERVER_SOFTWARE"],'Microsoft-IIS') !== false)
-    && php_sapi_name() == 'cgi-fcgi'
+if ((strpos($_SERVER["SERVER_SOFTWARE"],'Microsoft-IIS') !== false) 
+    && php_sapi_name() == 'cgi-fcgi' 
     && ini_get('fastcgi.logging') != '0')
 {
     installLog($mod_strings['ERR_CHECKSYS_FASTCGI_LOGGING']);
@@ -111,7 +111,7 @@ if(strpos($server_software,'Microsoft-IIS') !== false)
           </tr>';
     }
 }
-
+        
 // PHP VERSION
 $php_version = constant('PHP_VERSION');
 $check_php_version_result = check_php_version($php_version);
@@ -204,14 +204,6 @@ if(!function_exists('mb_strlen')) {
       </tr>';
 }else{
     installLog("MBString Support Found");
-}
-
-// zip
-if(!class_exists('ZipArchive')) {
-    $zipStatus = "<b><span class=stop>{$mod_strings['ERR_CHECKSYS_ZIP']}</font></b>";
-    installLog("ERROR:: {$mod_strings['ERR_CHECKSYS_ZIP']}");
-}else{
-    installLog("ZIP Support Found");
 }
 
 // config.php

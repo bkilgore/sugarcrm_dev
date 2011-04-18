@@ -67,7 +67,7 @@ class DeployedRelationships extends AbstractRelationships implements Relationshi
      * The cardinality in the installed relationship is not necessarily correct for custom relationships, which currently are all built as many-to-many relationships
      * Instead we must obtain the true cardinality from a property we added to the relationship metadata when we created the relationship
      * This relationship metadata is accessed through the Table Dictionary
-     */ 
+     */
     function load ()
     {
         
@@ -90,8 +90,7 @@ class DeployedRelationships extends AbstractRelationships implements Relationshi
             {
                 if (($definition [ 'lhs_module' ] == $this->moduleName) || ($definition [ 'rhs_module' ] == $this->moduleName))
                 {
-                    if (in_array ( $definition [ 'lhs_module' ], $validModules ) && in_array ( $definition [ 'rhs_module' ], $validModules )
-                        && ! in_array ( $definition [ 'lhs_module' ], $invalidModules ) && ! in_array ( $definition [ 'rhs_module' ], $invalidModules ))
+                    if (in_array ( $definition [ 'lhs_module' ], $validModules ) && in_array ( $definition [ 'rhs_module' ], $validModules ) && ! in_array ( $definition [ 'lhs_module' ], $invalidModules ) && ! in_array ( $definition [ 'rhs_module' ], $invalidModules ))
                     {
                         // identify the subpanels for this relationship - TODO: optimize this - currently does m x n scans through the subpanel list...
                         $definition [ 'rhs_subpanel' ] = self::identifySubpanel ( $definition [ 'lhs_module' ], $definition [ 'rhs_module' ] ) ;
@@ -167,10 +166,6 @@ class DeployedRelationships extends AbstractRelationships implements Relationshi
         $rac = new RepairAndClear ( ) ;
         $rac->repairAndClearAll ( array ( 'clearAll', 'rebuildExtensions',  ), array ( $GLOBALS [ 'mod_strings' ] [ 'LBL_ALL_MODULES' ] ), true, false ) ;
         $GLOBALS [ 'mod_strings' ] = $MBmodStrings;
-        if (isset($this->relationships[$rel_name]))
-        {
-            unset($this->relationships[$rel_name]);
-        }
     }
 
     /*
@@ -197,12 +192,13 @@ class DeployedRelationships extends AbstractRelationships implements Relationshi
         $spd = new SubPanelDefinitions ( $module ) ;
         $subpanelNames = $spd->get_available_tabs () ; // actually these are the displayed subpanels
         
+
+        $subPanels = array ( ) ;
         foreach ( $subpanelNames as $key => $name )
         {
             $GLOBALS [ 'log' ]->debug ( $thisModuleName . " " . $name ) ;
-            
             $subPanel = $spd->load_subpanel ( $name ) ;
-            if ($subPanel && ! isset ( $subPanel->_instance_properties [ 'collection_list' ] ))
+            if (! isset ( $subPanel->_instance_properties [ 'collection_list' ] ))
             {
                 if ($sourceModuleName == $subPanel->_instance_properties [ 'module' ])
                 {

@@ -126,11 +126,9 @@ class TemplateMultiEnum extends TemplateEnum{
 		{
 			// turn off error reporting in case we are unpacking a value that hasn't been packed...
 			// this is kludgy, but unserialize doesn't throw exceptions correctly
-			if($this->ext4[0] == 'a' && $this->ext4[1] == ':') {
-			    $unpacked = @unserialize ( $this->ext4 ) ;
-			} else {
-			    $unpacked = false;
-			}
+			$oldErrorReporting = error_reporting ( 0 );
+			$unpacked = unserialize ( $this->ext4 ) ;
+			error_reporting ( $oldErrorReporting ) ;
 
 			// if we have a new error, then unserialize must have failed => we don't have a packed ext4
 			// safe to assume that false means the unpack failed, as ext4 will either contain an imploded string of default values, or an array, not a boolean false value

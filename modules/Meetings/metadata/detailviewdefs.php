@@ -89,17 +89,18 @@ array (
             'name' => 'date_start',
             'label' => 'LBL_DATE_TIME',
           ),
-        ),
-        array (
-          array (
-            'name' => 'duration_hours',
-            'customCode' => '{$fields.duration_hours.value}{$MOD.LBL_HOURS_ABBREV} {$fields.duration_minutes.value}{$MOD.LBL_MINSS_ABBREV} ',
-            'label' => 'LBL_DURATION',
-          ),
           array (
             'name' => 'parent_name',
             'customLabel' => '{sugar_translate label=\'LBL_MODULE_NAME\' module=$fields.parent_type.value}',
           ),
+        ),
+        array (
+          array (
+            'name' => 'duration_hours',
+            'customCode' => '{$fields.duration_hours.value}{$MOD.LBL_HOURS_ABBREV} {$fields.duration_minutes.value}{$MOD.LBL_MINSS_ABBREV}&nbsp;',
+            'label' => 'LBL_DURATION',
+          ),
+          'location',
         ),
         array (
           array (
@@ -110,7 +111,6 @@ array (
               'reminder_time',
             ),
           ),
-          'location',
         ),
         array (
           'description',
@@ -128,7 +128,6 @@ array (
             'label' => 'LBL_DATE_MODIFIED',
             'customCode' => '{$fields.date_modified.value} {$APP.LBL_BY} {$fields.modified_by_name.value}',
           ),
-
         ),
         array (
           array (

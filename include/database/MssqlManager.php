@@ -212,11 +212,9 @@ class MssqlManager extends DBManager
             return true;
 
         $sqlmsg = mssql_get_last_message();
-        
         $sqlpos = strpos($sqlmsg, 'Changed database context to');
-        $sqlpos2 = strpos($sqlmsg, 'Warning:');
-        $sqlpos3 = strpos($sqlmsg, 'Checking identity information:');
-        if ( $sqlpos !== false || $sqlpos2 !== false || $sqlpos3 !== false )
+        $sqlpos2 = strpos($sqlmsg, 'Caution: Changing any part of an object name could break scripts and stored procedures.');
+        if ( $sqlpos !== false || $sqlpos2 !== false )
             $sqlmsg = '';  // empty out sqlmsg if its either of the two error messages described above
         else {
         	global $app_strings;
@@ -271,26 +269,6 @@ class MssqlManager extends DBManager
             $result = @mssql_query($sql, $this->database);
         }
 
-        if (!$result) {
-
-            // awu Bug 10657: ignoring mssql error message 'Changed database context to' - an intermittent
-            // 				  and difficult to reproduce error. The message is only a warning, and does
-            //				  not affect the functionality of the query
-            $sqlmsg = mssql_get_last_message();
-            $sqlpos = strpos($sqlmsg, 'Changed database context to');
-			$sqlpos2 = strpos($sqlmsg, 'Warning:');
-			$sqlpos3 = strpos($sqlmsg, 'Checking identity information:');
-            
-			if ($sqlpos !== false || $sqlpos2 !== false || $sqlpos3 !== false)		// if sqlmsg has 'Changed database context to', just log it
-				$GLOBALS['log']->debug($sqlmsg . ": " . $sql );
-			else {
-				$GLOBALS['log']->fatal($sqlmsg . ": " . $sql );
-				if($dieOnError)
-					sugar_die('SQL Error : ' . $sqlmsg);
-				else
-					echo 'SQL Error : ' . $sqlmsg;
-			}
-        }
         $this->lastmysqlrow = -1;
 
         $this->query_time = microtime(true) - $this->query_time;
@@ -826,15 +804,12 @@ class MssqlManager extends DBManager
             //and is not part of a function (i.e. "ISNULL(leads.last_name,'') as name"  )
             //this is especially true for unified search from home screen
 
-            $alias_beg_pos = 0;
             if(strpos($psql, " as "))
                 $alias_beg_pos = strpos($psql, " as ");
-            else if (strncasecmp($psql, 'isnull', 6))
+            else
                 $alias_beg_pos = strpos($psql, " ");
 
-            if ($alias_beg_pos > 0) {
-                $col_name = substr($psql,0, $alias_beg_pos );
-            }
+            $col_name = substr($psql,0, $alias_beg_pos );
             //add the "asc/desc" order back
             $col_name = $col_name. " ". $asc_desc;
 
@@ -997,12 +972,12 @@ class MssqlManager extends DBManager
         $table_descriptions[$tablename] = array();
 
         $sql = sprintf( "SELECT COLUMN_NAME AS Field
-				, DATA_TYPE + CASE WHEN CHARACTER_MAXIMUM_LENGTH IS NOT NULL
-                        THEN '(' + RTRIM(CAST(CHARACTER_MAXIMUM_LENGTH AS CHAR)) + ')' 
-						ELSE '' END as 'Type'
+				, DATA_TYPE + CASE WHEN CHARACTER_MAXIMUM_LENGTH IS NOT NULL " .
+							"THEN '(' + RTRIM(CAST(CHARACTER_MAXIMUM_LENGTH AS CHAR)) + ')' " .
+							"ELSE '' END as 'Type'
 				, CHARACTER_MAXIMUM_LENGTH
 				, IS_NULLABLE AS 'Null'
-				, CASE WHEN COLUMN_DEFAULT LIKE '((0))' THEN '(''0'')' ELSE COLUMN_DEFAULT END as 'Default'
+				, CASE WHEN COLUMN_DEFAULT LIKE '((0))' THEN \"('0')\" ELSE COLUMN_DEFAULT END as 'Default'
 			FROM INFORMATION_SCHEMA.COLUMNS
 			WHERE TABLE_NAME = '%s'",
 			$tablename
@@ -1288,7 +1263,7 @@ class MssqlManager extends DBManager
 			else
 			    $ret .=	" + ' ' + ".db_convert($table.".".$field,'IFNULL', array("''"));
 
-		return empty($ret)?$ret:"LTRIM(RTRIM($ret))";
+		return $ret;
     }
 
     /**

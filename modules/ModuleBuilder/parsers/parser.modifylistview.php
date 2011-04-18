@@ -178,12 +178,6 @@ class ParserModifyListView extends ModuleBuilderParser
 
 		return $this->availableFields ;
 	}
-
-    function getFieldDefs()
-    {
-        return $this->module->field_defs;
-    }
-
 	
 	function isValidField($key, $def) {
 	    //Allow fields that are studio visible  

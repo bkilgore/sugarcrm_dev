@@ -39,35 +39,34 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 require('config.php');
 global $sugar_config;
 global $timedate;
-global $mod_strings;
 
 //Sent when the admin generate a new password
 $EmailTemp = new EmailTemplate();
-$EmailTemp->name = $mod_strings['advanced_password_new_account_email']['name'];
-$EmailTemp->description = $mod_strings['advanced_password_new_account_email']['description'];
-$EmailTemp->subject = $mod_strings['advanced_password_new_account_email']['subject'];
-$EmailTemp->body = $mod_strings['advanced_password_new_account_email']['txt_body'];
-$EmailTemp->body_html = $mod_strings['advanced_password_new_account_email']['body'];
+$subj ='New account information';
+$desc = 'This template is used when the System Administrator sends a new password to a user.';
+$body = '<div><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width="550" align=\"\&quot;\&quot;center\&quot;\&quot;\"><tbody><tr><td colspan=\"2\"><p>Here is your account username and temporary password:</p><p>Username : $contact_user_user_name </p><p>Password : $contact_user_user_hash </p><br><p>'.$GLOBALS['sugar_config']['site_url'].'/index.php</p><br><p>After you log in using the above password, you may be required to reset the password to one of your own choice.</p>   </td>         </tr><tr><td colspan=\"2\"></td>         </tr> </tbody></table> </div>';
+$txt_body = 
+'
+Here is your account username and temporary password:
+Username : $contact_user_user_name
+Password : $contact_user_user_hash
+
+'.$GLOBALS['sugar_config']['site_url'].'/index.php
+
+After you log in using the above password, you may be required to reset the password to one of your own choice.';
+$name = 'System-generated password email';
+
+$EmailTemp->name = $name;
+$EmailTemp->description = $desc;
+$EmailTemp->subject = $subj;
+$EmailTemp->body = $txt_body;
+$EmailTemp->body_html = $body;
 $EmailTemp->deleted = 0;
 $EmailTemp->published = 'off';
 $EmailTemp->text_only = 0;
 $id =$EmailTemp->save();
+
 $sugar_config['passwordsetting']['generatepasswordtmpl'] = $id;
-
-//User generate a link to set a new password
-$EmailTemp = new EmailTemplate();
-$EmailTemp->name = $mod_strings['advanced_password_forgot_password_email']['name'];
-$EmailTemp->description = $mod_strings['advanced_password_forgot_password_email']['description'];
-$EmailTemp->subject = $mod_strings['advanced_password_forgot_password_email']['subject'];
-$EmailTemp->body = $mod_strings['advanced_password_forgot_password_email']['txt_body'];
-$EmailTemp->body_html = $mod_strings['advanced_password_forgot_password_email']['body'];
-$EmailTemp->deleted = 0;
-$EmailTemp->published = 'off';
-$EmailTemp->text_only = 0;
-$id =$EmailTemp->save();
-$sugar_config['passwordsetting']['lostpasswordtmpl'] = $id;
-
-// set all other default settings
 $sugar_config['passwordsetting']['forgotpasswordON'] = true;
 $sugar_config['passwordsetting']['SystemGeneratedPasswordON'] = true;
 $sugar_config['passwordsetting']['systexpirationtime'] = 7;
@@ -80,4 +79,37 @@ $sugar_config['passwordsetting']['oneupper'] = true;
 $sugar_config['passwordsetting']['onelower'] = true;
 $sugar_config['passwordsetting']['onenumber'] = true;
 
+$result = $EmailTemp->db->query("INSERT INTO config (value, category, name) VALUES ('$id','password', 'System-generated password email')");
+
+
+//User generate a link to set a new password
+$EmailTemp = new EmailTemplate();
+$subj ='Reset your account password';
+$desc = "This template is used to send a user a link to click to reset the user's account password.";
+$body = '<div><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width="550" align=\"\&quot;\&quot;center\&quot;\&quot;\"><tbody><tr><td colspan=\"2\"><p>You recently requested on $contact_user_pwd_last_changed to be able to reset your account password. </p><p>Click on the link below to reset your password:</p><p> $contact_user_link_guid </p>  </td>         </tr><tr><td colspan=\"2\"></td>         </tr> </tbody></table> </div>';
+$txt_body = 
+'
+You recently requested on $contact_user_pwd_last_changed to be able to reset your account password.
+
+Click on the link below to reset your password:
+
+$contact_user_link_guid';
+$name = 'Forgot Password email';
+
+$EmailTemp->name = $name;
+$EmailTemp->description = $desc;
+$EmailTemp->subject = $subj;
+$EmailTemp->body = $txt_body;
+$EmailTemp->body_html = $body;
+$EmailTemp->deleted = 0;
+$EmailTemp->published = 'off';
+$EmailTemp->text_only = 0;
+$id =$EmailTemp->save();
+$sugar_config['passwordsetting']['lostpasswordtmpl'] = $id;
+ 
+$result = $EmailTemp->db->query("INSERT INTO config (value, category, name) VALUES ('$id','password', 'Forgot Password email')");
+
+//rebuildConfigFile($sugar_config, $sugar_config['sugar_version']);
 write_array_to_file( "sugar_config", $sugar_config, "config.php");
+
+?>

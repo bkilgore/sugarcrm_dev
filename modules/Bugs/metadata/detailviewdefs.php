@@ -35,58 +35,65 @@
  ********************************************************************************/
 
 $viewdefs['Bugs']['DetailView'] = array(
-'templateMeta' => array('form' => array('buttons'=>array('EDIT', 'DUPLICATE', 'DELETE', 'FIND_DUPLICATES',)),
-                        'maxColumns' => '2',
+'templateMeta' => array('form' => array('buttons'=>array('EDIT', 'DUPLICATE', 'DELETE', 
+                                                         array('customCode'=>'<input title="{$APP.LBL_DUP_MERGE}" ' .
+                                                         		'                    accesskey="M" ' .
+                                                         		'                    class="button" ' .
+                                                         		'                    onclick="this.form.return_module.value=\'Bugs\';this.form.return_action.value=\'DetailView\';this.form.return_id.value=\'{$fields.id.value}\'; this.form.action.value=\'Step1\'; this.form.module.value=\'MergeRecords\';" ' .
+                                                         		'                    name="button" ' .
+                                                         		'                    value="{$APP.LBL_DUP_MERGE}" ' .
+                                                         		'                    type="submit">'),)),
+                        'maxColumns' => '2', 
                         'widths' => array(
-                                        array('label' => '10', 'field' => '30'),
+                                        array('label' => '10', 'field' => '30'), 
                                         array('label' => '10', 'field' => '30')
                                         ),
                         ),
-
+                        
 'panels' =>array (
-  'lbl_bug_information'=>array(
+  'lbl_bug_information'=>array( 
 	  array (
 	    'bug_number',
 	    'priority',
 	  ),
-
+	  
 	  array (
 	    array (
-	      'name' => 'name',
+	      'name' => 'name',      
 	      'label' => 'LBL_SUBJECT',
-	    ),
+	    ),	  
 	    'status',
 	  ),
-
+	  
 	  array (
 	    'type',
 	    'source',
 	  ),
-
+	  
 	  array (
 	    'product_category',
 	    'resolution',
 	  ),
-
+	  
 	  array (
 	    array (
 	      'name' => 'found_in_release',
-	      'label' => 'LBL_FOUND_IN_RELEASE',
-	    ),
+	      'label' => 'LBL_FOUND_IN_RELEASE',      
+	    ),    
 	    'fixed_in_release',
 	  ),
-
+	  
 	  array (
 	    'description',
 	  ),
-
+	  
 	  array (
 	    'work_log',
 	  ),
-
+	  
   ),
 
-      'LBL_PANEL_ASSIGNMENT' =>
+      'LBL_PANEL_ASSIGNMENT' => 
       array (
 
         array (
@@ -104,7 +111,7 @@ $viewdefs['Bugs']['DetailView'] = array(
         ),
 
         array (
-
+        
           array (
             'name' => 'date_entered',
             'customCode' => '{$fields.date_entered.value} {$APP.LBL_BY} {$fields.created_by_name.value}',
@@ -112,7 +119,7 @@ $viewdefs['Bugs']['DetailView'] = array(
           ),
 
         ),
-      ),
-)
+      ),  
+)   
 );
 ?>

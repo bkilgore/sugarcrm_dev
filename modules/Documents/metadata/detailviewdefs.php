@@ -47,7 +47,14 @@ $viewdefs['Documents']['DetailView'] = array(
       'lbl_document_information' => 
       array (
         array (
-          'filename',
+          array (
+            'name' => 'filename',
+            'displayParams' => 
+            array (
+              'link' => 'filename',
+              'id' => 'document_revision_id',
+            ),
+          ),
           'status',
         ),
 
@@ -95,7 +102,6 @@ $viewdefs['Documents']['DetailView'] = array(
 	       'related_doc_rev_number',
 	    ),
 
-		
         
       ),
       'LBL_REVISIONS_PANEL' => 
@@ -104,15 +110,6 @@ $viewdefs['Documents']['DetailView'] = array(
           0 => 'last_rev_created_name',
           1 => 'last_rev_create_date',
         ),
-      ),
-      'LBL_PANEL_ASSIGNMENT' =>
-      array (
-	    array (
-	      array (
-            'name' => 'assigned_user_name',
-            'label' => 'LBL_ASSIGNED_TO_NAME',
-          ),
-	    ),
       ),
     )
    

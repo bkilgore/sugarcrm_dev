@@ -110,7 +110,7 @@ YAHOO.util.Event.onDOMReady(SourceTabs.init);
 <input type="hidden" name="mapping_sources" value="">
 <input type="hidden" name="reset_to_default" value="">
 
-<table border="0" class="actionsContainer">
+<table border="0">
 <tr><td>
 <input title="{$APP.LBL_SAVE_BUTTON_LABEL}" accessKey="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button" type="submit" name="button" value="{$APP.LBL_SAVE_BUTTON_LABEL}"> 
 <input title="{$APP.LBL_CANCEL_BUTTON_LABEL}" accessKey="{$APP.LBL_CANCEL_BUTTON_KEY}" class="button" onclick="document.ModifyMapping.action.value='ConnectorSettings'; document.ModifyMapping.module.value='Connectors';" type="submit" name="button" value="{$APP.LBL_CANCEL_BUTTON_LABEL}"> 
@@ -124,7 +124,7 @@ YAHOO.util.Event.onDOMReady(SourceTabs.init);
 </div>
 </td></tr>
 </table>
-<table border="0" class="actionsContainer">
+<table border="0">
 <tr><td>
 <input title="{$APP.LBL_SAVE_BUTTON_LABEL}" accessKey="{$APP.LBL_SAVE_BUTTON_TITLE}" class="button" type="submit" name="button" value="{$APP.LBL_SAVE_BUTTON_LABEL}"> 
 <input title="{$APP.LBL_CANCEL_BUTTON_LABEL}" accessKey="{$APP.LBL_CANCEL_BUTTON_KEY}" class="button" onclick="document.ModifyMapping.action.value='ConnectorSettings'; document.ModifyMapping.module.value='Connectors';" type="submit" name="button" value="{$APP.LBL_CANCEL_BUTTON_LABEL}"> 

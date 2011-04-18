@@ -158,32 +158,29 @@ echo $theProductName."&#8482; ".$mod_strings['LBL_AND']." Sugar&#8482; ".$mod_st
 <ul style="margin-bottom: 20px; padding-left: 0px;">
 <LI><?php echo $mod_strings['LBL_SOURCE_SUGAR']; ?> (<A href="http://www.sugarcrm.com" target="_blank">http://www.sugarcrm.com</A>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_XTEMPLATE']; ?> (<A href="http://sourceforge.net/projects/xtpl" target="_blank">http://sourceforge.net/projects/xtpl</A>)</LI>
-<LI><?php echo $mod_strings['LBL_SOURCE_NUSOAP']; ?> (<a href="http://sourceforge.net/projects/nusoap/" target="_blank">http://sourceforge.net/projects/nusoap/</a>)</LI>
+<LI><?php echo $mod_strings['LBL_SOURCE_NUSOAP']; ?> (<a href="http://dietrich.ganx4.com/nusoap" target="_blank">http://dietrich.ganx4.com/nusoap</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_JSCALENDAR']; ?> (<a href="http://www.dynarch.com/mishoo/calendar.epl" target="_blank">http://www.dynarch.com/mishoo/calendar.epl</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_PHPPDF']; ?> (<a href="http://ros.co.nz/pdf/" target="_blank">http://ros.co.nz/pdf/</a>)
-<LI><?php echo $mod_strings['LBL_SOURCE_JSONPHP']; ?> (<a href="http://pear.php.net/pepr/pepr-proposal-show.php?id=198" target="_blank">http://pear.php.net/pepr/pepr-proposal-show.php?id=198</a>)</LI>
+<LI><?php echo $mod_strings['LBL_SOURCE_JSONPHP']; ?> (<a href="http://mike.teczno.com/json.html" target="_blank">http://mike.teczno.com/json.html</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_JSON']; ?> (<a href="http://www.json.org/js.html" target="_blank">http://www.json.org/js.html</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_HTTP_WEBDAV_SERVER']; ?> (<a href="http://pear.php.net/package/HTTP_WebDAV_Server" target="_blank">http://pear.php.net/package/HTTP_WebDAV_Server</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_JS_O_LAIT']; ?> (<a href="http://jsolait.net/" target="_blank">http://jsolait.net/</a>)</LI>
-<LI><?php echo $mod_strings['LBL_SOURCE_PCLZIP']; ?> (<a href="http://www.phpconcept.net/pclzip/" target="_blank">http://www.phpconcept.net/pclzip/</a>)</LI>
-<LI><?php echo $mod_strings['LBL_SOURCE_SMARTY']; ?> (<a href="http://www.smarty.net/" target="_blank">http://www.smarty.net/</a>)</LI>
+<LI><?php echo $mod_strings['LBL_SOURCE_PCLZIP']; ?> (<a href="http://www.phpconcept.net/pclzip/index.en.php" target="_blank">http://www.phpconcept.net/pclzip/index.en.php/</a>)</LI>
+<LI><?php echo $mod_strings['LBL_SOURCE_SMARTY']; ?> (<a href="http://smarty.php.net/" target="_blank">http://smarty.php.net/</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_OVERLIBMWS']; ?> (<a href="http://www.macridesweb.com/oltest/" target="_blank">http://www.macridesweb.com/oltest/</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_YAHOO_UI_LIB']; ?> (<a href="http://developer.yahoo.net/yui/" target="_blank">http://developer.yahoo.net/yui/</a>)</LI>
-<LI><?php echo $mod_strings['LBL_SOURCE_PHPMAILER']; ?> (<a href="http://sourceforge.net/projects/phpmailer/" target="_blank">http://sourceforge.net/projects/phpmailer/</a>)</LI>
+<LI><?php echo $mod_strings['LBL_SOURCE_PHPMAILER']; ?> (<a href="http://phpmailer.sourceforge.net/" target="_blank">http://phpmailer.sourceforge.net/</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_CRYPT_BLOWFISH']; ?> (<a href="http://pear.php.net/package/Crypt_Blowfish/" target="_blank">http://pear.php.net/package/Crypt_Blowfish/</a>) </LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_HTML_SAFE']; ?> (<a href="http://pear.php.net/package/HTML_Safe/" target="_blank">http://pear.php.net/package/HTML_Safe/</a>) </LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_XML_HTMLSAX3']; ?> (<a href="http://pear.php.net/package/XML_HTMLSax3/" target="_blank">http://pear.php.net/package/XML_HTMLSax3/</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_YAHOO_UI_LIB_EXT']; ?> (<a href="http://www.jackslocum.com/blog/" target="_blank">http://www.jackslocum.com/blog/</a>)</LI>
-<LI><?php echo $mod_strings['LBL_SOURCE_JSMIN']; ?> (<a href="https://github.com/rgrove/jsmin-php/" target="_blank">https://github.com/rgrove/jsmin-php/</a>)</LI>
+<LI><?php echo $mod_strings['LBL_SOURCE_JSMIN']; ?> (<a href="http://www.crockford.com/javascript/jsmin.html" target="_blank">http://www.crockford.com/javascript/jsmin.html</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_SWFOBJECT']; ?> (<a href="http://blog.deconcept.com/swfobject/" target="_blank">http://blog.deconcept.com/swfobject</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_TINYMCE']; ?> (<a href="http://wiki.moxiecode.com/index.php/TinyMCE:Index" target="_blank">http://wiki.moxiecode.com/index.php/TinyMCE:Index</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_TCPDF']; ?> (<a href="http://www.tcpdf.org/" target="_blank">http://www.tcpdf.org/</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_RECAPTCHA']; ?> (<a href="http://recaptcha.net/" target="_blank">http://recaptcha.net/</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_CSSMIN']; ?> (<a href="http://code.google.com/p/cssmin/" target="_blank">http://code.google.com/p/cssmin/</a>)</LI>
 <LI><?php echo $mod_strings['LBL_SOURCE_PHPSAML']; ?> (<a href="https://github.com/onelogin/php-saml" target="_blank">https://github.com/onelogin/php-saml/</a>)</LI>
-<LI><?php echo $mod_strings['LBL_SOURCE_ISCROLL']; ?> (<a href="http://cubiq.org/iscroll" target="_blank">http://cubiq.org/iscroll</a>)</LI>
-<LI><?php echo $mod_strings['LBL_SOURCE_JIT']; ?> (<a href="http://thejit.org/" target="_blank">http://thejit.org/</a>)</LI>
-<LI><?php echo $mod_strings['LBL_SOURCE_FLASHCANVAS']; ?> (<a href="http://flashcanvas.net/" target="_blank">http://flashcanvas.net/</a>)</LI>
 
 </ul>
 

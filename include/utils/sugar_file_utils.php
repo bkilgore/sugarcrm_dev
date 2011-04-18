@@ -55,22 +55,22 @@ function sugar_mkdir($pathname, $mode=null, $recursive=false, $context='') {
 
 	if ( sugar_is_dir($pathname,$mode) )
 	    return true;
-
+	
 	$result = false;
 	if(empty($mode))
 		$mode = 0777;
 	if(empty($context)) {
-		$result = @mkdir($pathname, $mode, $recursive);
+		$result = mkdir($pathname, $mode, $recursive);
 	} else {
-		$result = @mkdir($pathname, $mode, $recursive, $context);
+		$result = mkdir($pathname, $mode, $recursive, $context);
 	}
 
 	if($result){
-		if(!sugar_chmod($pathname, $mode)){
+		if(!sugar_chmod($pathname, $mode)){ 
 			return false;
 		}
 		if(!empty($GLOBALS['sugar_config']['default_permissions']['user'])){
-			if(!sugar_chown($pathname)){
+			if(!sugar_chown($pathname)){ 
 				return false;
 			}
 		}
@@ -80,10 +80,6 @@ function sugar_mkdir($pathname, $mode=null, $recursive=false, $context='') {
    			}
 		}
 	}
-	else {
-	    $GLOBALS['log']->error("Cannot create directory $pathname cannot be touched");
-	}
-	
 	return $result;
 }
 
@@ -106,7 +102,7 @@ function sugar_fopen($filename, $mode, $use_include_path=false, $context=null){
 	if(!file_exists($filename)){
 		sugar_touch($filename);
 	}
-
+		
 	if(empty($context)) {
 		return fopen($filename, $mode, $use_include_path);
 	} else {
@@ -134,43 +130,12 @@ function sugar_file_put_contents($filename, $data, $flags=null, $context=null){
 		sugar_touch($filename);
 	}
 
-	if ( !is_writable($filename) ) {
-	    $GLOBALS['log']->error("File $filename cannot be written to");
-	    return false;
-	}
-	
 	if(empty($flags)) {
 		return file_put_contents($filename, $data);
 	} elseif(empty($context)) {
 		return file_put_contents($filename, $data, $flags);
 	} else{
 		return file_put_contents($filename, $data, $flags, $context);
-	}
-}
-
-/**
- * sugar_file_get_contents
- *
- * @param $filename - String value of the file to create
- * @param $use_include_path - boolean value indicating whether or not to search the the included_path
- * @param $context
- * @return string|boolean - Returns a file data on success, false otherwise
- */
-function sugar_file_get_contents($filename, $use_include_path=false, $context=null){
-	//check to see if the file exists, if not then use touch to create it.
-	if(!file_exists($filename)){
-		sugar_touch($filename);
-	}
-
-	if ( !is_readable($filename) ) {
-	    $GLOBALS['log']->error("File $filename cannot be read");
-	    return false;
-	}
-	
-	if(empty($context)) {
-		return file_get_contents($filename, $use_include_path);
-	} else {
-		return file_get_contents($filename, $use_include_path, $context);
 	}
 }
 
@@ -193,17 +158,15 @@ function sugar_touch($filename, $time=null, $atime=null) {
    $result = false;
 
    if(!empty($atime) && !empty($time)) {
-   	  $result = @touch($filename, $time, $atime);
+   	  $result = touch($filename, $time, $atime);
    } else if(!empty($time)) {
-   	  $result = @touch($filename, $time);
+   	  $result = touch($filename, $time);
    } else {
-   	  $result = @touch($filename);
+   	  $result = touch($filename);
    }
 
-   if(!$result) {
-       $GLOBALS['log']->error("File $filename cannot be touched");
-       return $result;
-   }
+   if(!$result) return $result;
+
 	if(!empty($GLOBALS['sugar_config']['default_permissions']['file_mode'])){
 		sugar_chmod($filename, $GLOBALS['sugar_config']['default_permissions']['file_mode']);
 	}

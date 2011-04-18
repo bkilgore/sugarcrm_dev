@@ -101,7 +101,7 @@ else {
     }
 
 if(!empty($_REQUEST['meridiem'])){
-    $_REQUEST['time_start'] = $timedate->merge_time_meridiem($_REQUEST['time_start'],$timedate->get_time_format(), $_REQUEST['meridiem']);
+    $_REQUEST['time_start'] = $timedate->merge_time_meridiem($_REQUEST['time_start'],$timedate->get_time_format(true), $_REQUEST['meridiem']);
 }
 
 if(empty($_REQUEST['time_start'])) {

@@ -151,7 +151,7 @@
 			<tr height='20' class='{$_rowColor}S1'>
 				{if $prerow}
 				<td width='1%' nowrap='nowrap'>
-						<input onclick='sListView.check_item(this, document.MassUpdate)' type='checkbox' class='checkbox' name='mass[]' value='{$rowData.ID}'>
+						<input onclick='sListView.check_item(this, document.MassUpdate)' type='checkbox' class='checkbox' name='mass[]' value='{$rowData[$params.id]|default:$rowData.ID}'>
 				</td>
 				<td width='1%' nowrap='nowrap'>
 						{$pageData.additionalDetails.$id}

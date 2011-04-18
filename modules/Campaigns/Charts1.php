@@ -95,7 +95,7 @@ class charts {
         foreach ($leadSourceArr as $key=>$values) {
             if (isset($values['bars'])) {
                 foreach ($values['bars'] as $bar_id=>$bar_value) {
-                    $xtpl->assign("Y_BAR_ID",$bar_id);
+                    $xpl->assign("Y_BAR_ID",$bar_id);
                 }   
             }
             

@@ -99,13 +99,6 @@ class MergeRecord extends SugarBean {
         $this->merge_bean = new $this->merge_bean_class();
         if ($merge_id != '')
             $this->merge_bean->retrieve($merge_id);
-        
-        // Bug 18853 - Disable this view if the user doesn't have edit and delete permissions
-        if ( !$this->merge_bean->ACLAccess('edit') || !$this->merge_bean->ACLAccess('delete') ) {
-            ACLController::displayNoAccess();
-            sugar_die('');
-        }
-        
         //load master module strings
         if ($load_module_strings)
             $this->merge_bean_strings = return_module_language($current_language, $merge_module);
@@ -321,12 +314,6 @@ class MergeRecord extends SugarBean {
 	                $where_clauses[] = $query;
                 }                
             }
-        }
-        // Add ACL Check
-        if($this->merge_bean->bean_implements('ACL') && ACLController::requireOwner($this->merge_bean->module_dir, 'delete') )
-        {
-            global $current_user;
-            $where_clauses[] = $this->merge_bean->getOwnerWhere($current_user->id);
         }
         array_push($where_clauses, $this->merge_bean->table_name.".id !='".$GLOBALS['db']->quote($this->merge_bean->id)."'");
         return $where_clauses;

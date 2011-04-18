@@ -73,15 +73,8 @@ class SugarWidgetSubPanelRemoveButton extends SugarWidgetField
 			if($layout_def['fields']['UPLINE'] != translate('LBL_TEAM_UPLINE_EXPLICIT', 'Users')) {
 				$hideremove = true;
 			}	
-			
-			//We also cannot remove the user whose private team is set to the parent_record_id value
-			$user = new User();
-			$user->retrieve($layout_def['fields']['ID']);
-			if($parent_record_id == $user->getPrivateTeamID())
-			{
-			    $hideremove = true;
-			}
 		}
+		
 		
 		
 		$return_module = $_REQUEST['module'];

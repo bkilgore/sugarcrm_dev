@@ -612,14 +612,6 @@ function handleSave($prefix, $redirect=true, $useRequired=false){
 			if(isset($_POST['inbound_email_id']) && !empty($_POST['inbound_email_id'])) {
 				$get .= '&inbound_email_id='.$_POST['inbound_email_id'];
 			}
-			
-			// Bug 25311 - Add special handling for when the form specifies many-to-many relationships
-			if(isset($_POST['relate_to']) && !empty($_POST['relate_to'])) {
-				$get .= '&Contactsrelate_to='.$_POST['relate_to'];
-			}
-			if(isset($_POST['relate_id']) && !empty($_POST['relate_id'])) {
-				$get .= '&Contactsrelate_id='.$_POST['relate_id'];
-			}
 
 			//add all of the post fields to redirect get string
 			foreach ($focus->column_fields as $field)
@@ -680,7 +672,7 @@ function handleSave($prefix, $redirect=true, $useRequired=false){
             	ob_clean();
                 $json = getJSONobj();
                 $_SESSION['SHOW_DUPLICATES'] = $get;
-                echo $json->encode(array('status' => 'dupe', 'get' => $location));
+                echo $json->encode(array('status' => 'dupe', 'get' => $location . $get));
             } else {
                 if(!empty($_POST['to_pdf'])) $location .= '&to_pdf='.$_POST['to_pdf'];
                 $_SESSION['SHOW_DUPLICATES'] = $get;
@@ -731,7 +723,7 @@ function handleSave($prefix, $redirect=true, $useRequired=false){
         echo $json->encode(array('status' => 'success',
                                  'get' => ''));
     	$trackerManager = TrackerManager::getInstance();
-        $timeStamp = TimeDate::getInstance()->nowDb();
+        $timeStamp = gmdate($GLOBALS['timedate']->get_db_date_time_format());
         if($monitor = $trackerManager->getMonitor('tracker')){ 
 	        $monitor->setValue('action', 'detailview');
 	        $monitor->setValue('user_id', $GLOBALS['current_user']->id);

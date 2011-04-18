@@ -40,7 +40,12 @@ class SugarFieldUsername extends SugarFieldBase {
 	function getDetailViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
  
-        return $this->fetch($this->findTemplate('DetailView'));
+        global $current_language;
+        if(isset($current_language) && file_exists('include/SugarFields/Fields/Username/' . $current_language . '.DetailView.tpl')) {
+          return $this->fetch('include/SugarFields/Fields/Username/' . $current_language . '.DetailView.tpl'); 	
+        } else {
+          return $this->fetch('include/SugarFields/Fields/Username/DetailView.tpl');
+        } //if-else 
     }
 }
 ?>

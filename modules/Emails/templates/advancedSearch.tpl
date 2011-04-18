@@ -63,16 +63,16 @@
 	<tr class="toggleClass yui-hidden">
 		<td class="advancedSearchTD" style="padding-bottom: 2px">
 			{$app_strings.LBL_EMAIL_SEARCH_DATE_FROM}:&nbsp;<i>({$dateFormatExample})</i><br/>
-			<input name='searchDateFrom' id='searchDateFrom' onblur="parseDate(this, '{$dateFormat}');" maxlength='10' size='11' value="" type="text">&nbsp;
-			<img src="{sugar_getimagepath file='jscalendar.gif'}" alt="{$app_strings.LBL_ENTER_DATE}" id="searchDateFrom_trigger" align="absmiddle">
+			<input name='dateFrom' id='searchDateFrom' onblur="parseDate(this, '{$dateFormat}');" maxlength='10' size='11' value="" type="text">&nbsp;
+			<img src="{sugar_getimagepath file='jscalendar.gif'}" alt="{$app_strings.LBL_ENTER_DATE}" id="jscal_trigger_from" align="absmiddle">
 		</td>
 	</tr>
 
 	<tr class="toggleClass yui-hidden">
 		<td class="advancedSearchTD">
 			{$app_strings.LBL_EMAIL_SEARCH_DATE_UNTIL}:&nbsp;<i>({$dateFormatExample})</i><br/>
-			<input name='searchDateTo' id='searchDateTo' onblur="parseDate(this, '{$dateFormat}');" maxlength='10' size='11' value="" type="text">&nbsp;
-			<img src="{sugar_getimagepath file='jscalendar.gif'}" alt="{$app_strings.LBL_ENTER_DATE}" id="searchDateTo_trigger" align="absmiddle">		
+			<input name='dateTo' id='searchDateTo' onblur="parseDate(this, '{$dateFormat}');" maxlength='10' size='11' value="" type="text">&nbsp;
+			<img src="{sugar_getimagepath file='jscalendar.gif'}" alt="{$app_strings.LBL_ENTER_DATE}" id="jscal_trigger_to" align="absmiddle">
 		</td>
 	</tr>
 
@@ -111,6 +111,7 @@
 	<tr>
 		<td NOWRAP>
 			<br />&nbsp;<br />
+		
 			<input type="button" id="advancedSearchButton" class="button" onclick="SUGAR.email2.search.searchAdvanced()" value="   {$app_strings.LBL_SEARCH_BUTTON_LABEL}   ">&nbsp;
 			<input type="button" class="button" onclick="SUGAR.email2.search.searchClearAdvanced()" value="   {$app_strings.LBL_CLEAR_BUTTON_LABEL}   ">
 		</td>

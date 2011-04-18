@@ -45,8 +45,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 $mod_strings = array (
 	'ERR_DELETE_RECORD' => 'A record number must be specified to delete the meeting.',
-
-	'LBL_ACCEPT_THIS'=>'Accept?',
+	
+	'LBL_ACCEPT_THIS'=>'Accept?',  
 	'LBL_ADD_BUTTON'=> 'Add',
 	'LBL_ADD_INVITEE' => 'Add Invitees',
 	'LBL_COLON' => ':',
@@ -56,6 +56,7 @@ $mod_strings = array (
 	'LBL_DATE_END'=>'Date End',
 	'LBL_DATE_TIME' => 'Start Date & Time:',
 	'LBL_DATE' => 'Start Date:',
+	'LBL_DEFAULT_STATUS' => 'Planned',
 	'LBL_DEFAULT_SUBPANEL_TITLE' => 'Meetings',
 	'LBL_DEL'=> 'Del',
 	'LBL_DESCRIPTION_INFORMATION' => 'Description Information',
@@ -105,39 +106,20 @@ $mod_strings = array (
 	'LBL_SEND_BUTTON_LABEL'=>'Send Invites',
 	'LBL_SEND_BUTTON_TITLE'=>'Send Invites [Alt+I]',
 	'LBL_STATUS' => 'Status:',
-   'LBL_TYPE' => 'Meeting Type',
-   'LBL_PASSWORD' => 'Meeting Password',
-   'LBL_URL' => 'Start/Join Meeting',
-   'LBL_CREATOR' => 'Meeting Creator',
-   'LBL_EXTERNALID' => 'External App ID',
 	'LBL_SUBJECT' => 'Subject:',
 	'LBL_TIME' => 'Start Time:',
 	'LBL_USERS_SUBPANEL_TITLE' => 'Users',
-	'LBL_ACTIVITIES_REPORTS' => 'Activities Report',
-
+	'LBL_ACTIVITIES_REPORTS' => 'Activities Report',    
+	
 	'LNK_MEETING_LIST'=>'View Meetings',
 	'LNK_NEW_APPOINTMENT' => 'Create Appointment',
 	'LNK_NEW_MEETING'=>'Schedule Meeting',
 	'LNK_IMPORT_MEETINGS' => 'Import Meetings',
-
+	
 	'NTC_REMOVE_INVITEE' => 'Are you sure you want to remove this invitee from the meeting?',
     'LBL_CREATED_USER' => 'Created User',
     'LBL_MODIFIED_USER' => 'Modified User',
     'NOTICE_DURATION_TIME' => 'Duration time must be greater than 0',
     'LBL_MEETING_INFORMATION' => 'Meeting Overview',
-	'LBL_LIST_JOIN_MEETING' => 'Join Meeting',
-	'LBL_JOIN_EXT_MEETING' => 'Join Meeting',
-	'LBL_HOST_EXT_MEETING' => 'Start Meeting',
-
-    // You are not invited to the meeting messages
-    'LBL_EXTNOT_HEADER' => 'Error: Not Invited',
-    'LBL_EXTNOT_MAIN' => 'You are not able to join this meeting because you are not an Invitee.',
-    'LBL_EXTNOT_RECORD_LINK' => 'View Meeting',
-    'LBL_EXTNOT_GO_BACK' => 'Go back to the previous record',
-
-    //cannot start messages
-    'LBL_EXTNOSTART_HEADER' => 'Error: Cannot Start Meeting',
-    'LBL_EXTNOSTART_MAIN' => 'You cannot start this meeting because you are not an Administrator or the owner of the meeting.',
-
 );
 ?>

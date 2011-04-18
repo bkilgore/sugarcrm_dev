@@ -38,14 +38,7 @@ function addVariables(the_select,the_module){the_select.options.length=0;for(var
 showVariable();}
 function toggle_text_only(firstRun){if(typeof(firstRun)=='undefined')
 firstRun=false;var text_only=document.getElementById('text_only');if(firstRun){setTimeout("tinyMCE.execCommand('mceAddControl', false, 'body_text');",500);var tiny=tinyMCE.getInstanceById('body_text');}
-if(document.getElementById('toggle_textonly').checked==true){document.getElementById('body_text_div').style.display='none';document.getElementById('toggle_textarea_option').style.display='none';document.getElementById('text_div').style.display='block';text_only.value=1;}else{document.getElementById('body_text_div').style.display='inline';document.getElementById('toggle_textarea_option').style.display='inline';document.getElementById('text_div').style.display='none';text_only.value=0;}
-update_textarea_button();}
-function update_textarea_button()
-{if(document.getElementById('text_div').style.display=='none'){document.getElementById('toggle_textarea_elem').value=toggle_textarea_elem_values[0];}else{document.getElementById('toggle_textarea_elem').value=toggle_textarea_elem_values[1];}}
-function toggle_textarea_edit(obj)
-{if(document.getElementById('text_div').style.display=='none')
-{document.getElementById('text_div').style.display='block';}else{document.getElementById('text_div').style.display='none';}
-update_textarea_button();}
+if(document.getElementById('toggle_textonly').checked==true){document.getElementById('body_text_div').style.display='none';document.getElementById('toggle_textarea_option').style.display='none';document.getElementById('toggle_textarea_elem').checked=true;document.getElementById('text_div').style.display='inline';text_only.value=1;}else{document.getElementById('body_text_div').style.display='inline';document.getElementById('toggle_textarea_option').style.display='inline';document.getElementById('toggle_textarea_elem').checked=false;document.getElementById('text_div').style.display='none';text_only.value=0;}}
 function setTinyHTML(text){var tiny=tinyMCE.getInstanceById('body_text');if(tiny.getContent()!=null){tiny.setContent(text)}else{setTimeout(setTinyHTML(text),1000);}}
 function stripTags(str){var theText=new String(str);if(theText!='undefined'){return theText.replace(/<\/?[^>]+>/gi,'');}}
 function insert_variable_text(myField,myValue){if(document.selection){myField.focus();sel=document.selection.createRange();sel.text=myValue;}

@@ -38,43 +38,36 @@
   
 class VardefManager{
 	static $custom_disabled_modules = array();
-    static $linkFields;
 
-    /**
+	/**
 	 * this method is called within a vardefs.php file which extends from a SugarObject.
 	 * It is meant to load the vardefs from the SugarObject.
-     */
-    static function createVardef($module, $object, $templates = array('default'), $object_name = false)
-    {
-        global $dictionary;
+	 */
+   static function createVardef($module,$object, $templates=array('default'), $object_name=false){
+                        global $dictionary;
 
-        include_once('modules/TableDictionary.php');
+                        //reverse the sort order so priority goes highest to lowest;
+                    $templates = array_reverse($templates);
+                        foreach($templates as $template){
+                                VardefManager::addTemplate($module,$object,$template, $object_name);
+                        }
+                        LanguageManager::createLanguageFile($module, $templates);
 
-        //reverse the sort order so priority goes highest to lowest;
-        $templates = array_reverse($templates);
-        foreach ($templates as $template)
-        {
-            VardefManager::addTemplate($module, $object, $template, $object_name);
-        }
-        LanguageManager::createLanguageFile($module, $templates);
+        if (isset(VardefManager::$custom_disabled_modules[$module])) {
+                        $vardef_paths = array(
+                                'custom/modules/'.$module.'/Ext/Vardefs/vardefs.ext.php',
+                                'custom/Extension/modules/'.$module.'/Ext/Vardefs/vardefs.php'
+                        );
 
-        if (isset(VardefManager::$custom_disabled_modules[$module]))
-        {
-            $vardef_paths = array(
-                'custom/modules/' . $module . '/Ext/Vardefs/vardefs.ext.php',
-                'custom/Extension/modules/' . $module . '/Ext/Vardefs/vardefs.php'
-            );
-
-            //search a predefined set of locations for the vardef files
-            foreach ($vardef_paths as $path)
-            {
-                if (file_exists($path)) {
-                    require($path);
-                }
-            }
+                        //search a predefined set of locations for the vardef files
+                        foreach($vardef_paths as $path){
+                                if(file_exists($path)){
+                                        require($path);
+                                }
+                        }
         }
     }
-
+	
 	/**
 	 * Enables/Disables the loading of custom vardefs for a module.
 	 * @param String $module Module to be enabled/disabled
@@ -137,9 +130,7 @@ class VardefManager{
 		
 		$file = create_cache_directory('modules/' . $module . '/' . $object . 'vardefs.php');
 		write_array_to_file('GLOBALS["dictionary"]["'. $object . '"]',$GLOBALS['dictionary'][$object], $file);
-		if ( is_readable($file) ) {
-		    include($file);
-		}
+		include($file);
 		
 		// put the item in the sugar cache.
 		$key = "VardefManager.$module.$object";
@@ -227,11 +218,9 @@ class VardefManager{
 		
 		//great! now that we have loaded all of our vardefs.
 		//let's go save them to the cache file.
-		if(!empty($GLOBALS['dictionary'][$object])) {
+		if(!empty($GLOBALS['dictionary'][$object]))
 			VardefManager::saveCache($module, $object);
-        }
 	}
-
 	
 	/**
 	 * load the vardefs for a given module and object
@@ -272,9 +261,8 @@ class VardefManager{
 			//which was created from the refreshVardefs so let's try to load it.
 			if(file_exists($GLOBALS['sugar_config']['cache_dir'].'modules/'. $module .  '/' . $object . 'vardefs.php'))
 			{
-			    if ( is_readable($GLOBALS['sugar_config']['cache_dir'].'modules/'. $module .  '/' . $object . 'vardefs.php') ) {
-			        include_once($GLOBALS['sugar_config']['cache_dir'].'modules/'. $module .  '/' . $object . 'vardefs.php');
-				}
+				include_once($GLOBALS['sugar_config']['cache_dir'].'modules/'. $module .  '/' . $object . 'vardefs.php');
+				
 				// now that we hae loaded the data from disk, put it in the cache.
 				if(!empty($GLOBALS['dictionary'][$object]))
 					sugar_cache_put($key,$GLOBALS['dictionary'][$object]);

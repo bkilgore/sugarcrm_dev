@@ -54,8 +54,8 @@ if (!is_admin($current_user) && !is_admin_for_any_module($current_user))
    sugar_die("Unauthorized access to administration.");
 }
 
-echo getClassicModuleTitle(translate('LBL_MODULE_NAME','Administration'),
-                      array(translate('LBL_MODULE_NAME','Administration')), false);
+echo get_module_title(translate('LBL_MODULE_NAME','Administration'),
+                      translate('LBL_MODULE_NAME','Administration'), true);
 
 //get the module links..
 require('modules/Administration/metadata/adminpaneldefs.php');

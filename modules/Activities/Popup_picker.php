@@ -64,28 +64,28 @@ class Popup_Picker
 {
 
 
-    /**
-    * sole constructor
-    */
-    function Popup_Picker() {
-    }
+	/**
+	 * sole constructor
+	 */
+	function Popup_Picker() {
+	}
 
-    /**
-    *
-    */
-    function process_page() {
-        global $focus;
-        global $mod_strings;
-        global $app_strings;
-        global $app_list_strings;
-        global $currentModule;
-        global $odd_bg;
-        global $even_bg;
+	/**
+	 *
+	 */
+	function process_page() {
+		global $focus;
+		global $mod_strings;
+		global $app_strings;
+		global $app_list_strings;
+		global $currentModule;
+		global $odd_bg;
+ 		global $even_bg;
+ 		
+ 		global $timedate;
+ 		
 
-        global $timedate;
-
-
-        $history_list = array();
+		$history_list = array();
 
 		if(!empty($_REQUEST['record'])) {
    			$result = $focus->retrieve($_REQUEST['record']);
@@ -104,12 +104,12 @@ class Popup_Picker
 		foreach($focus->get_linked_fields() as $field => $def) {
 			if ($focus->load_relationship($field)) {
 				$relTable = $focus->$field->getRelatedTableName();
-	        	if (in_array($relTable, array_keys($activitiesRels)))
+	        	if (in_array($relTable, array_keys($activitiesRels))) 
         		{
         			$varname = "focus_" . $relTable . "_list";
         			$$varname = sugarArrayMerge($$varname, $focus->get_linked_beans($field,$activitiesRels[$relTable]));
         		}
-
+	        	
 			}
 		}
 
@@ -204,7 +204,7 @@ class Popup_Picker
 		} // end Meetings
 
 		foreach ($focus_calls_list as $call) {
-
+			
 			if (empty($call->contact_id) && empty($call->contact_name)) {
 				$call_contacts = $call->get_linked_beans('contacts','Contact');
 				if (!empty($call_contacts[0]->id) && !empty($call_contacts[0]->name)) {
@@ -212,7 +212,6 @@ class Popup_Picker
 					$call->contact_name = $call_contacts[0]->name;
 				}
 			}
-
 			if ($call->status != "Planned") {
 				$history_list[] = array('name' => $call->name,
 									 'id' => $call->id,
@@ -302,84 +301,83 @@ class Popup_Picker
 			}
 		} // end Notes
 
-        $xtpl=new XTemplate ('modules/Activities/Popup_picker.html');
+		$xtpl=new XTemplate ('modules/Activities/Popup_picker.html');
+		
+		$xtpl->assign('MOD', $mod_strings);
+		$xtpl->assign('APP', $app_strings);
+		insert_popup_header();
 
-        $xtpl->assign('MOD', $mod_strings);
-        $xtpl->assign('APP', $app_strings);
-        insert_popup_header();
+		//output header
+		echo "<table width='100%' cellpadding='0' cellspacing='0'><tr><td>";
+		echo get_module_title($focus->module_dir, translate('LBL_MODULE_NAME', $focus->module_dir).": ".$focus->name, false);
+		echo "</td><td align='right' class='moduleTitle'>";
+		echo "<A href='javascript:print();' class='utilsLink'><img src='".SugarThemeRegistry::current()->getImageURL("print.gif")."' width='13' height='13' alt='".$app_strings['LNK_PRINT']."' border='0' align='absmiddle'></a>&nbsp;<A href='javascript:print();' class='utilsLink'>".$app_strings['LNK_PRINT']."</A>\n";
+		echo "</td></tr></table>";
 
-        //output header
-        echo "<table width='100%' cellpadding='0' cellspacing='0'><tr><td>";
-        echo getClassicModuleTitle($focus->module_dir, array(translate('LBL_MODULE_NAME', $focus->module_dir),$focus->name), false);
-        echo "</td><td align='right' class='moduleTitle'>";
-        echo "<A href='javascript:print();' class='utilsLink'><img src='".SugarThemeRegistry::current()->getImageURL("print.gif")."' width='13' height='13' alt='".$app_strings['LNK_PRINT']."' border='0' align='absmiddle'></a>&nbsp;<A href='javascript:print();' class='utilsLink'>".$app_strings['LNK_PRINT']."</A>\n";
-        echo "</td></tr></table>";
+		$oddRow = true;
+		if (count($history_list) > 0) $history_list = array_csort($history_list, 'sort_value', SORT_DESC);
+		foreach($history_list as $activity)
+		{
+			$activity_fields = array(
+				'ID' => $activity['id'],
+				'NAME' => $activity['name'],
+				'MODULE' => $activity['module'],
+				'CONTACT_NAME' => $activity['contact_name'],
+				'CONTACT_ID' => $activity['contact_id'],
+				'PARENT_TYPE' => $activity['parent_type'],
+				'PARENT_NAME' => $activity['parent_name'],
+				'PARENT_ID' => $activity['parent_id'],
+				'DATE' => $activity['date_modified'],
+				'DESCRIPTION' => $activity['description'],
+				'DATE_TYPE' => $activity['date_type']
+			);
+			if (empty($activity['direction'])) {
+				$activity_fields['TYPE'] = $app_list_strings['activity_dom'][$activity['type']];
+			}
+			else {
+				$activity_fields['TYPE'] = $app_list_strings['call_direction_dom'][$activity['direction']].' '.$app_list_strings['activity_dom'][$activity['type']];
+			}
 
-        $oddRow = true;
-        if (count($history_list) > 0) $history_list = array_csort($history_list, 'sort_value', SORT_DESC);
-        foreach($history_list as $activity)
-        {
-            $activity_fields = array(
-                'ID' => $activity['id'],
-                'NAME' => $activity['name'],
-                'MODULE' => $activity['module'],
-                'CONTACT_NAME' => $activity['contact_name'],
-                'CONTACT_ID' => $activity['contact_id'],
-                'PARENT_TYPE' => $activity['parent_type'],
-                'PARENT_NAME' => $activity['parent_name'],
-                'PARENT_ID' => $activity['parent_id'],
-                'DATE' => $activity['date_modified'],
-                'DESCRIPTION' => $activity['description'],
-                'DATE_TYPE' => $activity['date_type']
-            );
-            if (empty($activity['direction'])) {
-                $activity_fields['TYPE'] = $app_list_strings['activity_dom'][$activity['type']];
-            }
-            else {
-                $activity_fields['TYPE'] = $app_list_strings['call_direction_dom'][$activity['direction']].' '.$app_list_strings['activity_dom'][$activity['type']];
-            }
+			switch ($activity['type']) {
+				case 'Call':
+					$activity_fields['STATUS'] = $app_list_strings['call_status_dom'][$activity['status']];
+					break;
+				case 'Meeting':
+					$activity_fields['STATUS'] = $app_list_strings['meeting_status_dom'][$activity['status']];
+					break;
+				case 'Task':
+					$activity_fields['STATUS'] = $app_list_strings['task_status_dom'][$activity['status']];
+					break;
+			}
 
-            switch ($activity['type']) {
-                case 'Call':
-                    $activity_fields['STATUS'] = $app_list_strings['call_status_dom'][$activity['status']];
-                    break;
-                case 'Meeting':
-                    $activity_fields['STATUS'] = $app_list_strings['meeting_status_dom'][$activity['status']];
-                    break;
-                case 'Task':
-                    $activity_fields['STATUS'] = $app_list_strings['task_status_dom'][$activity['status']];
-                    break;
-            }
+			if (isset($activity['location'])) $activity_fields['LOCATION'] = $activity['location'];
+			if (isset($activity['filename'])) {
+				$activity_fields['ATTACHMENT'] = "<a href='index.php?entryPoint=download&id=".$activity['id']."&type=Notes' target='_blank'>".SugarThemeRegistry::current()->getImage("attachment","alt='".$activity['filename']."' border='0' align='absmiddle'")."</a>";
+   			}
 
-            if (isset($activity['location'])) $activity_fields['LOCATION'] = $activity['location'];
-            if (isset($activity['filename'])) {
-                $activity_fields['ATTACHMENT'] = "<a href='index.php?entryPoint=download&id=".$activity['id']."&type=Notes' target='_blank'>".SugarThemeRegistry::current()->getImage("attachment","alt='".$activity['filename']."' border='0' align='absmiddle'")."</a>";
-            }
+			if (isset($activity['parent_type'])) $activity_fields['PARENT_MODULE'] = $activity['parent_type'];
 
-            if (isset($activity['parent_type'])) $activity_fields['PARENT_MODULE'] = $activity['parent_type'];
+			$xtpl->assign("ACTIVITY", $activity_fields);
+			$xtpl->assign("ACTIVITY_MODULE_PNG", SugarThemeRegistry::current()->getImage($activity_fields['MODULE'].'','border="0" alt="'.$activity_fields['NAME'].'"'));
 
-            $xtpl->assign("ACTIVITY", $activity_fields);
-            $xtpl->assign("ACTIVITY_MODULE_PNG", SugarThemeRegistry::current()->getImage($activity_fields['MODULE'].'','border="0" alt="'.$activity_fields['NAME'].'"'));
+			if($oddRow)
+   			{
+        		//todo move to themes
+				$xtpl->assign("ROW_COLOR", 'oddListRow');
+				$xtpl->assign("BG_COLOR", $odd_bg);
+    		}
+    		else
+    		{
+        		//todo move to themes
+				$xtpl->assign("ROW_COLOR", 'evenListRow');
+				$xtpl->assign("BG_COLOR", $even_bg);
+    		}
+   			$oddRow = !$oddRow;
 
-            if($oddRow)
-            {
-                //todo move to themes
-                $xtpl->assign("ROW_COLOR", 'oddListRow');
-                $xtpl->assign("BG_COLOR", $odd_bg);
-            }
-            else
-            {
-                //todo move to themes
-                $xtpl->assign("ROW_COLOR", 'evenListRow');
-                $xtpl->assign("BG_COLOR", $even_bg);
-            }
-            $oddRow = !$oddRow;
-            if(!empty($activity_fields['DESCRIPTION'])) {
-                $xtpl->parse("history.row.description");
-            }
-            $xtpl->parse("history.row");
-        // Put the rows in.
+			$xtpl->parse("history.row");
+		// Put the rows in.
 }
+
 		$xtpl->parse("history");
 		$xtpl->out("history");
 		insert_popup_footer();

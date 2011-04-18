@@ -46,13 +46,13 @@ class ViewHistory extends SugarView
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
     	return array(
     	   translate('LBL_MODULE_NAME','Administration'),
-    	   ModuleBuilderController::getModuleTitle(),
+    	   $mod_strings['LBL_MODULEBUILDER'],
     	   );
     }
 
@@ -98,7 +98,7 @@ class ViewHistory extends SugarView
         $snapshots = array ( ) ;
         for ( $i = 0 ; $i <= $this->pageSize && $ts > 0 ; $i ++ )
         {
-            $dbDate = $timedate->fromTimestamp($ts)->asDb();
+            $dbDate = gmdate ( $timedate->get_db_date_time_format (), $ts ) ;
             $displayTS = $timedate->to_display_date_time ( $dbDate ) ;
             if ($page * $this->pageSize + $i + 1 == $count)
                 $displayTS = translate("LBL_MB_DEFAULT_LAYOUT");

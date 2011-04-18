@@ -42,12 +42,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * All Rights Reserved.
  * Contributor(s): ______________________________________..
  ********************************************************************************/
-if(isset($_SESSION['authenticated_user_id'])) {
-	ob_clean();
-   	header("Location: index.php?module=Home&action=index");
-    sugar_cleanup(true);
-   	return;
-}
 global $current_language, $mod_strings, $app_strings;
 if(isset($_REQUEST['login_language'])){
     $lang = $_REQUEST['login_language'];
@@ -64,15 +58,6 @@ global $app_language, $sugar_config;
 //we don't want the parent module's string file, but rather the string file specifc to this subpanel
 global $current_language;
 
-// Get the login page image
-if ( sugar_is_file('custom/include/images/sugar_md.png') ) {
-    $login_image = '<IMG src="custom/include/images/sugar_md.png" alt="Sugar" width="340" height="25">';
-}
-else {
-    $login_image = '<IMG src="include/images/sugar_md_open.png" alt="Sugar" width="340" height="25" style="margin: 5px 0;">';
-}
-$sugar_smarty->assign('LOGIN_IMAGE',$login_image);
-
 // See if any messages were passed along to display to the user.
 if(isset($_COOKIE['loginErrorMessage'])) {
     if ( !isset($_REQUEST['loginErrorMessage']) ) {
@@ -84,7 +69,7 @@ if(isset($_REQUEST['loginErrorMessage'])) {
     if (isset($mod_strings[$_REQUEST['loginErrorMessage']])) {
         echo "<p align='center' class='error' > ". $mod_strings[$_REQUEST['loginErrorMessage']]. "</p>";
     } else if (isset($app_strings[$_REQUEST['loginErrorMessage']])) {
-        echo "<p align='center' class='error' > ". $app_strings[$_REQUEST['loginErrorMessage']]. "</p>";
+        echo "<p align='center' class='error' > ". $app_strings[$_REQUEST['loginErrorMessage']]. "</p>";        
     }
 }
 $query = "SELECT count(id) as total from users WHERE status='Active' AND deleted=0 AND is_group=0 AND portal_only=0";
@@ -151,17 +136,17 @@ if ( !empty($logindisplay) )
 	$sugar_smarty->assign('LOGIN_DISPLAY', $logindisplay);;
 
 // RECAPTCHA
-
+	
 	$admin = new Administration();
 	$admin->retrieveSettings('captcha');
 	$captcha_privatekey = "";
 	$captcha_publickey="";
 	$captcha_js = "";
 	$Captcha='';
-
-	// if the admin set the captcha stuff, assign javascript and div
+	
+	// if the admin set the captcha stuff, assign javascript and div		
 	if(isset($admin->settings['captcha_on'])&& $admin->settings['captcha_on']=='1' && !empty($admin->settings['captcha_private_key']) && !empty($admin->settings['captcha_public_key'])){
-
+		
 			$captcha_privatekey = $admin->settings['captcha_private_key'];
 			$captcha_publickey = $admin->settings['captcha_public_key'];
 			$captcha_js .="<script type='text/javascript' src='" . getJSPath('include/javascript/sugar_grp1_yui.js') . "'></script><script type='text/javascript' src='" . getJSPath('include/javascript/sugar_grp_yui2.js') . "'></script>
@@ -171,7 +156,7 @@ if ( !empty($logindisplay) )
 			Recaptcha.create('$captcha_publickey' ,'captchaImage',{theme:'custom'});
 			}
 			window.onload=initCaptcha;
-
+		
 			var handleFailure=handleSuccess;
 			var handleSuccess = function(o){
 				if(o.responseText!==undefined && o.responseText =='Success'){
@@ -185,7 +170,7 @@ if ( !empty($logindisplay) )
 				}
 			}
 			var callback2 ={ success:handleSuccess, failure: handleFailure };
-
+			
 			function validateAndSubmit(){
 					var form = document.getElementById('form');
 					var url = '&to_pdf=1&module=Home&action=index&entryPoint=Changenewpassword&recaptcha_challenge_field='+Recaptcha.get_challenge()+'&recaptcha_response_field='+ Recaptcha.get_response();
@@ -194,10 +179,10 @@ if ( !empty($logindisplay) )
 		$Captcha.="<tr>
 			<td scope='row' width='20%'>".$mod_strings['LBL_RECAPTCHA_INSTRUCTION'].":</td>
 		    <td width='70%'><input type='text' size='26' id='recaptcha_response_field' value=''></td>
-
+			
 		</tr>
-		<tr>
-
+		<tr>		
+				 	
 		 	<td colspan='2'><div style='margin-left:2px'class='x-sqs-list' id='recaptcha_image'></div></td>
 		</tr>
 		<tr>
@@ -208,7 +193,7 @@ if ( !empty($logindisplay) )
 		</tr>";
 		$sugar_smarty->assign('CAPTCHA', $Captcha);
 		echo $captcha_js;
-
+	
 	}else{
 		echo "<script>
 		function validateAndSubmit(){generatepwd();}

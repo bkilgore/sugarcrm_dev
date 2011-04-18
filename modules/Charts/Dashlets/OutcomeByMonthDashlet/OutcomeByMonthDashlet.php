@@ -41,36 +41,33 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/Dashlets/DashletGenericChart.php');
 
-class OutcomeByMonthDashlet extends DashletGenericChart
+class OutcomeByMonthDashlet extends DashletGenericChart 
 {
     public $obm_ids = array();
     public $obm_date_start;
     public $obm_date_end;
     
-    /**
-     * @see DashletGenericChart::$_seedName
-     */
     protected $_seedName = 'Opportunities';
-
+    
     /**
      * @see DashletGenericChart::__construct()
      */
     public function __construct(
-        $id,
+        $id, 
         array $options = null
-        )
+        ) 
     {
         global $timedate;
-
-		if(empty($options['obm_date_start']))
-            $options['obm_date_start'] = $timedate->nowDbDate();
-
+        
+		if(empty($options['obm_date_start'])) 
+            $options['obm_date_start'] = date($timedate->get_db_date_time_format(), time());
+            
         if(empty($options['obm_date_end']))
-            $options['obm_date_end'] = $timedate->asDbDate($timedate->getNow()->modify("+6 months"));
-
+            $options['obm_date_end'] = date($timedate->get_db_date_time_format(), strtotime("+6 months", time()));
+            
         parent::__construct($id,$options);
     }
-
+    
     /**
      * @see DashletGenericChart::displayOptions()
      */
@@ -78,18 +75,18 @@ class OutcomeByMonthDashlet extends DashletGenericChart
     {
         if (!isset($this->obm_ids) || count($this->obm_ids) == 0)
 			$this->_searchFields['obm_ids']['input_name0'] = array_keys(get_user_array(false));
-
+        
         return parent::displayOptions();
     }
-
+    
     /**
      * @see DashletGenericChart::display()
      */
-    public function display()
+    public function display() 
     {
         $currency_symbol = $GLOBALS['sugar_config']['default_currency_symbol'];
         if ($GLOBALS['current_user']->getPreference('currency')){
-
+            
             $currency = new Currency();
             $currency->retrieve($GLOBALS['current_user']->getPreference('currency'));
             $currency_symbol = $currency->symbol;
@@ -97,11 +94,11 @@ class OutcomeByMonthDashlet extends DashletGenericChart
 
         require("modules/Charts/chartdefs.php");
         $chartDef = $chartDefs['outcome_by_month'];
-
-        require_once('include/SugarCharts/SugarChartFactory.php');
-        $sugarChart = SugarChartFactory::getInstance();
-        $sugarChart->setProperties('',
-            translate('LBL_OPP_SIZE', 'Charts') . ' ' . $currency_symbol . '1' .translate('LBL_OPP_THOUSANDS', 'Charts'),
+		
+        require_once('include/SugarCharts/SugarChart.php');
+        $sugarChart = new SugarChart();
+        $sugarChart->setProperties('', 
+            translate('LBL_OPP_SIZE', 'Charts') . ' ' . $currency_symbol . '1' .translate('LBL_OPP_THOUSANDS', 'Charts'), 
             $chartDef['chartType']);
         $sugarChart->base_url = $chartDef['base_url'];
         $sugarChart->group_by = $chartDef['groupBy'];
@@ -113,9 +110,9 @@ class OutcomeByMonthDashlet extends DashletGenericChart
         $sugarChart->saveXMLFile($xmlFile, $sugarChart->generateXML());
 	
         return $this->getTitle('<div align="center"></div>') . 
-            '<div align="center">' . $sugarChart->display($this->id, $xmlFile, '100%', '480', false) . '</div>'. $this->processAutoRefresh();
+            '<div align="center">' . $sugarChart->display($this->id, $xmlFile, '100%', '480', false) . '</div><br />';
 	}
-
+    
     /**
      * @see DashletGenericChart::constructQuery()
      */
@@ -125,14 +122,16 @@ class OutcomeByMonthDashlet extends DashletGenericChart
             db_convert('opportunities.date_closed','date_format',array("'%Y-%m'"),array("'YYYY-MM'"))." as m, ".
             "sum(amount_usdollar/1000) as total, count(*) as opp_count FROM opportunities ";
         $query .= " WHERE opportunities.date_closed >= ".db_convert("'".$this->obm_date_start."'",'datetime') .
-                        " AND opportunities.date_closed <= ".db_convert("'".$this->obm_date_end."'",'datetime') .
+                        " AND opportunities.date_closed <= ".db_convert("'".$this->obm_date_end."'",'datetime') . 
                         " AND opportunities.deleted=0";
         if (count($this->obm_ids) > 0)
             $query .= " AND opportunities.assigned_user_id IN ('" . implode("','",$this->obm_ids) . "')";
         $query .= " GROUP BY sales_stage,".
                         db_convert('opportunities.date_closed','date_format',array("'%Y-%m'"),array("'YYYY-MM'")) .
                     " ORDER BY m";
-
+        
         return $query;
     }
 }
+
+?>

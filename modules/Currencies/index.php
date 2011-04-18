@@ -50,14 +50,7 @@ global $app_list_strings;
 global $app_strings;
 global $current_user, $focus;
 
-echo getClassicModuleTitle(
-        "Administration", 
-        array(
-            "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
-           $mod_strings['LBL_MODULE_NAME'],
-           ), 
-        false
-        );
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'], true); 
 
 if($current_user->is_admin){
 require_once('modules/Currencies/ListCurrency.php');
@@ -117,7 +110,7 @@ $edit_botton = '<form name="EditView" method="POST" action="index.php" >';
 			$edit_botton .= '<input type="hidden" name="return_action" value="index">';
 			$edit_botton .= '<input type="hidden" name="return_id" value="">';
 		$edit_botton .= '<input title="'.$app_strings['LBL_SAVE_BUTTON_TITLE'].'" accessKey="'.$app_strings['LBL_SAVE_BUTTON_KEY'].'" class="button" onclick="this.form.edit.value=\'true\';this.form.action.value=\'index\';return check_form(\'EditView\');" type="submit" name="button" value="'.$app_strings['LBL_SAVE_BUTTON_LABEL'].'" > ';
-		$edit_botton .= '<input title="'.$app_strings['LBL_CANCEL_BUTTON_TITLE'].'" accessKey="'.$app_strings['LBL_CANCEL_BUTTON_KEY'].'" class="button" onclick="this.form.edit.value=\'false\';this.form.action.value=\'index\';" type="submit" name="button" value="'.$app_strings['LBL_CANCEL_BUTTON_LABEL'].'" > ';
+		$edit_botton .= '<input title="'.$app_strings['LBL_CLEAR_BUTTON_TITLE'].'" accessKey="'.$app_strings['LBL_CLEAR_BUTTON_KEY'].'" class="button" onclick="this.form.edit.value=\'false\';this.form.action.value=\'index\';" type="submit" name="button" value="'.$app_strings['LBL_CLEAR_BUTTON_LABEL'].'" > ';
 $header_text = '';
 if(is_admin($current_user) && $_REQUEST['module'] != 'DynamicLayout' && !empty($_SESSION['editinplace'])){	
 		$header_text = "&nbsp;<a href='index.php?action=index&module=DynamicLayout&from_action=ListView&from_module=".$_REQUEST['module'] ."'>".SugarThemeRegistry::current()->getImage("EditLayout","border='0' alt='Edit Layout' align='bottom'")."</a>";
@@ -127,7 +120,7 @@ $ListView->initNewXTemplate( 'modules/Currencies/ListView.html',$mod_strings);
 $ListView->xTemplateAssign('PRETABLE', $pretable);
 $ListView->xTemplateAssign('POSTTABLE', '</form>');
 $ListView->xTemplateAssign("DELETE_INLINE_PNG",  SugarThemeRegistry::current()->getImage('delete_inline','align="absmiddle" alt="'.$app_strings['LNK_DELETE'].'" border="0"'));
-//$ListView->setHeaderTitle($mod_strings['LBL_LIST_FORM_TITLE']. $header_text );
+$ListView->setHeaderTitle($mod_strings['LBL_LIST_FORM_TITLE']. $header_text );
 $ListView->setHeaderText($merge_button);
 
 $ListView->processListView($lc->list, "main", "CURRENCY");
@@ -139,12 +132,8 @@ if(isset($_GET['record']) && !empty($_GET['record']) && !isset($_POST['edit'])) 
 if(is_admin($current_user) && $_REQUEST['module'] != 'DynamicLayout' && !empty($_SESSION['editinplace'])){	
 		$header_text = "&nbsp;<a href='index.php?action=index&module=DynamicLayout&from_action=EditView&from_module=".$_REQUEST['module'] ."'>".SugarThemeRegistry::current()->getImage("EditLayout","border='0' alt='Edit Layout' align='bottom'")."</a>";
 }
-if ( empty($focus->id) ) {
-    echo get_form_header($app_strings['LBL_CREATE_BUTTON_LABEL'] . $header_text,$edit_botton , false); 
-}
-else {
-    echo get_form_header($app_strings['LBL_EDIT_BUTTON_LABEL']." &raquo; ".$focus->name . $header_text,$edit_botton , false); 
-}
+echo get_form_header($mod_strings['LBL_CURRENCY']." ".$focus->name . $header_text,$edit_botton , false); 
+
 $sugar_smarty = new Sugar_Smarty();
 
 	$sugar_smarty->assign("MOD", $mod_strings);

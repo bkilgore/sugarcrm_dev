@@ -97,8 +97,6 @@ $mod_strings = array (
 'LBL_MONTHS' => 'mo',
 'LBL_DAY_OF_WEEK' => 'day',
 'LBL_CRONTAB_EXAMPLES' => 'The above uses standard crontab notation.',
-'LBL_CRONTAB_SERVER_TIME_PRE' =>  'The cron specifications run based on the server timezone (',
-'LBL_CRONTAB_SERVER_TIME_POST' => '). Please specify the scheduler execution time accordingly.',
 // Labels
 'LBL_ALWAYS' => 'Always',
 'LBL_CATCH_UP' => 'Execute If Missed',

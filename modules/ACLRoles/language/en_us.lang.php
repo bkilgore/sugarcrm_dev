@@ -50,7 +50,6 @@ $mod_strings = array (
 'LBL_CREATE_ROLE'=>'Create Role',
 'LBL_EDIT_VIEW_DIRECTIONS'=>'Double click on a cell to change value.',
 'LBL_ACCESS_DEFAULT'=>'Not Set',
-'LBL_ACTION_ADMIN'=>'Access Type',
 'LBL_ALL'=>'All',
 'LBL_DUPLICATE_OF'=>'Duplicate Of ',
 )

@@ -112,10 +112,9 @@ if( isset( $_REQUEST['run'] ) && ($_REQUEST['run'] != "") ){
             echo $mod_strings['ERR_UW_NO_UPLOAD_FILE'];
         }
         else{
-        	$ext = end(explode(".", $_FILES['upgrade_zip']['name']));
-        	if($ext === $_FILES['upgrade_zip']['name'] || $ext != 'zip' || !move_uploaded_file($_FILES['upgrade_zip']['tmp_name'], getAbsolutePath($sugar_config['upload_dir'].$_FILES['upgrade_zip']['name'],true))) {
+        	if(!move_uploaded_file($_FILES['upgrade_zip']['tmp_name'], getAbsolutePath($sugar_config['upload_dir'].$_FILES['upgrade_zip']['name'],true))) {
 			unlinkTempFiles();
-        		sugar_die("Invalid Package");
+        		die($mod_strings['ERR_NOT_VALID_UPLOAD']);
         	} else {
 			     $tempFile = getAbsolutePath($sugar_config['upload_dir'].$_FILES['upgrade_zip']['name'],true);
                  $perform = true;
@@ -220,10 +219,10 @@ if( isset( $_REQUEST['run'] ) && ($_REQUEST['run'] != "") ){
 }
 
 if( $view == "module") {
-	print( getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_LOADER_TITLE']), false) );
+	print( get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_LOADER_TITLE'], true) );
 }
 else {
-	print( getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$mod_strings['LBL_UPGRADE_WIZARD_TITLE']), false) );
+	print( get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'].": ".$mod_strings['LBL_UPGRADE_WIZARD_TITLE'], true) );
 }
 
 // upload link

@@ -35,7 +35,7 @@
  ********************************************************************************/
 
 *}
-<span class="sugar_field" id="{{sugarvar key='name'}}">
+<span id="{{sugarvar key='name'}}">
 {{if $vardef.disable_num_format}}
 {assign var="value" value={{sugarvar key='value' string=true}} }
 {$value}

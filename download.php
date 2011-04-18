@@ -36,8 +36,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 
-global $db;
-
 if(empty($_REQUEST['id']) || empty($_REQUEST['type']) || !isset($_SESSION['authenticated_user_id'])) {
 	die("Not a Valid Entry Point");
 }
@@ -51,7 +49,7 @@ else {
     if(!isset($_REQUEST['isTempFile'])) {
 	    //Custom modules may have capilizations anywhere in thier names. We should check the passed in format first.
 		require('include/modules.php');
-		$module = $db->quote($_REQUEST['type']);
+		$module = $_REQUEST['type'];
 		$file_type = strtolower($_REQUEST['type']);
 		if(empty($beanList[$module])) {
 			//start guessing at a module name
@@ -70,39 +68,7 @@ else {
 	    if(!$focus->ACLAccess('view')){
 	        die($mod_strings['LBL_NO_ACCESS']);
 	    } // if
-
-        // Pull up the document revision, if it's of type Document
-        if ( isset($focus->object_name) && $focus->object_name == 'Document' ) {
-            // It's a document, get the revision that really stores this file
-            $focusRevision = new DocumentRevision();
-            $focusRevision->retrieve($_REQUEST['id']);
-            
-            if ( empty($focusRevision->id) ) {
-                // This wasn't a document revision id, it's probably actually a document id, we need to grab that, get the latest revision and use that
-                $focusDocument = new Document();
-                $focusDocument->retrieve($_REQUEST['id']);
-                
-                $focusRevision->retrieve($focusDocument->document_revision_id);
-
-                if ( !empty($focusRevision->id) ) {
-                    $_REQUEST['id'] = $focusRevision->id;
-                }
-            }
-        }
-        
-        // See if it is a remote file, if so, send them that direction
-        if ( isset($focus->doc_url) && !empty($focus->doc_url) ) {
-            header('Location: '.$focus->doc_url);
-            sugar_die();
-        }
-
-        if ( isset($focusRevision) && isset($focusRevision->doc_url) && !empty($focusRevision->doc_url) ) {
-            header('Location: '.$focusRevision->doc_url);
-            sugar_die();
-        }
-
     } // if
-
 	$local_location = (isset($_REQUEST['isTempFile'])) ? "{$GLOBALS['sugar_config']['cache_dir']}/modules/Emails/{$_REQUEST['ieId']}/attachments/{$_REQUEST['id']}"
 		 : $GLOBALS['sugar_config']['upload_dir']."/".$_REQUEST['id'];
 
@@ -119,16 +85,16 @@ else {
 		if($file_type == 'documents') {
 			// cn: bug 9674 document_revisions table has no 'name' column.
 			$query = "SELECT filename name FROM document_revisions INNER JOIN documents ON documents.id = document_revisions.document_id ";
-			$query .= "WHERE document_revisions.id = '".$db->quote($_REQUEST['id'])."' ";
+			$query .= "WHERE document_revisions.id = '" . $_REQUEST['id'] ."'";
 		} elseif($file_type == 'kbdocuments') {
 				$query="SELECT document_revisions.filename name	FROM document_revisions INNER JOIN kbdocument_revisions ON document_revisions.id = kbdocument_revisions.document_revision_id INNER JOIN kbdocuments ON kbdocument_revisions.kbdocument_id = kbdocuments.id ";	 
-            $query .= "WHERE document_revisions.id = '" . $db->quote($_REQUEST['id']) ."'";
+			$query .= "WHERE document_revisions.id = '" . $_REQUEST['id'] ."'";
 		}  elseif($file_type == 'notes') {
 			$query = "SELECT filename name FROM notes ";
-			$query .= "WHERE notes.id = '" . $db->quote($_REQUEST['id']) ."'";
+			$query .= "WHERE notes.id = '" . $_REQUEST['id'] ."'";
 		} elseif( !isset($_REQUEST['isTempFile']) && !isset($_REQUEST['tempName'] ) && isset($_REQUEST['type']) && $file_type!='temp' ){ //make sure not email temp file.
 			$query = "SELECT filename name FROM ". $file_type ." ";
-			$query .= "WHERE ". $file_type .".id= '".$db->quote($_REQUEST['id'])."'";
+			$query .= "WHERE ". $file_type .".id= '".$_REQUEST['id']."'";
 		}elseif( $file_type == 'temp'){
 			$doQuery = false;
 		}

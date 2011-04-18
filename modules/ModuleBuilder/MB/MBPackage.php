@@ -98,7 +98,7 @@ class MBPackage{
 function getManifest($version_specific = false, $for_export = false){
     //If we are exporting the package, we must ensure a different install key
     $pre = $for_export ? MB_EXPORTPREPEND : "";
-    $date = TimeDate::getInstance()->nowDb();
+    $date = gmdate($GLOBALS['timedate']->get_db_date_time_format());
     $time = time();
     $this->description = to_html($this->description);
     $is_uninstallable = ($this->is_uninstallable ? 'true' : 'false');

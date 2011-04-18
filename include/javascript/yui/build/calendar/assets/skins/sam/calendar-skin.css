@@ -247,7 +247,6 @@ version: 2.8.0r4
 	text-decoration:none;
 	color:#000;
 	zoom:1;
-	background: url("../../../../include/javascript/yui/build/assets/skins/sam/sprite.png") repeat scroll 0 -500px transparent; 	
 }
 
 .yui-skin-sam .yui-calendar a.calnav:hover { 

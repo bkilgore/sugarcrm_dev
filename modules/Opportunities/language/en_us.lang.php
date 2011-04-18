@@ -123,7 +123,6 @@ $mod_strings = array (
 	
     'LBL_LEADS_SUBPANEL_TITLE' => 'Leads',
     'LBL_CONTACTS_SUBPANEL_TITLE' => 'Contacts',
-    'LBL_DOCUMENTS_SUBPANEL_TITLE' => 'Documents',
     'LBL_PROJECTS_SUBPANEL_TITLE' => 'Projects',
 	'LBL_ASSIGNED_TO_NAME' => 'Assigned to:',
 	'LBL_LIST_ASSIGNED_TO_NAME' => 'Assigned User',

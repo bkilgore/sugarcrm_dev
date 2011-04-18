@@ -49,16 +49,12 @@ require_once('include/MVC/View/views/view.edit.php');
 
 class EmployeesViewEdit extends ViewEdit {
 
- 	function display()
- 	{
-        global $sugar_config;
-		if(!empty($sugar_config['default_user_name'])
-			&& $sugar_config['default_user_name'] == $this->bean->user_name
-			&& !empty($sugar_config['lock_default_user_name']))
-		{
-     	    $this->ss->assign('STATUS_DISABLE', true);
-		}
- 	    if(is_admin($GLOBALS['current_user'])) {
+ 	function EmployeesViewEdit(){
+ 		parent::ViewEdit();
+ 	}
+ 	
+ 	function display() {
+       	if(is_admin($GLOBALS['current_user'])) {
             $json = getJSONobj();
             require_once('include/QuickSearchDefaults.php');
             $qsd = new QuickSearchDefaults();

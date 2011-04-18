@@ -53,10 +53,7 @@ $subpanel_layout = array(
 			'widget_class' => 'SubPanelIcon',
  		 	'width' => '2%',
  		 	'image2'=>'attachment',
- 		 	'image2_url_field'=> array(
-				'id_field' => 'id',
-				'filename_field' => 'filename',
-			),
+ 		 	'image2_url_field'=>'file_url'
 		),
         'name'=>array(
  			'vname' => 'LBL_LIST_SUBJECT',

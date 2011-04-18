@@ -45,7 +45,7 @@ if(!ACLController::checkAccess('Calendar', 'list', true)){
 	ACLController::displayNoAccess(true);
 }
 
-echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_ACTION']), false);
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], "<span class='pointer'>&raquo;</span>".$mod_strings['LBL_MODULE_ACTION'], true);
 
 if ( empty($_REQUEST['view']))
 {
@@ -87,6 +87,20 @@ if ( isset($_REQUEST['year']))
 }
 
 // today adjusted for user's timezone
+if(empty($date_arr)) {
+	global $timedate;
+    $gmt_today = $timedate->get_gmt_db_datetime();
+    $user_today = $timedate->handle_offset($gmt_today, $GLOBALS['timedate']->get_db_date_time_format());
+	preg_match('/(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})/',$user_today,$matches);
+
+    $date_arr = array(
+      'year'=>$matches[1],
+      'month'=>$matches[2],
+      'day'=>$matches[3],
+      'hour'=>$matches[4],
+      'min'=>$matches[5]);
+} 
+
 $args['calendar'] = new Calendar($_REQUEST['view'], $date_arr);
 if ($_REQUEST['view'] == 'day' || $_REQUEST['view'] == 'week' || $_REQUEST['view'] == 'month')
 {
@@ -114,9 +128,9 @@ function toggleDisplay(id){
 }
 		//  End -->
 	</script>
-<table width="100%" border="0" cellpadding="0" cellspacing="0" id="calendarModule">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
-<td valign=top width="70%">
+<td valign=top width="70%" style="padding-right: 10px; padding-top: 2px;">
 <?php template_calendar($args); ?>
 </td>
 <?php if ($_REQUEST['view'] == 'day') { ?>

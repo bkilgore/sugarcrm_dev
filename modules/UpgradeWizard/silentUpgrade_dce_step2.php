@@ -236,7 +236,7 @@ function addDefaultModuleRoles($defaultRoles = array()) {
 					$row=$GLOBALS['db']->fetchByAssoc($result);
 					if ($row == null) {
 	                	$guid = create_guid();
-	                	$currdate = gmdate('Y-m-d H:i:s');
+	                	$currdate = gmdate($GLOBALS['timedate']->get_db_date_time_format());
 	                	$query= "INSERT INTO acl_actions (id,date_entered,date_modified,modified_user_id,name,category,acltype,aclaccess,deleted ) VALUES ('$guid','$currdate','$currdate','1','$name','$category','$roleName','$access_override','0')";
 						$GLOBALS['db']->query($query);
 						if($GLOBALS['db']->checkError()){
@@ -832,7 +832,7 @@ if(file_exists($newtemplate_path . '/include/SugarLogger/LoggerManager.php')){
 		
 	}
 	if(class_exists('LoggerManager')){
-		unset($GLOBALS['log']);
+		unset($GsLOBALS['log']);
 		$GLOBALS['log'] = LoggerManager::getLogger('SugarCRM');
 	}
 	set_upgrade_progress('logger','done');

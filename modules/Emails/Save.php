@@ -54,7 +54,7 @@ if(!isset($prefix)) {
 	$prefix = '';
 }
 if(isset($_POST[$prefix.'meridiem']) && !empty($_POST[$prefix.'meridiem'])) {
-	$_POST[$prefix.'time_start'] = $timedate->merge_time_meridiem($_POST[$prefix.'time_start'], $timedate->get_time_format(), $_POST[$prefix.'meridiem']);
+	$_POST[$prefix.'time_start'] = $timedate->merge_time_meridiem($_POST[$prefix.'time_start'], $timedate->get_time_format(true), $_POST[$prefix.'meridiem']);
 }
 //retrieve the record
 if(isset($_POST['record']) && !empty($_POST['record'])) {
@@ -220,14 +220,26 @@ if(isset($_REQUEST['object_type']) && !empty($_REQUEST['object_type']) && isset(
         }
     }
 }
+//// handle legacy parent_id/parent_type relationship calls
+elseif(isset($_REQUEST['parent_type']) && !empty($_REQUEST['parent_type'])
+		&& isset($_REQUEST['parent_id']) && !empty($_REQUEST['parent_id'])) {
+    //run linking code only if the object_id has not been linked as part of the contacts above
+    if(!isset($exContactIds) || !in_array($_REQUEST['parent_id'],$exContactIds)){
+        $rel = strtolower($_REQUEST['parent_type']);
+        if ($focus->load_relationship($rel)) {
+        	$focus->$rel->add($_REQUEST['parent_id']);
+        }
+    }
+}
 ////    END RELATIONSHIP LINKING
 ///////////////////////////////////////////////////////////////////////////////
 
 // If came from email archiving edit view, this would have been set from form input.
 if (!isset($focus->date_start))
 {
-    $timedate = TimeDate::getInstance();
-	list($focus->date_start,  $focus->time_start) = $timedate->split_date_time($timedate->now());
+	$today = gmdate($GLOBALS['timedate']->get_db_date_time_format());
+	$focus->date_start = $timedate->to_display_date($today);
+	$focus->time_start = $timedate->to_display_time($today, true);
 }
 
 $focus->date_sent = "";

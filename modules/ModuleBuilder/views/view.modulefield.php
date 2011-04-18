@@ -42,13 +42,13 @@ class ViewModulefield extends SugarView
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
     	return array(
     	   translate('LBL_MODULE_NAME','Administration'),
-    	   ModuleBuilderController::getModuleTitle(),
+    	   $mod_strings['LBL_MODULEBUILDER'],
     	   );
     }
 
@@ -276,24 +276,15 @@ class ViewModulefield extends SugarView
         $fv->ss->assign('duplicate_merge_options', $GLOBALS['app_list_strings']['custom_fields_merge_dup_dom']);
 
         $triggers = array () ;
-        $existing_field_names = array () ;
         foreach ( $module->mbvardefs->vardefs['fields'] as $field )
         {
         	if ($field [ 'type' ] == 'enum' || $field [ 'type'] == 'multienum' )
         	{
         		$triggers [] = $field [ 'name' ] ;
         	}
-        	
-        	if (!isset($field['source']) || $field['source'] != 'non-db') {
-        		if(preg_match('/^(.*?)(_c)?$/', $field['name'], $matches))
-        		{
-        			$existing_field_names [] = strtoupper($matches[1]);	
-        		}
-        	}
         }
-        
         $fv->ss->assign('triggers',$triggers);
-        $fv->ss->assign('existing_field_names', $json->encode($existing_field_names));
+
         $fv->ss->assign('mod_strings',$GLOBALS['mod_strings']);
 
 		// jchi #24880

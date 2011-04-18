@@ -98,7 +98,7 @@ class MassUpdate
 		global $current_user;
 
 		unset($_REQUEST['current_query_by_page']);
-		$query = base64_encode(serialize(array_merge($_POST, $_GET)));
+		$query = base64_encode(serialize($_REQUEST));
 
         $bean = loadBean($_REQUEST['module']);
        $order_by_name = $bean->module_dir.'2_'.strtoupper($bean->object_name).'_ORDER_BY' ;
@@ -146,10 +146,15 @@ eoq;
 	function handleMassUpdate(){
 
 		require_once('include/formbase.php');
-		global $current_user, $db, $disable_date_format;
-		
-		//We need to disable_date_format so that date values for the beans remain in database format
-		$disable_date_format = true;
+		global $current_user, $db;
+
+		/*
+		 C.L. - Commented this out... not sure why it's here
+		if(!is_array($this->sugarbean) && $this->sugarbean->bean_implements('ACL') && !ACLController::checkAccess($this->sugarbean->module_dir, 'edit', true))
+		{
+
+		}
+        */
 
 		foreach($_POST as $post=>$value){
 			if(is_array($value)){
@@ -285,7 +290,7 @@ eoq;
 						if(!empty($_POST['reports_to_id']) && $newbean->reports_to_id != $_POST['reports_to_id']) {
 						   $old_reports_to_id = empty($newbean->reports_to_id) ? 'null' : $newbean->reports_to_id;
 						}
-
+						
 						$check_notify = FALSE;
 
 						if (isset( $this->sugarbean->assigned_user_id)) {
@@ -296,15 +301,15 @@ eoq;
 								$check_notify = TRUE;
 							}
 						}
-
+	                    
 						//Call include/formbase.php, but do not call retrieve again
 						populateFromPost('', $newbean, true);
 						$newbean->save_from_post = false;
-
+						
 						if (!isset($_POST['parent_id'])) {
 							$newbean->parent_type = null;
 						}
-
+						
 						$email_address_id = '';
 	                    if (!empty($_POST['optout_primary'])) {
 	                    	$optout_flag_value = 0;
@@ -1142,7 +1147,7 @@ EOQ;
         if (isset($oldTime[1])) {
         	$oldTime = $oldTime[1];
         } else {
-        	$oldTime = $timedate->now();
+        	$oldTime = $timedate->to_display_time($timedate->get_gmt_db_datetime());
         }
         $value = explode(" ", $value);
         $value = $value[0];
@@ -1187,13 +1192,13 @@ EOQ;
         else{
             $this->use_old_search = false;
             require_once('include/SearchForm/SearchForm2.php');
-
+            
             if(file_exists('custom/modules/'.$module.'/metadata/metafiles.php')){
-                require('custom/modules/'.$module.'/metadata/metafiles.php');
+                require('custom/modules/'.$module.'/metadata/metafiles.php');	
             }elseif(file_exists('modules/'.$module.'/metadata/metafiles.php')){
                 require('modules/'.$module.'/metadata/metafiles.php');
             }
-
+            
             if (file_exists('custom/modules/'.$module.'/metadata/searchdefs.php'))
             {
                 require_once('custom/modules/'.$module.'/metadata/searchdefs.php');
@@ -1219,16 +1224,12 @@ EOQ;
             $searchForm = new SearchForm($seed, $module);
             $searchForm->setup($searchdefs, $searchFields, 'include/SearchForm/tpls/SearchFormGeneric.tpl');
         }
-	/* bug 31271: using false to not add all bean fields since some beans - like SavedReports
-	   can have fields named 'module' etc. which may break the query */
-        $searchForm->populateFromArray(unserialize(base64_decode($query)), null, false); // see bug 31271
+        $searchForm->populateFromArray(unserialize(base64_decode($query)));
         $this->searchFields = $searchForm->searchFields;
         $where_clauses = $searchForm->generateSearchWhere(true, $module);
         if (count($where_clauses) > 0 ) {
             $this->where_clauses = '('. implode(' ) AND ( ', $where_clauses) . ')';
             $GLOBALS['log']->info("MassUpdate Where Clause: {$this->where_clauses}");
-        } else {
-            $this->where_clauses = '';
         }
     }
 

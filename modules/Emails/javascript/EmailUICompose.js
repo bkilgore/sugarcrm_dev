@@ -1287,12 +1287,6 @@ SE.composeLayout = {
         var box_title = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_SHOW_TITLE;
 		var box_msg = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_SHOW_MSG;
 		var box_none_msg = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_CLEAR_MSG;
-		//Bug #6224
-		var to_addr = document.getElementById('addressTO'+idx);
-		if (to_addr.value.search(/[^;,]{6,}[;,][^;,]{6,}/) != -1) {
-			box_title = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_WARNING_TITLE;
-			box_msg = mod_strings.LBL_EMAILTEMPLATE_MESSAGE_MULTIPLE_RECIPIENTS + '<br /><br />' + box_msg;
-		}
 		
 		// id is selected index of email template drop-down
 		if(id == '' || id == "0") {

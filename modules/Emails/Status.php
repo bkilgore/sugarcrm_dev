@@ -67,7 +67,7 @@ if (isset($_REQUEST['contact_name']) && is_null($focus->contact_name)) {
 if (isset($_REQUEST['contact_id']) && is_null($focus->contact_id)) {
 	$focus->contact_id = $_REQUEST['contact_id'];
 }
-echo getClassicModuleTitle($mod_strings['LBL_SEND'], array($mod_strings['LBL_SEND']), true);
+echo get_module_title($mod_strings['LBL_SEND'], $mod_strings['LBL_SEND'], true);
 
 $GLOBALS['log']->info("Email detail view");
 

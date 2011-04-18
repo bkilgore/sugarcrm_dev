@@ -59,6 +59,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
             $prefix.'include/javascript/ext-1.1.1'  => 'include/javascript/ext-1.1.1',
             $prefix.'include/javascript/ext-2.0'    => 'include/javascript/ext-2.0',
             $prefix.'include/javascript/tiny_mce'   => 'include/javascript/tiny_mce',
+            $prefix.'jscalendar/lang'               => 'jscalendar/lang',
             $prefix.'modules/Emails'                => 'modules/Emails',
             $prefix.'jssource'                      => 'jssource',
             $prefix.'modules/ModuleBuilder'			=> 'modules/ModuleBuilder',

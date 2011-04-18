@@ -49,7 +49,7 @@ $smarty = new Sugar_Smarty();
 if(empty($GLOBALS['tabStructure'])){
 	require_once('include/tabConfig.php');
 }
-$title=getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_CONFIGURE_GROUP_TABS']), false);
+$title=get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_CONFIGURE_GROUP_TABS'], true);
 
 #30205
 $selectedAppLanguages = return_application_language($tabGroupSelected_lang);

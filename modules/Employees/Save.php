@@ -51,11 +51,9 @@ parse_str($tabs_def,$DISPLAY_ARR);
 
 
 $focus = new Employee();
-
 $focus->retrieve($_POST['record']);
 //rrs bug: 30035 - I am not sure how this ever worked b/c old_reports_to_id was not populated.
 $old_reports_to_id = $focus->reports_to_id;
-
 populateFromRow($focus,$_POST);
 	
 $focus->save();
@@ -70,17 +68,13 @@ if(isset($_POST['return_id']) && $_POST['return_id'] != "") $return_id = $_POST[
 
 $GLOBALS['log']->debug("Saved record with id of ".$return_id);
 
-
 header("Location: index.php?action=$return_action&module=$return_module&record=$return_id");
 
-
 function populateFromRow(&$focus,$row){
-	
-
 	//only employee specific field values need to be copied.    	
-	$e_fields=array('first_name','last_name','reports_to_id','description','phone_home','phone_mobile','phone_work','phone_other','phone_fax','address_street','address_city','address_state','address_country','address_country', 'address_postalcode', 'messenger_id','messenger_type');
+	$e_fields=array('employee_status', 'first_name','last_name','reports_to_id','description','phone_home','phone_mobile','phone_work','phone_other','phone_fax','address_street','address_city','address_state','address_country','address_country', 'address_postalcode', 'messenger_id','messenger_type');
 	if ( is_admin($GLOBALS['current_user']) )
-        $e_fields = array_merge($e_fields,array('title','department','employee_status'));
+        $e_fields = array_merge($e_fields,array('title','department'));
     $nullvalue='';
 	foreach($e_fields as $field)
 	{

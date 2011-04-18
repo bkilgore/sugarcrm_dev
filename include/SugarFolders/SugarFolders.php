@@ -268,18 +268,18 @@ class SugarFolder {
 		}
 	}
 
-
+	
 	/**
 	 * Deletes all subscriptions for a particular folder id
 	 *
 	 * @return unknown
 	 */
-	function clearSubscriptionsForFolder($folderID)
+	function clearSubscriptionsForFolder($folderID) 
 	{
 	    $query = "DELETE FROM folders_subscriptions WHERE folder_id = '$folderID'";
 	    $r = $this->db->query($query);
-	}
-
+	} 
+	
 	function generateSugarsDynamicFolderQuery() {
 		global $current_user;
 		$type = $this->folder_type;
@@ -333,7 +333,7 @@ class SugarFolder {
 		$return = array();
 
 		$email = new Email(); //Needed for email specific functions.
-
+		
 		while($a = $this->db->fetchByAssoc($r)) {
 
 			$temp = array();
@@ -462,8 +462,8 @@ class SugarFolder {
 		}
 		$rootWhere = '';
         $teamSecurityClause = '';
-
-
+        
+		
 
 		if($sugar_config['dbconfig']['db_type'] == 'oci8') {
 			$rootWhere .= "AND f.parent_folder IS NULL";
@@ -509,12 +509,12 @@ class SugarFolder {
 		foreach($folders as $a) {
 			$a['selected'] = (in_array($a['id'], $subscriptions)) ? true : false;
             $a['origName'] = $a['name'];
-
+            
 			if($a['is_group'] == 1)
-				if ($a['deleted'] != 1)
+				if ($a['deleted'] != 1) 
 					$grp[] = $a;
 		}
-
+       
 		return $grp;
 	}
 	/**
@@ -534,8 +534,6 @@ class SugarFolder {
 		foreach($folders as $a) {
 			$a['selected'] = (in_array($a['id'], $subscriptions)) ? true : false;
             $a['origName'] = $a['name'];
-            if( isset($a['dynamic_query']) )
-                unset($a['dynamic_query']);
 			if($a['is_group'] == 1) {
 				$grp[] = $a;
 			} else {
@@ -574,7 +572,7 @@ class SugarFolder {
 
 		}
 		$collection[] = $a;
-
+			
 		if($a['has_child'] == 1) {
 			$this->_depth++;
 			$qGetChildren = $this->core.$this->coreWhere."AND parent_folder = '{$a['id']}'";
@@ -583,7 +581,7 @@ class SugarFolder {
 				$collection = $this->getFoldersChildForSettings($aGetChildren, $collection, $subscriptions);
 			}
 		}
-
+	
 		return $collection;
 	}
 
@@ -793,14 +791,14 @@ class SugarFolder {
 		} // if
 
 		$q = "SELECT COUNT(*) c from folders_rel where polymorphic_module = 'Emails' AND polymorphic_id = '{$id}' AND folder_id = '{$this->id}'";
-
+		
 		$checkEmailQuery = "SELECT count(*) c FROM folders_rel where polymorphic_module = 'Emails' and folder_id = '{$id}' and deleted = 0";
 		$resultSet = $this->db->query($checkEmailQuery);
 		$a = $this->db->fetchByAssoc($resultSet);
 		if ($a['c'] > 0) {
 			return false;
 		} // if
-
+		
 		$q = "SELECT * FROM folders WHERE id = '{$id}'";
 		$r = $this->db->query($q);
 		$a = $this->db->fetchByAssoc($r);
@@ -842,22 +840,22 @@ class SugarFolder {
 
 		$this->dynamic_query = $this->db->helper->escape_quote($this->dynamic_query);
 
-		if((empty($this->id) && $this->new_with_id == false) || (!empty($this->id) && $this->new_with_id == true))
+		if((empty($this->id) && $this->new_with_id == false) || (!empty($this->id) && $this->new_with_id == true)) 
 		{
-
+		    
 		    if( empty($this->id) )
 		    {
 			    $guid = create_guid();
 			    $this->id = $guid;
 		    }
-
+		    
 			$q = "INSERT INTO folders(id, name, folder_type, parent_folder, has_child, is_group, is_dynamic, dynamic_query, assign_to_id, ".
 				"created_by, modified_by, deleted)".
 
 				" VALUES('{$this->id}', '{$this->name}', '{$this->folder_type}', '{$this->parent_folder}', {$this->has_child}, {$this->is_group}, {$this->is_dynamic}, '{$this->dynamic_query}', '{$this->assign_to_id}', " .
 				"'{$current_user->id}', '{$current_user->id}', 0)";
 
-
+			
 			if($addSubscriptions)
 			{
 			    // create default subscription
@@ -867,7 +865,7 @@ class SugarFolder {
 			// if parent_id is set, update parent's has_child flag
 			$q3 = "UPDATE folders SET has_child = 1 WHERE id = '{$this->parent_folder}'";
 			$r3 = $this->db->query($q3);
-		}
+		} 
 		else {
 			$q = "UPDATE folders SET name = '{$this->name}', parent_folder = '{$this->parent_folder}', dynamic_query = '{$this->dynamic_query}', assign_to_id = '{$this->assign_to_id}', " .
 				"modified_by = '{$current_user->id}' WHERE id = '{$this->id}'";
@@ -885,13 +883,13 @@ class SugarFolder {
 	function addSubscriptionsToGroupFolder()
 	{
 	    global $current_user;
-
+	    
 	    $this->createSubscriptionForUser($current_user->id);
-
+	    
 	}
-
-
-
+	
+	
+	
     /**
 	 * Add subscriptions to this group folder.
 	 *
@@ -902,8 +900,8 @@ class SugarFolder {
 	   $query = "INSERT INTO folders_subscriptions VALUES('{$guid2}', '{$this->id}', '{$user_id}')";
 	   $this->db->query($query);
 	}
-
-
+	
+	
 	function updateFolder($fields) {
 		global $current_user;
 

@@ -57,11 +57,6 @@ class UsersController extends SugarController
             $u->employee_status = 'Terminated';
             $u->save();
             $GLOBALS['log']->info("User id: {$GLOBALS['current_user']->id} deleted user record: {$_REQUEST['record']}");
-
-            $eapm = loadBean('EAPM');
-            $eapm->delete_user_accounts($_REQUEST['record']);
-            $GLOBALS['log']->info("Removing user's External Accounts");
-            
             SugarApplication::redirect("index.php?module=Users&action=index");
         }
         else 
@@ -83,7 +78,7 @@ class UsersController extends SugarController
 	    $_POST['should_remind'] = '1';
 	    $_POST['reminder_time'] = 1800;
         $_POST['mailmerge_on'] = 'on';
-        $_POST['user_theme'] = (string) SugarThemeRegistry::getDefault();
+	    $_POST['user_theme'] = 'Sugar5';
 	    
 	    // save and redirect to new view
 	    $_REQUEST['return_module'] = 'Home';

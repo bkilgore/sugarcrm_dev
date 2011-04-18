@@ -319,7 +319,7 @@ user_detailview_tabs.on('contentReady', function(e){
             </tr>
             <tr>
             <td width="15%" scope="row"><slot>{$MOD.LBL_PUBLISH_KEY}:</slot></td>
-            <td width="20%"><slot>{$CALENDAR_PUBLISH_KEY}&nbsp;</slot></td>
+            <td width="20%"><slot>{$CALENDAR_PUBLISH_KEY}</slot></td>
             <td width="65%"><slot>{$MOD.LBL_CHOOSE_A_KEY}&nbsp;</slot></td>
             </tr>
             <tr>

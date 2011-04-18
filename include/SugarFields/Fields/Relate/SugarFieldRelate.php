@@ -46,7 +46,7 @@ class SugarFieldRelate extends SugarFieldBase {
             $this->ss->assign('nolink', false);
         }
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch($this->findTemplate('DetailView'));
+        return $this->fetch('include/SugarFields/Fields/Relate/DetailView.tpl');
     }
     
     function getEditViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
@@ -134,7 +134,7 @@ class SugarFieldRelate extends SugarFieldBase {
            $displayParams['readOnly'] = $displayParams['readOnly'] == false ? '' : 'READONLY';  
         }
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch($this->findTemplate('EditView')); 
+        return $this->fetch('include/SugarFields/Fields/Relate/EditView.tpl'); 
     }
     
     function getPopupViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex){
@@ -151,10 +151,9 @@ class SugarFieldRelate extends SugarFieldBase {
         if(isset($displayParams['formName'])) {
             $form_name = $displayParams['formName'];
         }
-     	if(!empty($vardef['rname']) && $vardef['rname'] == 'user_name'){
+        if(!empty($vardef['rname']) && $vardef['rname'] == 'user_name'){
         	$displayParams['useIdSearch'] = true;
         }
-        
         //Special Case for accounts; use the displayParams array and retrieve
         //the key and copy indexes.  'key' is the suffix of the field we are searching
         //the Account's address with.  'copy' is the suffix we are copying the addresses
@@ -226,7 +225,7 @@ class SugarFieldRelate extends SugarFieldBase {
            $displayParams['readOnly'] = $displayParams['readOnly'] == false ? '' : 'READONLY';  
         }
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch($this->findTemplate('SearchView')); 
+        return $this->fetch('include/SugarFields/Fields/Relate/SearchView.tpl'); 
     }    
     
     function formatField($rawField, $vardef) {
@@ -252,117 +251,5 @@ class SugarFieldRelate extends SugarFieldBase {
     	
         return $new_field;
     }
-    
-    /**
-     * @see SugarFieldBase::importSanitize()
-     */
-    public function importSanitize(
-        $value,
-        $vardef,
-        $focus,
-        ImportFieldSanitize $settings
-        )
-    {
-        if ( !isset($vardef['module']) )
-            return false;
-        $newbean = loadBean($vardef['module']);
-        
-        // Bug 38885 - If we are relating to the Users table on user_name, there's a good chance
-        // that the related field data is the full_name, rather than the user_name. So to be sure
-        // let's try to lookup the field the relationship is expecting to use (user_name).
-        if ( $vardef['module'] == 'Users' && $vardef['rname'] == 'user_name' ) {
-            $userFocus = new User;
-            $userFocus->retrieve_by_string_fields(
-                array($userFocus->db->concat('users',array('first_name','last_name')) => $value ));
-            if ( !empty($userFocus->id) ) {
-                $value = $userFocus->user_name;
-            }
-        }       
-        
-        // Bug 32869 - Assumed related field name is 'name' if it is not specified
-        if ( !isset($vardef['rname']) )
-            $vardef['rname'] = 'name';
-        
-        // Bug 27046 - Validate field against type as it is in the related field
-        $rvardef = $newbean->getFieldDefinition($vardef['rname']);
-        if ( isset($rvardef['type']) 
-                && method_exists($this,$rvardef['type']) ) {
-            $fieldtype = $rvardef['type'];
-            $returnValue = $settings->$fieldtype($value,$rvardef);
-            if ( !$returnValue )
-                return false;
-            else
-                $value = $returnValue;
-        }
-        
-        if ( isset($vardef['id_name']) ) {
-            $idField = $vardef['id_name'];
-            
-            // Bug 24075 - clear out id field value if it is invalid
-            if ( isset($focus->$idField) ) {
-                $checkfocus = loadBean($vardef['module']);
-                if ( $checkfocus && is_null($checkfocus->retrieve($focus->$idField)) )
-                    $focus->$idField = '';
-            }
-            
-            // be sure that the id isn't already set for this row
-            if ( empty($focus->$idField)
-                    && $idField != $vardef['name']
-                    && !empty($vardef['rname']) 
-                    && !empty($vardef['table'])) {
-                // Bug 27562 - Check db_concat_fields first to see if the field name is a concat
-                $relatedFieldDef = $newbean->getFieldDefinition($vardef['rname']);
-                if ( isset($relatedFieldDef['db_concat_fields']) 
-                        && is_array($relatedFieldDef['db_concat_fields']) )
-                    $fieldname = $focus->db->concat($vardef['table'],$relatedFieldDef['db_concat_fields']);
-                else
-                    $fieldname = $vardef['rname'];
-                // lookup first record that matches in linked table
-                $query = "SELECT id 
-                            FROM {$vardef['table']} 
-                            WHERE {$fieldname} = '" . $focus->db->quote($value) . "'
-                                AND deleted != 1";
-                
-                $result = $focus->db->limitQuery($query,0,1,true, "Want only a single row");
-                if(!empty($result)){
-                    if ( $relaterow = $focus->db->fetchByAssoc($result) )
-                        $focus->$idField = $relaterow['id'];
-                    elseif ( !$settings->addRelatedBean 
-                            || ( $newbean->bean_implements('ACL') && !$newbean->ACLAccess('save') )
-                            || ( in_array($newbean->module_dir,array('Teams','Users')) )
-                            )
-                        return false;
-                    else {
-                        // add this as a new record in that bean, then relate
-                        if ( isset($relatedFieldDef['db_concat_fields']) 
-                                && is_array($relatedFieldDef['db_concat_fields']) ) {
-                            $relatedFieldParts = explode(' ',$value);
-                            foreach ($relatedFieldDef['db_concat_fields'] as $relatedField)
-                                $newbean->$relatedField = array_shift($relatedFieldParts);
-                        }
-                        else
-                            $newbean->$vardef['rname'] = $value;
-                        if ( !isset($focus->assigned_user_id) || $focus->assigned_user_id == '' )
-                            $newbean->assigned_user_id = $GLOBALS['current_user']->id;
-                        else
-                            $newbean->assigned_user_id = $focus->assigned_user_id;
-                        if ( !isset($focus->modified_user_id) || $focus->modified_user_id == '' )
-                            $newbean->modified_user_id = $GLOBALS['current_user']->id;
-                        else
-                            $newbean->modified_user_id = $focus->modified_user_id;
-                        
-                        // populate fields from the parent bean to the child bean
-                        $focus->populateRelatedBean($newbean);
-                        
-                        $newbean->save(false);
-                        $focus->$idField = $newbean->id;
-                        $settings->createdBeans[] = ImportFile::writeRowToLastImport(
-                                $focus->module_dir,$newbean->object_name,$newbean->id);
-                    }
-                }
-            }
-        }
-        
-        return $value;
-    }
 }
+?>

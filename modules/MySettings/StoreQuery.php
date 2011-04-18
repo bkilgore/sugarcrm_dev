@@ -45,67 +45,8 @@ class StoreQuery{
 		$this->query[$name] = $val;	
 	}
 	
-	/**
-	 * SaveQuery
-	 * 
-	 * This function handles saving the query parameters to the user preferences
-	 * SavedSearch.php does something very similar when saving saved searches as well
-	 * 
-	 * @see SavedSearch
-	 * @param $name String name  to identify this query
-	 */
-	function SaveQuery($name)
-	{
-		global $current_user, $timedate;
-		if(isset($this->query['module']))
-		{
-		   $bean = loadBean($this->query['module']);
-		   if(!empty($bean))
-		   {
-		   	  foreach($this->query as $key=>$value)
-		   	  {
-	   	  	    //Filter date fields to ensure it is saved to DB format, but also avoid empty values
-				if(!empty($value) && preg_match('/^(start_range_|end_range_|range_)?(.*?)(_advanced|_basic)$/', $key, $match))
-				{
-				   $field = $match[2];
-				   if(isset($bean->field_defs[$field]['type']))
-				   {
-				   	  $type = $bean->field_defs[$field]['type'];
-				   	  
-				   	  if(($type == 'date' || $type == 'datetime' || $type == 'datetimecombo') && !preg_match('/^\[.*?\]$/', $value))
-				   	  {
-				   	  	 $db_format = $timedate->to_db_date($value, false);
-				   	  	 $this->query[$key] = $db_format;
-				   	  }  else if ($type == 'int' || $type == 'currency' || $type == 'decimal' || $type == 'float') {
-				   	  		if(preg_match('/[^\d]/', $value)) {
-						   	  	 require_once('modules/Currencies/Currency.php');
-						   	  	 $this->query[$key] = unformat_number($value);
-						   	  	 //Flag this value as having been unformatted
-						   	  	 $this->query[$key . '_unformatted_number'] = true;
-						   	  	 //If the type is of currency and there was a currency symbol (non-digit), save the symbol
-						   	  	 if($type == 'currency' && preg_match('/^([^\d])/', $value, $match))
-						   	  	 {
-						   	  	 	$this->query[$key . '_currency_symbol'] = $match[1];
-						   	  	 }
-					   	  	} else {
-					   	  		 //unset any flags
-					   	  		 if(isset($this->query[$key . '_unformatted_number']))
-					   	  		 {
-					   	  		 	unset($this->query[$key . '_unformatted_number']);
-					   	  		 }
-					   	  		 
-					   	  		 if(isset($this->query[$key . '_currency_symbol']))
-					   	  		 {
-					   	  		 	unset($this->query[$key . '_currency_symbol']);
-					   	  		 }
-					   	  	}
-				   	  }
-				   }
-				}
-		   	  }
-		   }
-		}
-
+	function SaveQuery($name){
+		global $current_user;
 		$current_user->setPreference($name.'Q', $this->query);
 	}
 	
@@ -129,45 +70,12 @@ class StoreQuery{
 	}
 	
 	
-	function populateRequest()
-	{
-		global $timedate;
-		
-		if(isset($this->query['module']))
-		{
-		   $bean = loadBean($this->query['module']);
-		}
-
-		foreach($this->query as $key=>$value)
-		{
+	function populateRequest(){
+		foreach($this->query as $key=>$val){
             // todo wp: remove this
-            if($key != 'advanced' && $key != 'module') 
-            {   
-            	//Filter date fields to ensure it is saved to DB format, but also avoid empty values
-				if(!empty($value) && !empty($bean) && preg_match('/^(start_range_|end_range_|range_)?(.*?)(_advanced|_basic)$/', $key, $match))
-				{
-				   $field = $match[2];
-				   if(isset($bean->field_defs[$field]['type']))
-				   {
-				   	  $type = $bean->field_defs[$field]['type'];
-				   	  
-				   	  if(($type == 'date' || $type == 'datetime' || $type == 'datetimecombo') && preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) && !preg_match('/^\[.*?\]$/', $value))
-				   	  {
-				   	  	 $value = $timedate->to_display_date($value, false);
-				   	  }  else if (($type == 'int' || $type == 'currency' || $type == 'decimal' || $type == 'float') && isset($this->query[$key . '_unformatted_number']) && preg_match('/^\d+$/', $value)) {
-				   	  	 require_once('modules/Currencies/Currency.php');
-				   	  	 $value = format_number($value);
-				   	  	 if($type == 'currency' && isset($this->query[$key . '_currency_symbol']))
-				   	  	 {
-				   	  	 	$value = $this->query[$key . '_currency_symbol'] . $value;
-				   	  	 }
-				   	  }
-				   }
-				}            	
-            	
-            	// cn: bug 6546 storequery stomps correct value for 'module' in Activities
-    			$_REQUEST[$key] = $value;	
-    			$_GET[$key] = $value;	
+            if($key != 'advanced' && $key != 'module') { // cn: bug 6546 storequery stomps correct value for 'module' in Activities
+    			$_REQUEST[$key] = $val;	
+    			$_GET[$key] = $val;	
             }
 		}	
 	}

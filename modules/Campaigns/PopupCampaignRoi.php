@@ -55,6 +55,9 @@ global $app_strings;
 global $app_list_strings;
 global $sugar_version, $sugar_config;
 
+/*
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_NEWSLETTER'].": ".$focus->name, true);
+*/
 global $theme;
 
 

@@ -60,44 +60,49 @@ echo getClassicModuleTitle(
             "<a href='index.php?module=Administration&action=index'>{$mod_strings['LBL_MODULE_NAME']}</a>",
            translate('LBL_DIAGNOSTIC_TITLE')
            ), 
-        false
+        true
         );
 
 global $currentModule;
 
+
+
 $GLOBALS['log']->info("Administration Diagnostic");
 
-$sugar_smarty = new Sugar_Smarty();
-$sugar_smarty->assign("MOD", $mod_strings);
-$sugar_smarty->assign("APP", $app_strings);
+$xtpl=new XTemplate ('modules/Administration/Diagnostic.html');
+$xtpl->assign("MOD", $mod_strings);
+$xtpl->assign("APP", $app_strings);
 
-if($db->dbType != 'mysql') {
-	$sugar_smarty->assign("NO_MYSQL_MESSAGE", "<tr><td class=\"dataLabel\"><slot><font color=red>".
+if($db->dbType != 'mysql'){
+	$xtpl->assign("NO_MYSQL_MESSAGE", "<tr><td class=\"dataLabel\"><slot><font color=red>".
 										$mod_strings['LBL_DIAGNOSTIC_NO_MYSQL'].
 									  "</font></slot></td></tr><tr><td>&nbsp;</td></tr>");
-	$sugar_smarty->assign("MYSQL_CAPABLE", "");
-	$sugar_smarty->assign("MYSQL_CAPABLE_CHECKBOXES",
+	$xtpl->assign("MYSQL_CAPABLE", "");
+	$xtpl->assign("MYSQL_CAPABLE_CHECKBOXES",
 				  "<script type=\"text/javascript\" language=\"Javascript\"> ".
 				  "document.Diagnostic.mysql_dumps.disabled=true;".
 				  "document.Diagnostic.mysql_schema.disabled=true;".
 				  "document.Diagnostic.mysql_info.disabled=true;".
 				  "</script>"
 				  );
+}else{
+	$xtpl->assign("NO_MYSQL_MESSAGE", "");
+	$xtpl->assign("MYSQL_CAPABLE", "checked");
+	$xtpl->assign("MYSQL_CAPABLE_CHECKBOXES", "");
 }
-else {
-	$sugar_smarty->assign("NO_MYSQL_MESSAGE", "");
-	$sugar_smarty->assign("MYSQL_CAPABLE", "checked");
-	$sugar_smarty->assign("MYSQL_CAPABLE_CHECKBOXES", "");
-}
 
-$sugar_smarty->assign("RETURN_MODULE", "Administration");
-$sugar_smarty->assign("RETURN_ACTION", "index");
+$xtpl->assign("RETURN_MODULE", "Administration");
+$xtpl->assign("RETURN_ACTION", "index");
 
-$sugar_smarty->assign("MODULE", $currentModule);
-$sugar_smarty->assign("PRINT_URL", "index.php?".$GLOBALS['request_string']);
+$xtpl->assign("MODULE", $currentModule);
+$xtpl->assign("PRINT_URL", "index.php?".$GLOBALS['request_string']);
 
 
-$sugar_smarty->assign("ADVANCED_SEARCH_PNG", SugarThemeRegistry::current()->getImage('advanced_search','alt="'.$app_strings['LNK_ADVANCED_SEARCH'].'"  border="0"'));
-$sugar_smarty->assign("BASIC_SEARCH_PNG", SugarThemeRegistry::current()->getImage('basic_search','alt="'.$app_strings['LNK_BASIC_SEARCH'].'"  border="0"'));
+$xtpl->assign("ADVANCED_SEARCH_PNG", SugarThemeRegistry::current()->getImage('advanced_search','alt="'.$app_strings['LNK_ADVANCED_SEARCH'].'"  border="0"'));
+$xtpl->assign("BASIC_SEARCH_PNG", SugarThemeRegistry::current()->getImage('basic_search','alt="'.$app_strings['LNK_BASIC_SEARCH'].'"  border="0"'));
 
-$sugar_smarty->display("modules/Administration/Diagnostic.tpl");
+$xtpl->parse("main");
+$xtpl->out("main");
+
+
+?>

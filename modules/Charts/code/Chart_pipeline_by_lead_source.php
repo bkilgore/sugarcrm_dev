@@ -183,7 +183,7 @@ echo "<P align='center'><span class='chartFootnote'>".$current_module_strings['L
 
 	if (file_exists($sugar_config['tmp_dir'].$cache_file_name)) {
 global $timedate;
-		$file_date = $timedate->asUser($timedate->fromTimestamp(filemtime($sugar_config['tmp_dir'].$cache_file_name)));
+		$file_date = date($timedate->get_date_format()." ".$timedate->get_time_format(), filemtime($sugar_config['tmp_dir'].$cache_file_name));
 	}
 	else {
 		$file_date = '';
@@ -208,7 +208,7 @@ global $timedate;
 	*/
 	function gen_xml($legends=array('foo','bar'), $user_id=array('1'), $cache_file_name='a_file', $refresh=true,$current_module_strings) {
 		global $app_strings, $charset, $lang, $pieChartColors, $current_user;
-
+		
 		$kDelim = $current_user->getPreference('num_grp_sep');
 
 		if (!file_exists($cache_file_name) || $refresh == true) {
@@ -251,7 +251,7 @@ global $timedate;
 			$query = "SELECT lead_source,sum(amount_usdollar/1000) as total,count(*) as opp_count FROM opportunities ";
 			$query .= "WHERE ".$where." AND opportunities.deleted=0 ";
 			$query .= "GROUP BY lead_source ORDER BY total DESC";
-
+			
 			//build pipeline by lead source data
 			$total = 0;
 			$div = 1;
@@ -327,11 +327,11 @@ global $timedate;
 		return $return;
 
 	}
-
+	
 	function constructQuery(){
 		global $current_user;
 		global $app_list_strings;
-
+		
 		$tempx = array();
 		$datax = array();
 		$selected_datax = array();
@@ -351,7 +351,7 @@ global $timedate;
 			$GLOBALS['log']->debug("USER PREFERENCES['pbls_lead_sources'] is:");
 			$GLOBALS['log']->debug($current_user->getPreference('pbls_lead_sources'));
 		}
-
+		
 		//set $datax using selected sales stage keys
 		if (count($tempx) > 0) {
 			foreach ($tempx as $key) {
@@ -363,9 +363,9 @@ global $timedate;
 			$datax = $app_list_strings['lead_source_dom'];
 			$selected_datax = array_keys($app_list_strings['lead_source_dom']);
 		}
-
+				
 		$legends = $datax;
-
+		
 		$ids = array();
 		$user_ids = $current_user->getPreference('pbls_ids');
 		//get list of user ids for which to display data
@@ -386,9 +386,9 @@ global $timedate;
 			$ids = get_user_array(false);
 			$ids = array_keys($ids);
 		}
-
+		
 		$user_id = $ids;
-
+			
 		$opp = new Opportunity;
 		//Now do the db queries
 		//query for opportunity data that matches $legends and $user
@@ -423,7 +423,7 @@ global $timedate;
 
 		return $query;
 	}
-
+	
 	function constructGroupBy(){
 		return array( 'lead_source', );
 	}

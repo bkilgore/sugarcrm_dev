@@ -77,7 +77,7 @@ function saveFile($note, $portal = false){
         }else{
                 return '-1';
         }
-
+        
         return $return_id;
 }
 
@@ -110,11 +110,11 @@ function newSaveFile($note, $portal = false){
         }
 
         $return_id = $focus->id;
-
+        
         if(!empty($note['file'])){
         	$this->upload_file->final_move($focus->id);
         }
-
+        
 		if (!empty($note['related_module_id']) && !empty($note['related_module_name'])) {
         	$focus->process_save_dates=false;
         	$module_name = $note['related_module_name'];
@@ -126,7 +126,7 @@ function newSaveFile($note, $portal = false){
 				$focus->contact_id=$module_id;
 			}
 			$focus->save();
-
+        	
         } // if
         return $return_id;
 }
@@ -139,7 +139,9 @@ function retrieveFile($id, $filename){
 	$this->upload_file->stored_file_name = $filename;
 	$filepath = $this->upload_file->get_upload_path($id);
 	if(file_exists($filepath)){
-		$file = file_get_contents($filepath);
+		$fp = sugar_fopen($filepath, 'rb');
+		$file = fread($fp, filesize($filepath));
+		fclose($fp);
 		return base64_encode($file);
 	}
 	return -1;

@@ -52,7 +52,7 @@ $error_msg = '';
 
 global $current_language;
 $mod_strings = return_module_language($current_language, 'Accounts');
-echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$mod_strings['LBL_SAVE_ACCOUNT']), true);
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'].": ".$mod_strings['LBL_SAVE_ACCOUNT'], true);
 $xtpl=new XTemplate ('modules/Accounts/ShowDuplicates.html');
 $xtpl->assign("MOD", $mod_strings);
 $xtpl->assign("APP", $app_strings);
@@ -114,14 +114,6 @@ foreach ($account->additional_column_fields as $field)
 		$value = urldecode($_POST['Accounts'.$field]);
 		$input .= "<input type='hidden' name='$field' value='{$value}'>\n";
 	}
-}
-
-// Bug 25311 - Add special handling for when the form specifies many-to-many relationships
-if(!empty($_POST['Contactsrelate_to'])) {
-    $input .= "<input type='hidden' name='relate_to' value='{$_POST['Contactsrelate_to']}'>\n";
-}
-if(!empty($_POST['Contactsrelate_id'])) {
-    $input .= "<input type='hidden' name='relate_id' value='{$_POST['Contactsrelate_id']}'>\n";
 }
 
 

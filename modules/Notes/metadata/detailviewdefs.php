@@ -81,7 +81,13 @@ array (
            
           array (
             'name' => 'filename',
-          ),          
+            'type' => 'file',
+            'displayParams' => 
+            array (
+              'id' => 'id',
+              'link' => 'filename',
+            ),
+          ),
         ),
          
         array (

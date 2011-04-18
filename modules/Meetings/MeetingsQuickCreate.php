@@ -73,9 +73,9 @@ class MeetingsQuickCreate extends QuickCreate {
         $this->javascript->addAllFields('');
 
 		if (is_null($focus->date_start))
-			$focus->date_start = $timedate->to_display_date(TimeDate::getInstance()->nowDb());
+			$focus->date_start = $timedate->to_display_date(gmdate($GLOBALS['timedate']->get_db_date_time_format()));
 		if (is_null($focus->time_start))
-			$focus->time_start = $timedate->to_display_time(TimeDate::getInstance()->nowDb(), true);
+			$focus->time_start = $timedate->to_display_time(gmdate($GLOBALS['timedate']->get_db_date_time_format()), true);
 		if (!isset ($focus->duration_hours))
 			$focus->duration_hours = "1";
 

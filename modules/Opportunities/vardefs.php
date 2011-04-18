@@ -36,7 +36,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 
-$dictionary['Opportunity'] = array('table' => 'opportunities','audited'=>true, 'unified_search' => true, 'unified_search_default_enabled' => true, 'duplicate_merge'=>true,
+$dictionary['Opportunity'] = array('table' => 'opportunities','audited'=>true, 'unified_search' => true,'duplicate_merge'=>true,
 		'comment' => 'An opportunity is the target of selling activities',
 		'fields' => array (
   'name' =>
@@ -147,10 +147,9 @@ $dictionary['Opportunity'] = array('table' => 'opportunities','audited'=>true, '
 //    'disable_num_format' => true,
     'dbType' => 'double',
     'comment' => 'Unconverted amount of the opportunity',
+    'duplicate_merge'=>'disabled',
     'importable' => 'required',
     'required' => true,
-  	'options' => 'numeric_range_search_dom',
-    'enable_range_search' => true,
   ),
   'amount_usdollar' =>
   array (
@@ -160,9 +159,8 @@ $dictionary['Opportunity'] = array('table' => 'opportunities','audited'=>true, '
     'group'=>'amount',
     'dbType' => 'double',
     'disable_num_format' => true,
-    'duplicate_merge'=>'disabled',
     'audited'=>true,
-    'comment' => 'Formatted amount of the opportunity',
+    'comment' => 'Formatted amount of the opportunity'
   ),
   'currency_id' =>
   array (
@@ -213,8 +211,6 @@ $dictionary['Opportunity'] = array('table' => 'opportunities','audited'=>true, '
     'comment' => 'Expected or actual date the oppportunity will close',
 	'importable' => 'required',
     'required' => true,
-    'enable_range_search' => true,
-    'options' => 'date_range_search_dom',
   ),
   'next_step' =>
   array (
@@ -310,14 +306,6 @@ $dictionary['Opportunity'] = array('table' => 'opportunities','audited'=>true, '
     'relationship' => 'emails_opportunities_rel',/* reldef in emails */
     'source'=>'non-db',
 		'vname'=>'LBL_EMAILS',
-  ),
-  'documents'=>
-  array (
-      'name' => 'documents',
-      'type' => 'link',
-      'relationship' => 'documents_opportunities',
-      'source' => 'non-db',
-      'vname' => 'LBL_DOCUMENTS_SUBPANEL_TITLE',
   ),
 
   'project' =>

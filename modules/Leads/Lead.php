@@ -253,7 +253,7 @@ class Lead extends Person {
 		if($custom_join)
 				$custom_join['join'] .= $relate_link_join;
                          $query = "SELECT
-                                leads.*, email_addresses.email_address email_address,
+                                leads.*, email_addresses.email_address email1,
                                 users.user_name assigned_user_name";
                          if($custom_join){
    							$query .= $custom_join['select'];

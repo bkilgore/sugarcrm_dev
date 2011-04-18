@@ -74,9 +74,7 @@ class DBManagerFactory
         if(!isset($dbinstances[$instanceName])){
             $my_db_manager = 'MysqlManager';
             if( $config['db_type'] == "mysql" ) {
-                if ((!isset($sugar_config['mysqli_disabled'])
-                            || $sugar_config['mysqli_disabled'] == false) 
-                    && function_exists('mysqli_connect')) {
+                if (function_exists('mysqli_connect')) {
                     $my_db_manager = 'MysqliManager';
                 }
             }

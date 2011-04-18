@@ -71,8 +71,6 @@ $probability_script=<<<EOQ
 			&& typeof(document.getElementsByName('probability')[0]) != "undefined"
 			) {
 				document.getElementsByName('probability')[0].value = prob_array[document.getElementsByName('sales_stage')[0].value];
-				SUGAR.util.callOnChangeListers(document.getElementsByName('probability')[0]);
-
 			} 
 		};
 	$prePopProb

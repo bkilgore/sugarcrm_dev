@@ -35,8 +35,8 @@
  ********************************************************************************/
 
 *}
-<script type="text/javascript" src="{sugar_getjspath file='include/javascript/sugar_grp_yui_widgets.js'}"></script>
 {literal}
+<script type="text/javascript" src="include/javascript/sugar_grp_yui_widgets.js"></script>
 <script>
  /*
         *  a reference to an instance of PackageManagerGrid

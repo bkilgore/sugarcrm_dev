@@ -45,7 +45,7 @@ $default_versions = array();
 $new_db = DBManagerFactory::getInstance();
 
 $db_version = '2.5.1';
-$dirName ='custom/include/language';
+$dirName ='custom/include/language'; 
 if(is_dir($dirName))
 {
 	$d = dir($dirName);
@@ -54,11 +54,13 @@ if(is_dir($dirName))
 				// echo $dirName."/".$entry;
 					  if (is_file($dirName."/".$entry) && substr($entry, -9)=='.lang.php') {
 					$custom_lang_file = $dirName."/".$entry;
-
+					  
 	if(is_readable($custom_lang_file))
 	{
 		$pattern = '/\$app_list_strings[\ ]*=[\ ]*array/';
-		$subject = @sugar_file_get_contents($custom_lang_file);
+		$handle = @sugar_fopen($custom_lang_file, 'rt');
+		$subject = fread($handle, filesize($custom_lang_file));
+		fclose($handle);
 		$matches = preg_match($pattern, $subject);
 		if($matches > 0)
 		{

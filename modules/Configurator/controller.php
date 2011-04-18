@@ -43,10 +43,6 @@ class ConfiguratorController extends SugarController
      * Go to the font manager view
      */
     function action_FontManager(){
-    	global $current_user;
-        if(!is_admin($current_user)){
-            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
-        }
         $this->view = 'fontmanager';
     }
     
@@ -71,20 +67,12 @@ class ConfiguratorController extends SugarController
     }
     
     function action_listview(){
-    	global $current_user;
-        if(!is_admin($current_user)){
-            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
-        }
     	$this->view = 'edit';
     }
     /**
      * Show the addFont view
      */
     function action_addFontView(){
-    	global $current_user;
-        if(!is_admin($current_user)){
-            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
-        }
         $this->view = 'addFontView';
     }
     /**
@@ -134,10 +122,6 @@ class ConfiguratorController extends SugarController
     }
     function action_saveadminwizard()
     {
-    	global $current_user;
-        if(!is_admin($current_user)){
-            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
-        }
         $focus = new Administration();
         $focus->retrieveSettings();
         $focus->saveConfig();
@@ -148,25 +132,11 @@ class ConfiguratorController extends SugarController
 	    $configurator->parseLoggerSettings();
         $configurator->saveConfig();
         
-        // Bug 37310 - Delete any existing currency that matches the one we've just set the default to during the admin wizard
-        $currency = new Currency;
-        $currency->retrieve($currency->retrieve_id_by_name($_REQUEST['default_currency_name']));
-        if ( !empty($currency->id) 
-                && $currency->symbol == $_REQUEST['default_currency_symbol']
-                && $currency->iso4217 == $_REQUEST['default_currency_iso4217'] ) {
-            $currency->deleted = 1;
-            $currency->save();
-        }
-        
         SugarApplication::redirect('index.php?module=Users&action=Wizard&skipwelcome=1');
     }
     
     function action_saveconfig()
     {
-    	global $current_user;
-        if(!is_admin($current_user)){
-            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
-        }
         $configurator = new Configurator();
         $configurator->saveConfig();
         
@@ -182,10 +152,6 @@ class ConfiguratorController extends SugarController
 	
 	function action_detail()
     {
-    	global $current_user;
-        if(!is_admin($current_user)){
-            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
-        }
         $this->view = 'edit';
     }
 }

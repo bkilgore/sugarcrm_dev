@@ -43,7 +43,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 
-require_once('include/SugarCharts/SugarChartFactory.php');
+require_once('include/charts/Charts.php');
+
 
 
 class campaign_charts {
@@ -57,14 +58,11 @@ class campaign_charts {
 	
 	function campaign_response_by_activity_type($datay= array(),$targets=array(),$campaign_id, $cache_file_name='a_file', $refresh=false, $marketing_id='') {
 		global $app_strings, $mod_strings, $charset, $lang, $barChartColors,$app_list_strings;
-		$sugarChart = SugarChartFactory::getInstance('','Reports');
-		$xmlFile = $sugarChart->getXMLFileName($campaign_id);
-		
-		if (!file_exists($xmlFile) || $refresh == true) {
+		if (!file_exists($cache_file_name) || $refresh == true) {
 			$GLOBALS['log']->debug("datay is:");
 			$GLOBALS['log']->debug($datay);
 			$GLOBALS['log']->debug("user_id is: ");
-			$GLOBALS['log']->debug("cache_file_name is: $xmlFile");
+			$GLOBALS['log']->debug("cache_file_name is: $cache_file_name");
             
 			$focus = new Campaign();
 					
@@ -80,14 +78,13 @@ class campaign_charts {
 			$query.= " GROUP BY  activity_type, target_type";
 			$query.= " ORDER BY  activity_type, target_type";
 			$result = $focus->db->query($query);
-			//$camp_data=$focus->db->fetchByAssoc($result);
-			$camp_data = array();
+
 			$leadSourceArr = array();
 			$total=0;
 			$total_targeted=0;
 			$rowTotalArr = array();
 			$rowTotalArr[] = 0;
-			while($row = $focus->db->fetchByAssoc($result))
+			while($row = $focus->db->fetchByAssoc($result, -1, false))
 			{
 				if(!isset($leadSourceArr[$row['activity_type']]['row_total'])) {
 					$leadSourceArr[$row['activity_type']]['row_total']=0;
@@ -110,7 +107,9 @@ class campaign_charts {
 					$total_targeted+=$row['hits'];
 				}
 			}
-		
+			
+			$fileContents = '     <yData defaultAltText="'.$mod_strings['LBL_ROLLOVER_VIEW'].'">'."\n";
+			
 			foreach ($datay as $key=>$translation) {				
 				if ($key == '') {
 					//$key = $mod_strings['NTC_NO_LEGENDS'];
@@ -126,49 +125,62 @@ class campaign_charts {
 				if(is_array($leadSourceArr[$key]) && isset($leadSourceArr[$key]['row_total']) && $leadSourceArr[$key]['row_total']>100){
 					$leadSourceArr[$key]['row_total'] = round($leadSourceArr[$key]['row_total']);
 				}
-				$camp_data[$translation] = array();
-					foreach ($targets as $outcome=>$outcome_translation){
+				$fileContents .= '          <dataRow title="'.$translation.'" endLabel="'.$leadSourceArr[$key]['row_total'].'">'."\n";
+				
+				if(is_array($leadSourceArr[$key]['outcome'])){
+					
+					
+				
+					foreach ($leadSourceArr[$key]['outcome'] as $outcome=>$outcome_translation){
 						//create alternate text.
                         $alttext = ' ';
                         if(isset($targeted) && isset($targeted[$outcome])&& !empty($targeted[$outcome])){
 						$alttext=$targets[$outcome].': '.$mod_strings['LBL_TARGETED'].' '.$targeted[$outcome]. ', '.$mod_strings['LBL_TOTAL_TARGETED'].' '. $total_targeted. ".";
                         }
 						if ($key != 'targeted'){
-							$hits =  (isset($leadSourceArr[$key][$outcome]) && is_array($leadSourceArr[$key][$outcome]) && is_array($leadSourceArr[$key][$outcome]['hits'])) ? array_sum($leadSourceArr[$key][$outcome]['hits']) : 0;
-							$alttext.=" $translation ".$hits;
+							$alttext.=" $translation ". array_sum($leadSourceArr[$key][$outcome]['hits']);
 						}
-						$count = (isset($leadSourceArr[$key][$outcome]) && is_array($leadSourceArr[$key][$outcome]) && is_array($leadSourceArr[$key][$outcome]['total'])) ? array_sum($leadSourceArr[$key][$outcome]['total']) : 0;
-						$camp_data[$translation][$outcome] = 
-							array(
-							"numerical_value" => $count,
-							"group_text" => $translation,
-							"group_key" => "",
-							"count" => "{$count}",
-							"group_label" => $alttext,
-							"numerical_label" => "Hits",
-							"numerical_key" => "hits",
-							"module" => 'Campaigns',
-     						"group_base_text" => $outcome,
-     						"link" => $key
-							);
+						$fileContents .= '               <bar id="'.$outcome.'" totalSize="'.array_sum($leadSourceArr[$key][$outcome]['total']).'" altText="'.$alttext.'" url="#'.$key.'"/>'."\n";
 					}
+				}
 
+								
+				$fileContents .= '          </dataRow>'."\n";
 			}
-
-
-			if($camp_data)
-			$sugarChart->setData($camp_data);
-			else
-			$sugarChart->setData(array());
+			$fileContents .= '     </yData>'."\n";
 			
-			$sugarChart->setProperties($mod_strings['LBL_CAMPAIGN_RESPONSE_BY_RECIPIENT_ACTIVITY'], "", 'horizontal group by chart');
-			$sugarChart->saveXMLFile($xmlFile, $sugarChart->generateXML());
+			$max = get_max($rowTotalArr);
+			
+			$fileContents .= '     <xData min="0" max="'.$max.'" length="10" prefix="'.''.'" suffix=""/>'."\n";
+			$fileContents .= '     <colorLegend status="on">'."\n";
+			$i=0;
+
+			foreach ($targets as $outcome=>$outcome_translation) {
+				$color = generate_graphcolor($outcome,$i);
+				$fileContents .= '          <mapping id="'.$outcome.'" name="'.$outcome_translation.'" color="'.$color.'"/>'."\n";
+				$i++;
+			}
+			$fileContents .= '     </colorLegend>'."\n";
+			$fileContents .= '     <graphInfo>'."\n";
+			$fileContents .= '          <![CDATA['.' '.']]>'."\n";
+			$fileContents .= '     </graphInfo>'."\n";
+			$fileContents .= '     <chartColors ';
+			foreach ($barChartColors as $key => $value) {
+				$fileContents .= ' '.$key.'='.'"'.$value.'" ';
+			}
+			$fileContents .= ' />'."\n";
+			$fileContents .= '</graphData>'."\n";
+			$total = round($total, 2);
+			$title = '<graphData title="'.$mod_strings['LBL_CAMPAIGN_RESPONSE_BY_RECIPIENT_ACTIVITY'].'">'."\n";
+			$fileContents = $title.$fileContents;
+
+			save_xml_file($cache_file_name, $fileContents);
 		}
 		
-		$width = '100%';
-		$return = '';
-		$return .= $sugarChart->display($campaign_id, $xmlFile, $width, '480',"");
 		
+		
+		
+		$return = create_chart('hBarF',$cache_file_name);
 		return $return;
 	}
 	
@@ -249,7 +261,6 @@ class campaign_charts {
 	        $opp_data1[$mod_strings['LBL_ROI_CHART_BUDGET']]=$camp_data1['budget'];
 	        $opp_data1[$mod_strings['LBL_ROI_CHART_EXPECTED_REVENUE']]=$camp_data1['expected_revenue'];	
 
-
 			$query = "SELECT activity_type,target_type, count(*) hits ";
 			$query.= " FROM campaign_log ";
 			$query.= " WHERE campaign_id = '$campaign_id' AND archived=0 AND deleted=0";
@@ -270,10 +281,11 @@ class campaign_charts {
 		global $current_user;
 		$user_id = $current_user->id;
 
+		require_once('include/SugarCharts/SugarChart.php');
 		
-		$width = '100%';
+		$width = ($is_dashlet) ? '100%' : '720px';
 		
-		$return = '';
+		$return = '<script type="text/javascript" src="' . getJSPath('include/javascript/swfobject.js' ) . '"></script>';
 		if (!$is_dashlet){
 			$return .= '<br />';
 		}		
@@ -289,10 +301,9 @@ class campaign_charts {
         }
 
 		
-		$sugarChart = SugarChartFactory::getInstance();
+		$sugarChart = new SugarChart();
 		$sugarChart->is_currency = true;
         $sugarChart->currency_symbol = $currency_symbol; 
-
 		if ($not_empty)
 	 		$sugarChart->setData($opp_data1);
 		else

@@ -106,15 +106,15 @@ var name=names[names.length-1];if(obj[name]){}else{var mth=new MethClass(methodN
 publ._add=function(methodNames){for(var i=0;i<methodNames.length;i++){setupPeerMethod(this,methodNames[i],this._conn,PeerObject);setupPeerMethod(this.notify,methodNames[i],this._conn,PeerNotifyObject);}}})
 mod.ServiceProxy=Class("ServiceProxy",BasePeer,function(publ,supr){publ.init=function(url,methodNames,localService){var n=url.match(/^jsonrpc:\/\/(.*:\d*)$/);if(n!=null){var hostaddr=n[1];try{var socket=createConnection();}catch(e){throw"Can't create a socket connection."}
 socket.connect(hostaddr);supr(this).init(new SocketConnectionHandler(socket,localService),methodNames);}else{this.httpConn=new HTTPConnectionHandler(url,localService);supr(this).init(this.httpConn,methodNames);}}})})
-function SugarClass()
+jsolait.baseURL='include/jsolait/lib';urllib=importModule('urllib');var global_request_registry=new Object();function SugarClass()
 {this.init();}
 SugarClass.prototype.init=function(){}
 SugarClass.inherit=function(className,parentClassName){var str=className+".prototype = new "+parentClassName+"();";str+=className+".prototype.constructor = "+className+";";str+=className+".superclass = "+parentClassName+".prototype;";try{eval(str);}catch(e){}}
-SugarClass.inherit("SugarContainer","SugarClass");function SugarContainer(root_div)
+var jsolait_baseURL='include/jsolait/lib';var jsonrpc=jsonrpclite;SugarClass.inherit("SugarContainer","SugarClass");function SugarContainer(root_div)
 {GLOBAL_REGISTRY.container=this;this.init(root_div);}
 SugarContainer.prototype.init=function(root_div){this.root_div=root_div;SugarContainer.superclass.init.call(this);}
 SugarContainer.prototype.start=function(root_widget){this.root_widget=new root_widget();this.root_widget.load(this.root_div);}
-jsolait.baseURL='include/jsolait/lib';urllib=importModule('urllib');var global_request_registry=new Object();var jsolait_baseURL='include/jsolait/lib';var jsonrpc=jsonrpclite;var req_count=0;SugarClass.inherit("SugarDateTime","SugarClass");function SugarDateTime()
+var req_count=0;SugarClass.inherit("SugarDateTime","SugarClass");function SugarDateTime()
 {this.init(root_div);}
 SugarDateTime.prototype.init=function(root_div){this.root_div=root_div;}
 SugarDateTime.mysql2jsDateTime=function(mysql_date,mysql_time){var match=new RegExp(date_reg_format);if(((result=match.exec(mysql_date)))==null)

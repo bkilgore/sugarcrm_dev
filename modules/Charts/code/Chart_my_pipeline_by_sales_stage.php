@@ -74,7 +74,7 @@ elseif (isset($_REQUEST['mypbss_date_start']) && $_REQUEST['mypbss_date_start'] 
 	$GLOBALS['log']->debug($current_user->getPreference('mypbss_date_start'));
 }
 else {
-	$date_start = $timedate->nowDate();
+	$date_start = date($timedate->get_date_format(), time());
 }
 $user_date_end = $current_user->getPreference('mypbss_date_end');
 
@@ -92,7 +92,7 @@ elseif (isset($_REQUEST['mypbss_date_end']) && $_REQUEST['mypbss_date_end'] != '
 	$GLOBALS['log']->debug( $current_user->getPreference('mypbss_date_end'));
 }
 else {
-	$date_end = $timedate->asUserDate($timedate->fromString("2010-01-01"));
+	$date_end = date($timedate->get_date_format(), strtotime('2010-01-01'));
 	$GLOBALS['log']->debug("USER PREFERENCES['mypbss_date_end'] not found. Using: ".$date_end);
 }
 
@@ -215,7 +215,7 @@ echo "<P align='center'><span class='chartFootnote'>".$current_module_strings['L
 
 
 	if (file_exists($sugar_config['tmp_dir'].$cache_file_name)) {
-		$file_date = $timedate->asUser($timedate->fromTimestamp(filemtime($sugar_config['tmp_dir'].$cache_file_name)));
+		$file_date = date($timedate->get_date_format()." ".$timedate->get_time_format(), filemtime($sugar_config['tmp_dir'].$cache_file_name));
 	}
 	else {
 		$file_date = '';
@@ -238,7 +238,7 @@ echo get_validate_chart_js();
 	*/
 	function gen_xml_pipeline_by_sales_stage($datax=array('foo','bar'), $date_start='2071-10-15', $date_end='2071-10-15', $user_id=array('1'), $cache_file_name='a_file', $refresh=false,$chart_size='hBarF',$current_module_strings) {
 		global $app_strings, $charset, $lang, $barChartColors, $current_user;
-
+		
 		$kDelim = $current_user->getPreference('num_grp_sep');
 		global $timedate;
 
@@ -280,7 +280,7 @@ echo get_validate_chart_js();
 			}
 
 			//build the where clause for the query that matches $date_start and $date_end
-			$where .= "	AND opportunities.date_closed >= ". db_convert("'".$date_start."'",'date'). "
+			$where .= "	AND opportunities.date_closed >= ". db_convert("'".$date_start."'",'date'). " 
 						AND opportunities.date_closed <= ".db_convert("'".$date_end."'",'date') ;
 			$where .= "	AND opportunities.assigned_user_id = users.id  AND opportunities.deleted=0 ";
 
@@ -294,7 +294,7 @@ echo get_validate_chart_js();
 						FROM users,opportunities  ";
 			$query .= "WHERE " .$where;
 			$query .= " GROUP BY opportunities.sales_stage,users.user_name,opportunities.assigned_user_id";
-
+			
 			$result = $opp->db->query($query)
 			or sugar_die("Error selecting sugarbean: ".mysql_error());
 			//build pipeline by sales stage data
@@ -304,16 +304,16 @@ echo get_validate_chart_js();
 			$symbol = $sugar_config['default_currency_symbol'];
 			global $current_user;
 			if($current_user->getPreference('currency') ){
-
+				
 				$currency = new Currency();
 				$currency->retrieve($current_user->getPreference('currency'));
 				$div = $currency->conversion_rate;
 				$symbol = $currency->symbol;
 			}
 			// cn: adding user-pref date handling
-			$dateStartDisplay = $timedate->asUserDate($timedate->fromString($date_start));
-			$dateEndDisplay = $timedate->asUserDate($timedate->fromString($date_end));
-
+			$dateStartDisplay = date($timedate->get_date_format(), strtotime($date_start));
+			$dateEndDisplay = date($timedate->get_date_format(), strtotime($date_end));
+			
 			$fileContents = '     <yData defaultAltText="'.$current_module_strings['LBL_ROLLOVER_DETAILS'].'">'."\n";
 			$stageArr = array();
 			$usernameArr = array();
@@ -395,14 +395,14 @@ echo get_validate_chart_js();
 		$return = create_chart($chart_size,$cache_file_name,$width,$height);
 		return $return;
 	}
-
+	
 	function constructQuery(){
 		global $current_user;
 		global $time_date;
-
+		
 		//get the dates to display
 		$user_date_start = $current_user->getPreference('mypbss_date_start');
-
+		
 		if (!empty($user_date_start) && !isset($_REQUEST['mypbss_date_start'])) {
 			$date_start = $user_date_start;
 			$GLOBALS['log']->debug("USER PREFERENCES['mypbss_date_start'] is:");
@@ -417,10 +417,10 @@ echo get_validate_chart_js();
 			$GLOBALS['log']->debug($current_user->getPreference('mypbss_date_start'));
 		}
 		else {
-			$date_start = $timedate->nowDate();
+			$date_start = date($timedate->get_date_format(), time());
 		}
 		$user_date_end = $current_user->getPreference('mypbss_date_end');
-
+		
 		if (!empty($user_date_end) && !isset($_REQUEST['mypbss_date_end'])) {
 			$date_end = $user_date_end;
 			$GLOBALS['log']->debug("USER PREFERENCES['mypbss_date_end'] is:");
@@ -435,12 +435,12 @@ echo get_validate_chart_js();
 			$GLOBALS['log']->debug( $current_user->getPreference('mypbss_date_end'));
 		}
 		else {
-			$date_end = $timedate->asUserDate($timedate->fromString("2010-01-01"));
+			$date_end = date($timedate->get_date_format(), strtotime('2010-01-01'));
 			$GLOBALS['log']->debug("USER PREFERENCES['mypbss_date_end'] not found. Using: ".$date_end);
 		}
-
+		
 		$user_id = array($current_user->id);
-
+				
 		$opp = new Opportunity;
 		$where="";
 		//build the where clause for the query that matches $user
@@ -469,7 +469,7 @@ echo get_validate_chart_js();
 		}
 
 		//build the where clause for the query that matches $date_start and $date_end
-		$where .= "	AND opportunities.date_closed >= ". db_convert("'".$date_start."'",'date'). "
+		$where .= "	AND opportunities.date_closed >= ". db_convert("'".$date_start."'",'date'). " 
 					AND opportunities.date_closed <= ".db_convert("'".$date_end."'",'date') ;
 		$where .= "	AND opportunities.assigned_user_id = users.id  AND opportunities.deleted=0 ";
 
@@ -485,9 +485,9 @@ echo get_validate_chart_js();
 		$query .= " GROUP BY opportunities.sales_stage,users.user_name,opportunities.assigned_user_id";
 
 		return $query;
-
+	
 	}
-
+	
 	function constructGroupBy(){
 		return array('sales_stage');
 	}

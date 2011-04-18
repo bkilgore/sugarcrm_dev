@@ -87,32 +87,6 @@ class SugarWidgetFieldBool extends SugarWidgetReportField
  {
     return $this->queryFilterEquals($layout_def);
  }    
- 
-    function displayInput(&$layout_def) 
-    {
-        global $app_strings;
-        
-        $yes = $no = $default = '';
-        if (isset($layout_def['input_name0']) && $layout_def['input_name0'] == 1) {
-            $yes = ' selected="selected"';
-        }
-        elseif (isset($layout_def['input_name0']) && $layout_def['input_name0'] == 'off') {
-            $no = ' selected="selected"';
-        }
-        else {
-            $default = ' selected="selected"';
-        }
-        
-        $str = <<<EOHTML
-<select id="{$layout_def['name']}" name="{$layout_def['name']}">
- <option value="" {$default}></option>
- <option value = "off" {$no}> {$app_strings['LBL_SEARCH_DROPDOWN_NO']}</option>
- <option value = "1" {$yes}> {$app_strings['LBL_SEARCH_DROPDOWN_YES']}</option>
-</select>
-EOHTML;
-        
-        return $str;
-    }
     
 
 }

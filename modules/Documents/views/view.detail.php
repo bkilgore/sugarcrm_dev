@@ -52,10 +52,10 @@ class DocumentsViewDetail extends ViewDetail
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
     	$params = array();
-    	$params[] = $this->_getModuleTitleListParam($browserTitle);
+    	$params[] = $this->_getModuleTitleListParam();
     	$params[] = $this->bean->document_name;
     	
 		return $params;

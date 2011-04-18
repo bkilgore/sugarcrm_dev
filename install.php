@@ -63,7 +63,7 @@ require_once('include/entryPoint.php');
     $_REQUEST['js_rebuild_concat'] = 'rebuild';
     require_once('jssource/minify.php');
 
-$timedate = TimeDate::getInstance();
+$timedate = new TimeDate();
 // cn: set php.ini settings at entry points
 setPhpIniSettings();
 $locale = new Localization();
@@ -352,7 +352,7 @@ if($next_clicked) {
       case 'license.php':
                 $_SESSION['setup_license_accept']   = get_boolean_from_request('setup_license_accept');
                 $_SESSION['license_submitted']      = true;
-
+                
 
            // eventually default all vars here, with overrides from config.php
             if(is_readable('config.php')) {
@@ -486,7 +486,7 @@ switch($the_file) {
         // check to see if installer has been disabled
         if(is_readable('config.php') && (filesize('config.php') > 0)) {
             include_once('config.php');
-
+			
             if(!isset($sugar_config['installer_locked']) || $sugar_config['installer_locked'] == true) {
                 $the_file = 'installDisabled.php';
 				$disabled_title = $mod_strings['LBL_DISABLED_DESCRIPTION'];
@@ -500,12 +500,12 @@ switch($the_file) {
 
 					<p>{$mod_strings['LBL_DISABLED_HELP_1']} <a href="{$mod_strings['LBL_DISABLED_HELP_LNK']}" target="_blank">{$mod_strings['LBL_DISABLED_HELP_2']}</a>.</p>
 EOQ;
-		             //if this is an offline client installation but the conversion did not succeed,
-		            //then try to convert again
-					if(isset($sugar_config['disc_client']) && $sugar_config['disc_client'] == true && isset($sugar_config['oc_converted']) && $sugar_config['oc_converted'] == false) {
-			          header('Location: index.php?entryPoint=oc_convert&first_time=true');
-						exit ();
-		            }
+				                //if this is an offline client installation but the conversion did not succeed,
+                //then try to convert again
+                if(isset($sugar_config['disc_client']) && $sugar_config['disc_client'] == true && isset($sugar_config['oc_converted']) && $sugar_config['oc_converted'] == false) {
+					 header('Location: index.php?entryPoint=oc_convert&first_time=true');
+					exit ();
+                }
             }
         }
         break;

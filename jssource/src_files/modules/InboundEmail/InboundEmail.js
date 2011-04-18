@@ -120,10 +120,8 @@ function ie_test_open_popup_with_submit(module_name, action, pageTarget, width, 
 	if (!isDataValid(formName, true)) {
 		return;
 	}
-
-	ie_id = (typeof document.getElementById(formName).ie_id != 'undefined') ? document.getElementById(formName).ie_id : '';
-
 	// launch the popup
+	
 	URL = 'index.php?'
 		+ 'module=' + module_name
 		+ '&to_pdf=1'
@@ -137,7 +135,6 @@ function ie_test_open_popup_with_submit(module_name, action, pageTarget, width, 
 		+ '&email_password=' + words[1]
 		+ '&mailbox=' + words[2]
 		+ '&ssl=' + ssl
-		+ '&ie_id=' + ie_id
 		+ '&personal=' + isPersonal;
 		
 	var SI = SUGAR.inboundEmail;
@@ -185,8 +182,8 @@ function isDataValid(formName, validateMonitoredFolder) {
     if(trim(formObject.email_user.value) == "") {
         errors.push(SUGAR.language.get('app_strings', 'LBL_EMAIL_ERROR_USER'));
     }
-    if(trim(formObject.email_password.value) == "" && trim(formObject.ie_id.value) == "") {
-    	errors.push(SUGAR.language.get('app_strings', 'LBL_EMAIL_ERROR_PASSWORD'));
+    if(trim(formObject.email_password.value) == "") {
+        errors.push(SUGAR.language.get('app_strings', 'LBL_EMAIL_ERROR_PASSWORD'));
     }
     if(formObject.protocol.protocol == "") {
         errors.push(SUGAR.language.get('app_strings', 'LBL_EMAIL_ERROR_PROTOCOL'));

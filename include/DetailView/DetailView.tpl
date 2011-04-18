@@ -37,7 +37,7 @@
 *}
 {{include file=$headerTpl}}
 {sugar_include include=$includes}
-<div id="{{$module}}_detailview_tabs"
+<div id="{{$module}}_detailview_tabs" 
 {{if $useTabs}}
 class="yui-navset detailview_tabs"
 {{/if}}
@@ -66,65 +66,46 @@ class="yui-navset detailview_tabs"
 {{if !is_array($panel)}}
     {sugar_include type='php' file='{{$panel}}'}
 {{else}}
-
+	
 	{{if !empty($label) && !is_int($label) && $label != 'DEFAULT' && !$useTabs}}
 	<h4>{sugar_translate label='{{$label}}' module='{{$module}}'}</h4>
 	{{/if}}
 	{{* Print out the table data *}}
 	<table id='detailpanel_{{$smarty.foreach.section.iteration}}' cellspacing='{$gridline}'>
+	
 
-
-
+	
 	{{foreach name=rowIteration from=$panel key=row item=rowData}}
-	{counter name="fieldsUsed" start=0 print=false assign="fieldsUsed"}
-	{counter name="fieldsHidden" start=0 print=false assign="fieldsHidden"}
-	{capture name="tr" assign="tableRow"}
 	<tr>
 		{{assign var='columnsInRow' value=$rowData|@count}}
 		{{assign var='columnsUsed' value=0}}
-		{{foreach name=colIteration from=$rowData key=col item=colData}}
-	    {{if !empty($colData.field.hideIf)}}
-	    	{if !({{$colData.field.hideIf}}) }
-	    {{/if}}
-			{counter name="fieldsUsed"}
+	    {{foreach name=colIteration from=$rowData key=col item=colData}}
 			<td width='{{$def.templateMeta.widths[$smarty.foreach.colIteration.index].label}}%' scope="row">
-				{{if !empty($colData.field.name)}}
-				    {if !$fields.{{$colData.field.name}}.hidden}
-                {{/if}}
 				{{if isset($colData.field.customLabel)}}
 			       {{$colData.field.customLabel}}
 				{{elseif isset($colData.field.label) && strpos($colData.field.label, '$')}}
-				   {capture name="label" assign="label"}{{$colData.field.label}}{/capture}
+				   {capture name="label" assign="label"}
+				   {{$colData.field.label}}
+				   {/capture}
 			       {$label|strip_semicolon}:
 				{{elseif isset($colData.field.label)}}
-				   {capture name="label" assign="label"}{sugar_translate label='{{$colData.field.label}}' module='{{$module}}'}{/capture}
+				   {capture name="label" assign="label"}
+				   {sugar_translate label='{{$colData.field.label}}' module='{{$module}}'}
+				   {/capture}
 			       {$label|strip_semicolon}:
 				{{elseif isset($fields[$colData.field.name])}}
-				   {capture name="label" assign="label"}{sugar_translate label='{{$fields[$colData.field.name].vname}}' module='{{$module}}'}{/capture}
+				   {capture name="label" assign="label"}
+				   {sugar_translate label='{{$fields[$colData.field.name].vname}}' module='{{$module}}'}
+				   {/capture}
 			       {$label|strip_semicolon}:
 				{{else}}
 				   &nbsp;
 				{{/if}}
-                {{if isset($colData.field.popupHelp) || isset($fields[$colData.field.name]) && isset($fields[$colData.field.name].popupHelp) }}
-                   {{if isset($colData.field.popupHelp) }}
-                     {capture name="popupText" assign="popupText"}{sugar_translate label="{{$colData.field.popupHelp}}" module='{{$module}}'}{/capture}
-                   {{elseif isset($fields[$colData.field.name].popupHelp)}}
-                     {capture name="popupText" assign="popupText"}{sugar_translate label="{{$fields[$colData.field.name].popupHelp}}" module='{{$module}}'}{/capture}
-                   {{/if}}
-                   {overlib_includes}
-                   {sugar_help text=$popupText WIDTH=400}
-                {{/if}}
-                {{if !empty($colData.field.name)}}
-                {/if}
-                {{/if}}
 			</td>
-			<td width='{{$def.templateMeta.widths[$smarty.foreach.colIteration.index].field}}%' {{if $colData.colspan}}colspan='{{$colData.colspan}}'{{/if}} {{if isset($fields[$colData.field.name].type) && $fields[$colData.field.name].type == 'phone'}}class="phone"{{/if}}>
-			    {{if !empty($colData.field.name)}}
-			    {if !$fields.{{$colData.field.name}}.hidden}
-			    {{/if}}
+			<td width='{{$def.templateMeta.widths[$smarty.foreach.colIteration.index].field}}%' {{if $colData.colspan}}colspan='{{$colData.colspan}}'{{/if}}>
 				{{if $colData.field.customCode || $colData.field.assign}}
 					{counter name="panelFieldCount"}
-					<span id="{{$colData.field.name}}" class="sugar_field">{{sugar_evalcolumn var=$colData.field colData=$colData}}</span>
+					{{sugar_evalcolumn var=$colData.field colData=$colData}}	
 				{{elseif $fields[$colData.field.name] && !empty($colData.field.fields) }}
 				    {{foreach from=$colData.field.fields item=subField}}
 				        {{if $fields[$subField]}}
@@ -134,27 +115,14 @@ class="yui-navset detailview_tabs"
 				        	{counter name="panelFieldCount"}
 				            {{$subField}}
 				        {{/if}}
-				    {{/foreach}}
+				    {{/foreach}}					    		
 				{{elseif $fields[$colData.field.name]}}
 					{counter name="panelFieldCount"}
 					{{sugar_field parentFieldArray='fields' vardef=$fields[$colData.field.name] displayType='DetailView' displayParams=$colData.field.displayParams typeOverride=$colData.field.type}}
 				{{/if}}
-				{{if !empty($colData.field.name)}}
-				{/if}
-				{{/if}}
 			</td>
-	    {{if !empty($colData.field.hideIf)}}
-			{else}
-
-			<td scope="row">&nbsp;</td><td>&nbsp;</td>
-			{/if}
-	    {{/if}}
 		{{/foreach}}
 	</tr>
-	{/capture}
-	{if $fieldsUsed > 0 && $fieldsUsed != $fieldsHidden}
-	{$tableRow}
-	{/if}
 	{{/foreach}}
 	</table>
 {{/if}}
@@ -167,9 +135,9 @@ class="yui-navset detailview_tabs"
 </div></div>
 {{include file=$footerTpl}}
 {{if $useTabs}}
-<script type="text/javascript" src="{sugar_getjspath file='include/javascript/sugar_grp_yui_widgets.js'}"></script>
+<script type="text/javascript" src="include/javascript/sugar_grp_yui_widgets.js"></script>
 <script type="text/javascript">
 var {{$module}}_detailview_tabs = new YAHOO.widget.TabView("{{$module}}_detailview_tabs");
 {{$module}}_detailview_tabs.selectTab(0);
-</script>
+</script> 
 {{/if}}

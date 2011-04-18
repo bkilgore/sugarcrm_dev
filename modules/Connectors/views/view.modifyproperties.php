@@ -44,7 +44,7 @@ class ViewModifyProperties extends SugarView
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
@@ -78,25 +78,17 @@ class ViewModifyProperties extends SugarView
 		$connectors = ConnectorUtils::getConnectors(true);
 		$required_fields = array();
     	//Get required fields for first connector only
-
-        $connectorsToShow = $connectors;
 		foreach($connectors as $id=>$entry) {
-			$s = SourceFactory::getSource($id);
-			$connector_strings = ConnectorUtils::getConnectorStrings($id);
-			$fields = $s->getRequiredConfigFields();
-            
-            if(empty($fields)){
-                unset($connectorsToShow[$id]);
-            }else{
-                if(empty($required_fields)){
-                    foreach($fields as $field_id) {
-                        $label = isset($connector_strings[$field_id]) ? $connector_strings[$field_id] : $field_id;
-                        $required_fields[$id][$field_id]=$label;
-                    }
-                }
-            }
+			    $s = SourceFactory::getSource($id);
+			    $connector_strings = ConnectorUtils::getConnectorStrings($id);
+			    $fields = $s->getRequiredConfigFields();
+			    foreach($fields as $field_id) {
+			    	$label = isset($connector_strings[$field_id]) ? $connector_strings[$field_id] : $field_id;
+			        $required_fields[$id][$field_id]=$label;
+			    }
+			    break;
 		}
-		$this->ss->assign('SOURCES', $connectorsToShow);
+		$this->ss->assign('SOURCES', $connectors);
 		$this->ss->assign('REQUIRED_FIELDS', $required_fields);
 	    echo $this->getModuleTitle();
 		$this->ss->display('modules/Connectors/tpls/modify_properties.tpl');

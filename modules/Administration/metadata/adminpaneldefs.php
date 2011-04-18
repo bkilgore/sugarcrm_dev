@@ -101,14 +101,9 @@ $admin_option_defs['Administration']['feed_settings']=array('icon_SugarFeed','LB
 // Connector Integration
 $admin_option_defs['Administration']['connector_settings']=array('icon_Connectors','LBL_CONNECTOR_SETTINGS','LBL_CONNECTOR_SETTINGS_DESC','./index.php?module=Connectors&action=ConnectorSettings');
 
-
 //$admin_option_defs['module_loader'] = array('ModuleLoader','LBL_MODULE_LOADER_TITLE','LBL_MODULE_LOADER','./index.php?module=Administration&action=UpgradeWizard&view=module');
 
 
-
-
-$admin_option_defs['Administration']['global_search']=array('icon_SearchForm','LBL_GLOBAL_SEARCH_SETTINGS','LBL_GLOBAL_SEARCH_SETTINGS_DESC','./index.php?module=Administration&action=GlobalSearchSettings');
-$admin_option_defs['Administration']['languages']= array('Currencies','LBL_MANAGE_LANGUAGES','LBL_LANGUAGES','./index.php?module=Administration&action=Languages&view=default');
 
 $admin_group_header[]= array('LBL_ADMINISTRATION_HOME_TITLE','',false,$admin_option_defs, 'LBL_ADMINISTRATION_HOME_DESC');
 
@@ -124,7 +119,7 @@ $admin_group_header[]= array('LBL_EMAIL_TITLE','',false,$admin_option_defs, 'LBL
 //studio.
 $admin_option_defs=array();
 $admin_option_defs['studio']['studio']= array('Studio','LBL_STUDIO','LBL_STUDIO_DESC','./index.php?module=ModuleBuilder&action=index&type=studio');
-if(isset($GLOBALS['beanFiles']['iFrame'])) {
+if(isset($GLOBSALS['beanFiles']['iFrame'])) {
 	$admin_option_defs['Administration']['portal']= array('iFrames','LBL_IFRAME','DESC_IFRAME','./index.php?module=iFrames&action=index');
 }
 $admin_option_defs['Administration']['rename_tabs']= array('RenameTabs','LBL_RENAME_TABS','LBL_CHANGE_NAME_TABS',"./index.php?action=wizard&module=Studio&wizard=StudioWizard&option=RenameTabs");
@@ -132,7 +127,6 @@ $admin_option_defs['Administration']['moduleBuilder']= array('ModuleBuilder','LB
 $admin_option_defs['Administration']['configure_tabs']= array('ConfigureTabs','LBL_CONFIGURE_TABS_AND_SUBPANELS','LBL_CONFIGURE_TABS_AND_SUBPANELS_DESC','./index.php?module=Administration&action=ConfigureTabs');
 
 $admin_option_defs['Administration']['module_loader'] = array('ModuleLoader','LBL_MODULE_LOADER_TITLE','LBL_MODULE_LOADER','./index.php?module=Administration&action=UpgradeWizard&view=module');
-$admin_option_defs['any']['configure_group_tabs']= array('ConfigureTabs','LBL_CONFIGURE_GROUP_TABS','LBL_CONFIGURE_GROUP_TABS_DESC','./index.php?action=wizard&module=Studio&wizard=StudioWizard&option=ConfigureGroupTabs');
 
 $admin_option_defs['any']['dropdowneditor']= array('Dropdown','LBL_DROPDOWN_EDITOR','DESC_DROPDOWN_EDITOR','./index.php?module=ModuleBuilder&action=index&type=dropdowns');
 
@@ -158,8 +152,8 @@ $access = get_admin_modules_for_user($current_user);
 foreach ($admin_group_header as $key=>$values) {
 	$module_index = array_keys($values[3]);  //get the actual links..
 	foreach ($module_index as $mod_key=>$mod_val) {
-		if (is_admin($current_user) ||
-			in_array($mod_val, $access) ||
+		if (is_admin($current_user) || 
+			in_array($mod_val, $access) || 
 		    $mod_val=='studio'||
 		    ($mod_val=='Forecasts' && in_array('ForecastSchedule', $access)) ||
 		    ($mod_val =='any')
@@ -170,7 +164,7 @@ foreach ($admin_group_header as $key=>$values) {
                 if(displayStudioForCurrentUser() == false) {
                     unset($values[3]['studio']);
                 }
-
+		   	
                 if(displayWorkflowForCurrentUser() == false) {
                     unset($values[3]['any']['workflow_management']);
                 }
@@ -187,14 +181,14 @@ foreach ($admin_group_header as $key=>$values) {
                 if(!in_array('Campaigns', $access)&& isset($values[3]['Campaigns'])){
                     unset($values[3]['Campaigns']);
                 }
-
+                
                 //////////////////
-
+		   	                        	
         } else {
         	//hide the link
         	unset($admin_group_header[$key][3][$mod_val]);
         }
-
+               
 	}
 }
 ?>

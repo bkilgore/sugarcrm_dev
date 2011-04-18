@@ -42,7 +42,7 @@ require_once('include/utils/encryption_utils.php');
 
 function getSystemInfo($send_usage_info=true){
 	global $sugar_config;
-	global $db, $authLevel, $administration, $timedate;
+	global $db, $authLevel, $administration;
 	$info=array();
 	$info = getBaseSystemInfo($send_usage_info);
     	if($send_usage_info){
@@ -63,16 +63,16 @@ function getSystemInfo($send_usage_info=true){
 		$user_list = get_user_array(false, "Active", "", false, null, " AND is_group=0 AND portal_only=0 ", false);
 
 
-
+		
 		$info['users']=count($user_list);
 		if(empty($administration)){
-
+			
 			$administration = new Administration();
 		}
 		$administration->retrieveSettings('system');
 		$info['system_name'] = (!empty($administration->settings['system_name']))?substr($administration->settings['system_name'], 0 ,255):'';
 
-
+		
 		$query="select count(*) count from users where status='Active' and deleted=0 and is_admin='1'";
 		$result=$db->query($query, 'fetching admin count', false);
 		$row = $db->fetchByAssoc($result);
@@ -89,7 +89,7 @@ function getSystemInfo($send_usage_info=true){
 		if(!empty($row)) {
 			$info['registered_users'] = $row['count'];
 		}
-		$lastMonth = db_convert("'". $timedate->getNow()->modify("-30 days")->asDb(false) . "'", 'datetime');
+		$lastMonth = db_convert("'".date($GLOBALS['timedate']->get_db_date_time_format() , strtotime('-1 month')) . "'", 'datetime');
 		if( !$send_usage_info){
 			$info['users_active_30_days'] = -1;
 		}
@@ -98,10 +98,10 @@ function getSystemInfo($send_usage_info=true){
 			$result=$db->query($query, 'fetching last 30 users count', false);
 			$row = $db->fetchByAssoc($result);
 			$info['users_active_30_days'] = $row['user_count'];
-
+			
 		}
-
-
+		
+        
 
 
 		if(!$send_usage_info){
@@ -148,10 +148,10 @@ function getBaseSystemInfo($send_usage_info=true){
 
 
     return $info;
-
+   
 
 }
-
+    
 function check_now($send_usage_info=true, $get_request_data=false, $response_data = false, $from_install=false ) {
 	global $sugar_config, $timedate;
 	global $db, $license;
@@ -164,7 +164,7 @@ function check_now($send_usage_info=true, $get_request_data=false, $response_dat
 
         if($from_install){
     		$info = getBaseSystemInfo(false);
-
+            
         }else{
             $info = getSystemInfo($send_usage_info);
         }
@@ -177,7 +177,7 @@ function check_now($send_usage_info=true, $get_request_data=false, $response_dat
 		if(empty($ping) || $sclient->getError()){
 			$sclient = '';
 		}
-
+		
 		if(empty($sclient)){
 			$GLOBALS['log']->debug('USING HTTP TO CONNECT TO HEARTBEAT');
 			$sclient = new nusoapclient('http://updates.sugarcrm.com/heartbeat/soap.php', false, false, false, false, false, 15, 15);
@@ -199,7 +199,7 @@ function check_now($send_usage_info=true, $get_request_data=false, $response_dat
 			return serialize($request_data);
 		}
 		$encodedResult = $sclient->call('sugarHome', array('key'=>$key, 'data'=>$encoded));
-
+		
 	}else{
 		$encodedResult = 	$response_data['data'];
 		$key = $response_data['key'];
@@ -242,15 +242,15 @@ function check_now($send_usage_info=true, $get_request_data=false, $response_dat
 		$resultData = array();
 		$resultData['versions'] = array();
 
-		$license->saveSetting('license', 'last_connection_fail', TimeDate::getInstance()->nowDb());
+		$license->saveSetting('license', 'last_connection_fail', gmdate($GLOBALS['timedate']->get_db_date_time_format()));
 		$license->saveSetting('license', 'last_validation', 'no_connection');
-
+		
 		if( empty($license->settings['license_last_validation_success']) && empty($license->settings['license_last_validation_fail']) && empty($license->settings['license_vk_end_date'])){
-			$license->saveSetting('license', 'vk_end_date', TimeDate::getInstance()->nowDb());
-
+			$license->saveSetting('license', 'vk_end_date', gmdate($GLOBALS['timedate']->get_db_date_time_format()));
+			
 			$license->saveSetting('license', 'validation_key', base64_encode(serialize(array('verified'=>false))));
 		}
-		$_SESSION['COULD_NOT_CONNECT'] =TimeDate::getInstance()->nowDb();
+		$_SESSION['COULD_NOT_CONNECT'] =gmdate($GLOBALS['timedate']->get_db_date_time_format());
 
 	}
 	if(!empty($resultData['versions'])){
@@ -276,7 +276,7 @@ function check_now($send_usage_info=true, $get_request_data=false, $response_dat
 	return $resultData['versions'];
 }
 function set_CheckUpdates_config_setting($value) {
-
+	
 
 	$admin=new Administration();
 	$admin->saveSetting('Update','CheckUpdates',$value);
@@ -287,7 +287,7 @@ function set_CheckUpdates_config_setting($value) {
 function get_CheckUpdates_config_setting() {
 
 	$checkupdates='automatic';
-
+	
 
 	$admin=new Administration();
 	$admin=$admin->retrieveSettings('Update',true);
@@ -300,14 +300,14 @@ function get_CheckUpdates_config_setting() {
 }
 
 function set_last_check_version_config_setting($value) {
-
+	
 
 	$admin=new Administration();
 	$admin->saveSetting('Update','last_check_version',$value);
 }
 function get_last_check_version_config_setting() {
 
-
+	
 
 	$admin=new Administration();
 	$admin=$admin->retrieveSettings('Update');
@@ -320,14 +320,14 @@ function get_last_check_version_config_setting() {
 
 
 function set_last_check_date_config_setting($value) {
-
+	
 
 	$admin=new Administration();
 	$admin->saveSetting('Update','last_check_date',$value);
 }
 function get_last_check_date_config_setting() {
 
-
+	
 
 	$admin=new Administration();
 	$admin=$admin->retrieveSettings('Update');
@@ -360,9 +360,9 @@ function get_sugarbeat() {
 
 
 function shouldCheckSugar(){
-	global $license, $timedate;
+	global $license;
 	if(
-
+	
 	get_CheckUpdates_config_setting() == 'automatic' ){
 		return true;
 	}
@@ -373,7 +373,7 @@ function shouldCheckSugar(){
 
 
 function loadLicense($firstLogin=false){
-
+	
 	$GLOBALS['license']=new Administration();
 	$GLOBALS['license']=$GLOBALS['license']->retrieveSettings('license', $firstLogin);
 
@@ -382,12 +382,12 @@ function loadLicense($firstLogin=false){
 function loginLicense(){
 	global $current_user, $license, $authLevel;
 	loadLicense(true);
-
+     
 	$authLevel = 0;
-
+	
 	if (shouldCheckSugar()) {
-
-
+	   
+		
 		$last_check_date=get_last_check_date_config_setting();
 		$current_date_time=time();
 		$time_period=3*23*3600 ;

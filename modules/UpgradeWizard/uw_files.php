@@ -91,6 +91,7 @@ $uw_files = array(
     'include/Pear/Crypt_Blowfish/Blowfish.php',
     'include/Pear/Crypt_Blowfish/Blowfish/DefaultKey.php',
     'include/utils.php',
+    'include/utils/external_cache.php',
     'include/language/en_us.lang.php',
     'include/modules.php',
     'include/Localization/Localization.php',

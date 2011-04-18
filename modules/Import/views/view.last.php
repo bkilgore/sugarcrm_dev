@@ -90,22 +90,15 @@ class ImportViewLast extends SugarView
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
-	    global $mod_strings, $app_list_strings;
+	    global $mod_strings;
 	    
-	    $iconPath = $this->getModuleTitleIconPath($this->module);
-	    $returnArray = array();
-	    if (!empty($iconPath) && !$browserTitle) {
-	        $returnArray[] = "<a href='index.php?module={$_REQUEST['import_module']}&action=index'><img src='{$iconPath}' alt='{$app_list_strings['moduleList'][$_REQUEST['import_module']]}' title='{$app_list_strings['moduleList'][$_REQUEST['import_module']]}' align='absmiddle'></a>";
-    	}
-    	else {
-    	    $returnArray[] = $app_list_strings['moduleList'][$_REQUEST['import_module']];
-    	}
-	    $returnArray[] = "<a href='index.php?module=Import&action=Step1&import_module={$_REQUEST['import_module']}'>".$mod_strings['LBL_MODULE_NAME']."</a>";
-	    $returnArray[] = $mod_strings['LBL_RESULTS'];
-    	
-	    return $returnArray;
+    	return array(
+           "<a href='index.php?module={$_REQUEST['import_module']}&action=index'><img src='".SugarThemeRegistry::current()->getImageURL('icon_'.$_REQUEST['import_module'].'_32.png')."' alt='".$_REQUEST['import_module']."' title='".$_REQUEST['import_module']."' align='absmiddle'></a>",
+    	   "<a href='index.php?module=Import&action=Step1&import_module={$_REQUEST['import_module']}'>".$mod_strings['LBL_MODULE_NAME']."</a>",
+    	   $mod_strings['LBL_RESULTS'],
+    	   );
     }
     
  	/** 
@@ -115,11 +108,14 @@ class ImportViewLast extends SugarView
     {
         global $mod_strings, $app_strings, $current_user, $sugar_config, $current_language;
         
+        $this->ss->assign("MOD", $mod_strings);
+        $this->ss->assign("APP", $app_strings);
         $this->ss->assign("IMPORT_MODULE", $_REQUEST['import_module']);
         $this->ss->assign("TYPE", $_REQUEST['type']);
         $this->ss->assign("HEADER", $app_strings['LBL_IMPORT']." ". $mod_strings['LBL_MODULE_NAME']);
         $this->ss->assign("MODULE_TITLE", $this->getModuleTitle());
         // lookup this module's $mod_strings to get the correct module name
+        $language = (isset($current_language)) ? ($current_language) : ($sugar_config['default_language']);
         $module_mod_strings = 
             return_module_language($current_language, $_REQUEST['import_module']);
         $this->ss->assign("MODULENAME",$module_mod_strings['LBL_MODULE_NAME']);
@@ -155,7 +151,14 @@ class ImportViewLast extends SugarView
         $this->ss->assign("errorrecordsFile",ImportCacheFiles::getErrorRecordsFileName());
         $this->ss->assign("dupeFile",ImportCacheFiles::getDuplicateFileName());
         
-        if ( $this->bean->object_name == "Prospect" ) {
+        // load bean
+        $focus = loadImportBean($_REQUEST['import_module']);
+        if ( !$focus ) {
+            showImportError($mod_strings['LBL_ERROR_IMPORTS_NOT_SET_UP'],$_REQUEST['import_module']);
+            return;
+        }
+        
+        if ( $focus->object_name == "Prospect" ) {
             $this->ss->assign("PROSPECTLISTBUTTON", 
                 $this->_addToProspectListButton());
         }
@@ -167,12 +170,13 @@ class ImportViewLast extends SugarView
         
         foreach ( UsersLastImport::getBeansByImport($_REQUEST['import_module']) as $beanname ) {
             // load bean
-            if ( !( $this->bean instanceof $beanname ) ) {
-                $this->bean = new $beanname;
+            if ( !( $focus instanceof $beanname ) ) {
+                require_once($GLOBALS['beanFiles'][$beanname]);
+                $focus = new $beanname;
             }
             // build listview to show imported records
             require_once('include/ListView/ListViewFacade.php');
-            $lvf = new ListViewFacade($this->bean, $this->bean->module_dir, 0);
+            $lvf = new ListViewFacade($focus, $focus->module_dir, 0);
         
             $params = array();
             if(!empty($_REQUEST['orderBy'])) {
@@ -180,15 +184,15 @@ class ImportViewLast extends SugarView
                 $params['overrideOrder'] = true;
                 if(!empty($_REQUEST['sortOrder'])) $params['sortOrder'] = $_REQUEST['sortOrder'];
             }
-            $beanname = ($this->bean->object_name == 'Case' ? 'aCase' : $this->bean->object_name);
+            $beanname = ($focus->object_name == 'Case' ? 'aCase' : $focus->object_name);
             // add users_last_import joins so we only show records done in this import
             $params['custom_from']  = ', users_last_import';
             $params['custom_where'] = " AND users_last_import.assigned_user_id = '{$GLOBALS['current_user']->id}' 
                 AND users_last_import.bean_type = '{$beanname}' 
-                AND users_last_import.bean_id = {$this->bean->table_name}.id 
+                AND users_last_import.bean_id = {$focus->table_name}.id 
                 AND users_last_import.deleted = 0 
-                AND {$this->bean->table_name}.deleted = 0";
-            $where = " {$this->bean->table_name}.id IN ( 
+                AND {$focus->table_name}.deleted = 0";
+            $where = " {$focus->table_name}.id IN ( 
                         SELECT users_last_import.bean_id
                             FROM users_last_import
                             WHERE users_last_import.assigned_user_id = '{$GLOBALS['current_user']->id}' 
@@ -197,11 +201,7 @@ class ImportViewLast extends SugarView
                 
             $lbl_last_imported = $mod_strings['LBL_LAST_IMPORTED'];
             $lvf->lv->mergeduplicates = false;
-            $lvf->lv->showMassupdateFields = false;
-            if ( $lvf->type == 2 ) {
-                $lvf->template = 'include/ListView/ListViewNoMassUpdate.tpl';
-            }
-            $module_mod_strings = return_module_language($current_language, $this->bean->module_dir);
+            $module_mod_strings = return_module_language($current_language, $focus->module_dir);
             $lvf->setup('', $where, $params, $module_mod_strings, 0, -1, '', strtoupper($beanname), array(), 'id');
             $lvf->display($lbl_last_imported.": ".$module_mod_strings['LBL_MODULE_NAME']);
         }

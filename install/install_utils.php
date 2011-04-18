@@ -208,7 +208,7 @@ function commitLanguagePack($uninstall=false) {
 function commitPatch($unlink = false, $type = 'patch'){
     require_once('ModuleInstall/ModuleInstaller.php');
     require_once('include/entryPoint.php');
-
+    
 
     global $mod_strings;
     global $base_upgrade_dir;
@@ -277,7 +277,7 @@ function commitPatch($unlink = false, $type = 'patch'){
 function commitModules($unlink = false, $type = 'module'){
     require_once('ModuleInstall/ModuleInstaller.php');
     require_once('include/entryPoint.php');
-
+    
 
     global $mod_strings;
     global $base_upgrade_dir;
@@ -755,24 +755,24 @@ function handleDbCreateSugarUser() {
 function displayMssqlErrors($driver_type, $query) {
     global $sugar_config;
     if($driver_type =='mssqlsrv' && ($errors = sqlsrv_errors(SQLSRV_ERR_ALL) ) != null)
-    {
+    {         
        foreach( $errors as $error)
        {
-
+        
           echo "<div style='color:red;'>";
           echo "An error occured when performing the folloing query:<br>";
           echo "$query<br>";
-          echo "</div>";
-          installLog("An error occured when performing the query:".$query." SQLSTATE: ".$error[ 'SQLSTATE']." message: ".$error[ 'message']);
+          echo "</div>";    
+          installLog("An error occured when performing the query:".$query." SQLSTATE: ".$error[ 'SQLSTATE']." message: ".$error[ 'message']);    
        }
     }
 	if($driver_type =='mssql')
-    {
+    {         
           echo "<div style='color:red;'>";
           echo "An error occured when performing the folloing query:<br>";
           echo "$query<br>";
-          echo "</div>";
-          installLog("An error occured when performing the query:".$query." message: ".mssql_get_last_message());
+          echo "</div>";    
+          installLog("An error occured when performing the query:".$query." message: ".mssql_get_last_message());    
     }
 }
 /**
@@ -792,11 +792,11 @@ function handleDbCharsetCollation() {
            $host_name = getHostPortFromString($setup_db_host_name);
             if(empty($host_name)){
                 $link = @mysqli_connect($setup_db_host_name, $setup_db_admin_user_name, $setup_db_admin_password);
-
+                    
             }else{
                     $link   = @mysqli_connect($host_name[0], $setup_db_admin_user_name, $setup_db_admin_password,null,$host_name[1]);
             }
-
+                
             $q1 = "ALTER DATABASE `{$setup_db_database_name}` DEFAULT CHARACTER SET utf8";
             $q2 = "ALTER DATABASE `{$setup_db_database_name}` DEFAULT COLLATE utf8_general_ci";
             @mysqli_query($link, $q1);
@@ -833,8 +833,8 @@ function handleDbCreateDatabase() {
                 $host_name = getHostPortFromString($setup_db_host_name);
                 if(empty($host_name)){
                     $link = @mysqli_connect($setup_db_host_name, $setup_db_admin_user_name, $setup_db_admin_password);
-                }else{
-                    $link   = @mysqli_connect($host_name[0], $setup_db_admin_user_name, $setup_db_admin_password,null,$host_name[1]);
+                }else{                
+                    $link   = @mysqli_connect($host_name[0], $setup_db_admin_user_name, $setup_db_admin_password,null,$host_name[1]);                    
                 }
                 $drop = 'DROP DATABASE IF EXISTS '.$setup_db_database_name;
                 @mysqli_query($link, $drop);
@@ -916,6 +916,18 @@ function handleDbCreateDatabase() {
  */
 function handleLog4Php() {
     return;
+/*    global $setup_site_log_dir;
+    global $setup_site_log_file;
+
+    if(is_writable("log4php.properties") && ($fh = @ sugar_fopen("log4php.properties", "r+"))) {
+        $props = fread($fh, filesize("log4php.properties"));
+        $props = preg_replace('/(log4php.appender.A2.File=).*\n/', "$1" . $setup_site_log_dir . "/" . $setup_site_log_file . "\n", $props);
+        rewind( $fh );
+        fwrite( $fh, $props );
+        ftruncate( $fh, ftell($fh) );
+        fclose( $fh );
+    }
+    */
 }
 
 function installLog($entry) {
@@ -1028,7 +1040,7 @@ function handleSugarConfig() {
     $sugar_config['sugar_version']                  = $setup_sugar_version;
     $sugar_config['tmp_dir']                        = $cache_dir.'xml/';
     $sugar_config['upload_dir']                 = $cache_dir.'upload/';
-//    $sugar_config['use_php_code_json']              = returnPhpJsonStatus(); // true on error
+    $sugar_config['use_php_code_json']              = returnPhpJsonStatus(); // true on error
     if( isset($_SESSION['setup_site_sugarbeet_anonymous_stats']) ){
         $sugar_config['sugarbeet']      = $_SESSION['setup_site_sugarbeet_anonymous_stats'];
     }
@@ -1056,7 +1068,7 @@ function handleSugarConfig() {
     	include('install/lang.config.php');
     	if(!empty($config['languages'])){
     		foreach($config['languages'] as $lang=>$label){
-    			$sugar_config['languages'][$lang] = $label;
+    			$sugar_config['languages'][$lang] = $label;	
     		}
     	}
     }
@@ -1079,15 +1091,6 @@ function handleSugarConfig() {
         $bottle[] = $mod_strings['ERR_PERFORM_CONFIG_PHP_4'];
     }
 
-
-    //Now merge the config_si.php settings into config.php
-    if(file_exists('config.php') && file_exists('config_si.php'))
-    {
-       require_once('modules/UpgradeWizard/uw_utils.php');
-       merge_config_si_settings(false, 'config.php', 'config_si.php');
-    }
-
-
     ////    END $sugar_config
     ///////////////////////////////////////////////////////////////////////////////
     return $bottle;
@@ -1098,17 +1101,16 @@ function handleSugarConfig() {
 function handleHtaccess(){
 global $mod_strings;
 $ignoreCase = (substr_count(strtolower($_SERVER['SERVER_SOFTWARE']), 'apache/2') > 0)?'(?i)':'';
-$htaccess_file   = getcwd() . "/.htaccess";
+$htaccess_file   = getcwd() . "/.htaccess";	
 $contents = '';
 $restrict_str = <<<EOQ
 
-# BEGIN SUGARCRM RESTRICTIONS
+# BEGIN SUGARCRM RESTRICTIONS	
 RedirectMatch 403 {$ignoreCase}.*\.log$
 RedirectMatch 403 {$ignoreCase}/+not_imported_.*\.txt
 RedirectMatch 403 {$ignoreCase}/+(soap|cache|xtemplate|data|examples|include|log4php|metadata|modules)/+.*\.(php|tpl)
 RedirectMatch 403 {$ignoreCase}/+emailmandelivery\.php
 RedirectMatch 403 {$ignoreCase}/+cache/+upload
-RedirectMatch 403 {$ignoreCase}/+cache/+diagnostic
 RedirectMatch 403 {$ignoreCase}/+files\.md5$
 # END SUGARCRM RESTRICTIONS
 EOQ;
@@ -1122,7 +1124,7 @@ EOQ;
 	 		if(preg_match("/\s*#\s*END\s*SUGARCRM\s*RESTRICTIONS/i", $line))$skip = false;
 	 	}
 	}
-	$status =  file_put_contents($htaccess_file, $contents . $restrict_str);
+	$status =  file_put_contents($htaccess_file, $contents . $restrict_str);	
     if( !$status ) {
         echo "<p>{$mod_strings['ERR_PERFORM_HTACCESS_1']}<span class=stop>{$htaccess_file}</span> {$mod_strings['ERR_PERFORM_HTACCESS_2']}</p>\n";
         echo "<p>{$mod_strings['ERR_PERFORM_HTACCESS_3']}</p>\n";
@@ -1134,16 +1136,11 @@ EOQ;
 /**
  * (re)write the web.config file to prevent browser access to the log file
  */
-function handleWebConfig() 
-{
-    if ( !isset($_SERVER['IIS_UrlRewriteModule']) ) {
-        return;
-    }
-
+function handleWebConfig() {
 	global $setup_site_log_dir;
     global $setup_site_log_file;
     global $sugar_config;
-
+    
     // Bug 36968 - Fallback to using $sugar_config values when we are not calling this from the installer
     if (empty($setup_site_log_file)) {
         $setup_site_log_file = $sugar_config['log_file'];
@@ -1157,10 +1154,10 @@ function handleWebConfig()
             $setup_site_log_dir = '.';
         }
     }
-
+    
     $prefix = $setup_site_log_dir.empty($setup_site_log_dir)?'':'/';
-
-
+    
+    
     $config_array = array(
     array('1'=> $prefix.str_replace('.','\\.',$setup_site_log_file).'\\.*' ,'2'=>'log_file_restricted.html'),
     array('1'=> $prefix.'install.log' ,'2'=>'log_file_restricted.html'),
@@ -1180,9 +1177,9 @@ function handleWebConfig()
     array('1'=>'emailmandelivery.php' ,'2'=>'index.php'),
     array('1'=>'cron.php' ,'2'=>'index.php'),
     array('1'=> $sugar_config['upload_dir'].'.*' ,'2'=>'index.php'),
-    );
-
-
+    );      
+    
+        
     $xmldoc = new XMLWriter();
     $xmldoc->openURI('web.config');
     $xmldoc->setIndent(true);
@@ -1197,7 +1194,7 @@ function handleWebConfig()
         $xmldoc->writeAttribute('name', "redirect$i");
         $xmldoc->writeAttribute('stopProcessing', 'true');
         $xmldoc->startElement('match');
-        $xmldoc->writeAttribute('url', $config_array[$i]['1']);
+        $xmldoc->writeAttribute('url', $config_array[$i]['1']); 
         $xmldoc->endElement();
         $xmldoc->startElement('action');
         $xmldoc->writeAttribute('type', 'Redirect');
@@ -1259,8 +1256,6 @@ function create_default_users(){
     global $setup_site_admin_user_name;
     global $create_default_user;
     global $sugar_config;
-    
-	require_once('install/UserDemoData.php');
 
     //Create default admin user
     $user = new User();
@@ -1276,9 +1271,8 @@ function create_default_users(){
     //$user->user_password = $user->encrypt_password($setup_site_admin_password);
     $user->user_hash = strtolower(md5($setup_site_admin_password));
     $user->email = '';
-    $user->picture = UserDemoData::_copy_user_image($user->id);
     $user->save();
-
+    
     // echo 'Creating RSS Feeds';
     //$feed = new Feed();
     //$feed->createRSSHomePage($user->id);
@@ -1342,12 +1336,12 @@ function insert_default_settings(){
     $db->query("INSERT INTO config (category, name, value) VALUES ('portal', 'on', '0')");
 
 
-
-    //insert default tracker settings
+    
+    //insert default tracker settings    
     $db->query("INSERT INTO config (category, name, value) VALUES ('tracker', 'Tracker', '1')");
+    
 
-
-
+    
     $db->query( "INSERT INTO config (category, name, value) VALUES ( 'system', 'skypeout_on', '1')" );
 
 }
@@ -1601,7 +1595,7 @@ function validate_siteConfig($type){
        if($_SESSION['setup_site_admin_user_name'] == '') {
        	  $errors[] = "<span class='error'>".$mod_strings['ERR_ADMIN_USER_NAME_BLANK']."</span>";
        }
-
+       
        if($_SESSION['setup_site_admin_password'] == ''){
           $errors[] = "<span class='error'>".$mod_strings['ERR_ADMIN_PASS_BLANK']."</span>";
        }
@@ -1653,7 +1647,7 @@ function pullSilentInstallVarsIntoSession() {
     global $mod_strings;
     global $sugar_config;
 
-
+    
     if( file_exists('config_si.php') ){
         require_once('config_si.php');
     }
@@ -2086,20 +2080,22 @@ function getHostPortFromString($hostname=''){
     $pos=strpos($hostname,':');
     if($pos === false){
         //no need to process as string is empty or does not contain ':' delimiter
-        return '';
+        return '';   
     }
 
     $hostArr = explode(':', $hostname);
 
     return $hostArr;
-
+    
 }
 
 function getLicenseContents($filename)
 {
 	$license_file = '';
     if(file_exists($filename) && filesize($filename) >0){
-	    $license_file = file_get_contents($filename);
+	    $fh = sugar_fopen( $filename, 'r' ) or die( "License file not found!" );
+	    $license_file = fread( $fh, filesize( $filename ) );
+	    fclose( $fh );
     }
     return $license_file;
 }
@@ -2187,36 +2183,39 @@ function create_phone_number() {
     return $phone;
 }
 
-function create_date($year=null,$mnth=null,$day=null)
-{
+function create_date($year=null,$mnth=null,$day=null) {
     global $timedate;
-    $now = $timedate->getNow();
-    if ($day==null) $day=$now->day+mt_rand(0,365);
-    return $timedate->asDbDate($now->get_day_begin($day, $mnth, $year));
+
+    if ($mnth ==null) $mnth=date("m");
+    if ($day==null) $day=date("d")+mt_rand(0,365);
+    if ($year==null) $year=date("Y");
+
+    $date = date($timedate->get_db_date_format(), mktime(0, 0, 0, $mnth, $day, $year));
+    return $date;
 }
 
-function create_current_date_time()
-{
+function create_current_date_time() {
     global $timedate;
-    return $timedate->nowDb();
+
+    $time=date($timedate->get_db_date_format() . ' ' . $timedate->get_db_date_format(),mktime());
+    return $time;
 }
 
-function create_time($hr=null,$min=null,$sec=null)
-{
+function create_time($hr=null,$min=null,$sec=null) {
     global $timedate;
-    $date = TimeDate::fromTimestamp(0);
     if ($hr==null) $hr=mt_rand(6,19);
     if ($min==null) $min=(mt_rand(0,3)*15);
     if ($sec==null) $sec=0;
-    return $timedate->asDbTime($date->setDate(2007, 10, 7)->setTime($hr, $min, $sec));
+
+    $time=date($timedate->get_db_time_format(),mktime($hr, $min, $sec, 7, 10, 2007));
+    return $time;
 }
 
-function create_past_date()
-{
+function create_past_date() {
     global $timedate;
-    $now = $timedate->getNow(true);
-    $day=$now->day-mt_rand(1, 365);
-    return $timedate->asUserDate($now->get_day_begin($day));
+
+    $date = date($timedate->get_date_format(), mktime(0, 0, 0, date("m"), date("d")+mt_rand(-365,-1), date("Y")));
+    return $date;
 }
 
 /**
@@ -2267,8 +2266,8 @@ return $password;
 
 function addDefaultRoles($defaultRoles = array()) {
 	global $db;
-
-
+    
+    
 	foreach($defaultRoles as $roleName=>$role){
 	    $ACLField = new ACLField();
         $role1= new ACLRole();
@@ -2301,9 +2300,7 @@ function enableSugarFeeds()
 {
     $admin = new Administration();
     $admin->saveSetting('sugarfeed','enabled','1');
-
+    
     foreach ( SugarFeed::getAllFeedModules() as $module )
         SugarFeed::activateModuleFeed($module);
-
-    check_logic_hook_file('Users','after_login', array(1, 'SugarFeed old feed entry remover', 'modules/SugarFeed/SugarFeedFlush.php', 'SugarFeedFlush', 'flushStaleEntries'));
 }

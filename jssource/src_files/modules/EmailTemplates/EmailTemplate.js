@@ -69,40 +69,20 @@ function toggle_text_only(firstRun) {
         //hide the html div (containing TinyMCE)
         document.getElementById('body_text_div').style.display = 'none';
         document.getElementById('toggle_textarea_option').style.display = 'none';
-        document.getElementById('text_div').style.display = 'block';
+        document.getElementById('toggle_textarea_elem').checked = true;
+        document.getElementById('text_div').style.display = 'inline';
+        
         text_only.value = 1; 
     } else {
         //display the html div (containing TinyMCE)
         document.getElementById('body_text_div').style.display = 'inline';
         document.getElementById('toggle_textarea_option').style.display = 'inline';
+        document.getElementById('toggle_textarea_elem').checked = false;
         document.getElementById('text_div').style.display = 'none';
         
         text_only.value = 0;                     
     }
-    update_textarea_button();
 }
-
-function update_textarea_button()
-{
-	if(document.getElementById('text_div').style.display == 'none') {
-		document.getElementById('toggle_textarea_elem').value = toggle_textarea_elem_values[0];
-	} else {
-		document.getElementById('toggle_textarea_elem').value = toggle_textarea_elem_values[1];
-	}
-}
-
-function toggle_textarea_edit(obj)
-{
-	if(document.getElementById('text_div').style.display == 'none')
-	{
-        document.getElementById('text_div').style.display = 'block';
-	} else {
-        document.getElementById('text_div').style.display = 'none';
-	}
-	update_textarea_button();
-}
-
-
 
 //This function checks that tinyMCE is initilized before setting the text (IE bug)
 function setTinyHTML(text) {

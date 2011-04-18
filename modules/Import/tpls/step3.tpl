@@ -116,8 +116,8 @@ textarea { width: 20em }
     </td>
     {if $item.show_remove}
     <td colspan="2">
-        <input title="{$MOD.LBL_REMOVE_ROW}" accessKey=""
-            id="deleterow_{$smarty.foreach.rows.index}" class="button" type="button"
+        <input title="{$MOD.LBL_REMOVE_ROW}" accessKey="" 
+            id="deleterow_{$smarty.foreach.rows.index}" class="button" type="button" 
             value="  {$MOD.LBL_REMOVE_ROW}  ">
     </td>
     {else}
@@ -130,14 +130,14 @@ textarea { width: 20em }
 {/foreach}
 <tr>
     <td align="left" colspan="4" style="background: transparent;">
-        <input title="{$MOD.LBL_ADD_ROW}" accessKey="" id="addrow" class="button" type="button"
+        <input title="{$MOD.LBL_ADD_ROW}" accessKey="" id="addrow" class="button" type="button" 
             name="button" value="  {$MOD.LBL_ADD_ROW}  ">
-        <input title="{$MOD.LBL_SHOW_ADVANCED_OPTIONS}" accessKey="" id="toggleImportOptions" class="button" type="button"
+        <input title="{$MOD.LBL_SHOW_ADVANCED_OPTIONS}" accessKey="" id="toggleImportOptions" class="button" type="button" 
             name="button" value="  {$MOD.LBL_SHOW_ADVANCED_OPTIONS}  ">
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <span scope="row"><strong>{$MOD.LBL_SAVE_MAPPING_AS}</strong></span>
         <span >
-            <input type="text" name="save_map_as" id="save_map_as" value=""
+            <input type="text" name="save_map_as" id="save_map_as" value="" 
                 style="width: 20em" maxlength="254">
             &nbsp;{sugar_help text=$MOD.LBL_SAVE_MAPPING_HELP}
         </span>
@@ -165,7 +165,7 @@ textarea { width: 20em }
                     </tr>
                     <tr>
                         <td scope="row"><slot>{$MOD.LBL_TIMEZONE}</slot></td>
-                        <td ><slot><select tabindex='4' name='importlocale_timezone'>{html_options options=$TIMEZONEOPTIONS selected=$TIMEZONE_CURRENT}</select></slot></td>
+                        <td ><slot><select tabindex='4' name='importlocale_timezone'>{$TIMEZONEOPTIONS}</select></slot></td>
                     </tr>
                     <tr>
                         <td scope="row"><slot>{$MOD.LBL_CURRENCY}</slot></td>
@@ -194,14 +194,14 @@ textarea { width: 20em }
                         <td scope="row"><slot>{$MOD.LBL_NUMBER_GROUPING_SEP}</slot></td>
                         <td ><slot>
                             <input tabindex='4' name='importlocale_num_grp_sep' id='default_number_grouping_seperator'
-                                type='text' maxlength='1' size='1' value='{$NUM_GRP_SEP}'
+                                type='text' maxlength='1' size='1' value='{$NUM_GRP_SEP}' 
                                 onkeydown='setSigDigits();' onkeyup='setSigDigits();'>
                         </slot></td>
                     </tr>
                     <tr>
                         <td scope="row"><slot>{$MOD.LBL_DECIMAL_SEP}</slot></td>
                         <td ><slot>
-                            <input tabindex='4' name='importlocale_dec_sep' id='default_decimal_seperator'
+                            <input tabindex='4' name='importlocale_dec_sep' id='default_decimal_seperator' 
                                 type='text' maxlength='1' size='1' value='{$DEC_SEP}'
                                 onkeydown='setSigDigits();' onkeyup='setSigDigits();'>
                         </slot></td>
@@ -215,7 +215,7 @@ textarea { width: 20em }
                     </tr>
                     <tr>
                         <td scope="row" valign="top"><i>{$MOD.LBL_LOCALE_EXAMPLE_NAME_FORMAT}:</i> </td>
-                        <td  valign="top"><input tabindex='4' id="nameTarget" name="no_value" id=":q" value="" style="border: none;" disabled size="50"></td>
+                        <td  valign="top"><input tabindex='4' id="nameTarget" name="no_value" id=":q" value="" style="border: none;" disabled size="50"></td>		
                     </tr>
                     </table>
                 </div>
@@ -266,31 +266,31 @@ ProcessImport = new function()
      * number of file to process processed
      */
     this.fileCount         = 0;
-
+    
     /*
      * total files to processs
      */
     this.fileTotal         = {/literal}{$FILECOUNT-1}{literal};
-
+    
     /*
      * total records to process
      */
     this.recordCount       = {/literal}{$RECORDCOUNT}{literal};
-
+    
     /*
      * maximum number of records per file
      */
     this.recordThreshold   = {/literal}{$RECORDTHRESHOLD}{literal};
-
+    
     /*
      * submits the form
      */
     this.submit = function()
     {
-        document.getElementById("importstep3").tmp_file.value =
+        document.getElementById("importstep3").tmp_file.value = 
             document.getElementById("importstep3").tmp_file_base.value + '-' + this.fileCount;
         YAHOO.util.Connect.setForm(document.getElementById("importstep3"));
-        YAHOO.util.Connect.asyncRequest('POST', 'index.php',
+        YAHOO.util.Connect.asyncRequest('POST', 'index.php', 
             {
                 success: function(o) {
                     if (o.responseText.replace(/^\s+|\s+$/g, '') != '') {
@@ -298,8 +298,8 @@ ProcessImport = new function()
                     }
                     else {
                         var locationStr = "index.php?module=Import"
-                            + "&action=Last"
-                            + "&type={/literal}{$TYPE}{literal}"
+                            + "&action=Last" 
+                            + "&type={/literal}{$TYPE}{literal}" 
                             + "&import_module={/literal}{$IMPORT_MODULE}{literal}";
                         if ( ProcessImport.fileCount >= ProcessImport.fileTotal ) {
                         	YAHOO.SUGAR.MessageBox.updateProgress(1,'{/literal}{$MOD.LBL_IMPORT_COMPLETE}{literal}');
@@ -315,9 +315,9 @@ ProcessImport = new function()
                 failure: function(o) {
                 	YAHOO.SUGAR.MessageBox.minWidth = 500;
                 	YAHOO.SUGAR.MessageBox.show({
-                    	type:  "alert",
-                    	title: '{/literal}{$MOD.LBL_IMPORT_ERROR}{literal}',
-                    	msg:   o.responseText,
+                    	type:  "alert", 
+                    	title: '{/literal}{$MOD.LBL_IMPORT_ERROR}{literal}', 
+                    	msg:   o.responseText, 
                         fn: function() { window.location.reload(true); }
                     });
                 }
@@ -332,11 +332,11 @@ ProcessImport = new function()
                         + " {/literal}{$MOD.LBL_IMPORT_RECORDS_TO}{literal} " + Math.min(((this.fileCount+1) * this.recordThreshold),this.recordCount)
                         + " {/literal}{$MOD.LBL_IMPORT_RECORDS_OF}{literal} " + this.recordCount );
     }
-
+    
     /*
      * begins the form submission process
      */
-    this.begin = function()
+    this.begin = function() 
     {
         datestarted = '{/literal}{$MOD.LBL_IMPORT_STARTED}{literal} ' +
                 YAHOO.util.Date.format('{/literal}{$datetimeformat}{literal}');

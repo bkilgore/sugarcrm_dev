@@ -105,8 +105,8 @@ if(!empty($_REQUEST['assigned_user_id'])){
  $xtpl->assign("APP", $app_strings);
  $Web_To_Lead_Form_html = '';
  $Web_To_Lead_Form_html .='<link rel="stylesheet" type="text/css" media="all" href="' . getJSPath(SugarThemeRegistry::current()->getCSSURL('calendar-win2k-cold-1.css')) . '">';
- $Web_To_Lead_Form_html .= "<script type=\"text/javascript\" src='" . getJSPath('include/javascript/sugar_grp1.js') . "'></script>";
- $Web_To_Lead_Form_html .= '<script type="text/javascript" src="' . getJSPath('include/javascript/calendar.js') . '"></script>';
+ $Web_To_Lead_Form_html .= "<script type=\"text/javascript\" language=\"Javascript\" src='" . getJSPath('include/javascript/sugar_grp1.js') . "'></script>";
+ $Web_To_Lead_Form_html .= '<script type="text/javascript" src="' . getJSPath('jscalendar/lang/calendar-' . substr($GLOBALS['current_language'], 0, 2) . '.js') . '"></script>';
  $Web_To_Lead_Form_html .="<form action='$web_post_url' name='WebToLeadForm' method='POST' id='WebToLeadForm'>";
  $Web_To_Lead_Form_html .= "<table width='100%' style='border-top: 1px solid;
 border-bottom: 1px solid;

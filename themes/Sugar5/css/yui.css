@@ -466,25 +466,23 @@ p#clear {
 }
 
  .yui-calendar .calnavleft {
-	background: url("../../../../include/javascript/yui/build/assets/skins/sam/sprite.png") repeat scroll 0 -450px transparent; 
     width: 25px;
     height: 15px;
     top: 0;
     bottom: 0;
     left: -10px;
     margin-left: .4em;
-    cursor: pointer; 
+    cursor: pointer;
 }
 
  .yui-calendar .calnavright {
-	background: url("../../../../include/javascript/yui/build/assets/skins/sam/sprite.png") repeat scroll 0 -500px transparent; 
     width: 25px;
     height: 15px;
     top: 0;
     bottom: 0;
     right: -10px;
     margin-right: .4em;
-    cursor: pointer; 
+    cursor: pointer;
 }
 
  .yui-calendar .calweekdayrow {
@@ -605,6 +603,7 @@ p#clear {
  .yui-calendar a.calnav {
     border: 1px solid #f2f2f2;
     padding: 0 4px;
+    text-decoration: none;
     color: #000;
     zoom: 1;
 }
@@ -693,18 +692,16 @@ p#clear {
     color: #000;
 }
 
- .yui-calcontainer .yui-cal-nav .yui-cal-nav-btn.yui-default {
+ .yui-calcontainer .yui-cal-nav .yui-cal-nav-btn.yui-default
+    {
+    border: 1px solid #304369;
     background-color: #426fd9;
-    border: 1px solid #326A9C; 
-    -moz-border-radius :  4px 4px 4px 4px;
 }
 
- .yui-calcontainer .yui-cal-nav .yui-cal-nav-btn.yui-default button {
+ .yui-calcontainer .yui-cal-nav .yui-cal-nav-btn.yui-default button
+    {
     color: #fff;
-    background-color: #356EA1;
-    text-shadow: -1px -1px #254F74;    
 }
-
 
 .yui-carousel {
     visibility: hidden;
@@ -1249,7 +1246,6 @@ p#clear {
 
  .yui-dialog .ft .button-group {
     display: block;
-    clear: both;
     text-align: right;
 }
 

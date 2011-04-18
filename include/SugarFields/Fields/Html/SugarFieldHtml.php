@@ -42,21 +42,21 @@ class SugarFieldHtml extends SugarFieldBase {
         $vardef['value'] = $this->getVardefValue($vardef);
         
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch($this->findTemplate('DetailView'));
+        return $this->fetch('include/SugarFields/Fields/Html/DetailView.tpl');
     }
     
     function getEditViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex){
     	$vardef['value'] = $this->getVardefValue($vardef);
 				
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch($this->findTemplate('DetailView'));
+        return $this->fetch('include/SugarFields/Fields/Html/DetailView.tpl');
     }
     
 	function getSearchViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex) {
 		$vardef['value'] = $this->getVardefValue($vardef);
 				
         $this->setup($parentFieldArray, $vardef, $displayParams, $tabindex);
-        return $this->fetch($this->findTemplate('DetailView'));    
+        return $this->fetch('include/SugarFields/Fields/Html/DetailView.tpl');    
     }
     
     function getVardefValue($vardef){

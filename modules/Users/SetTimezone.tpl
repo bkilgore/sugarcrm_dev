@@ -41,7 +41,7 @@
 <!-- BEGIN: main -->
 <div class="dashletPanelMenu" style="width: 500px; margin: 20px auto;">
 <div class="hd"><div class="tl"></div><div class="hd-center"></div><div class="tr"></div></div>
-<div class="bd" style="padding-top: 0px; padding-bottom: 0;">
+<div class="bd" style="padding-top: 0px; padding-bottom: 0;">	
 <div class="ml"></div>
 <div class="bd-center">
 <form name="EditView" method="POST" action="index.php?module=Users&action=SaveTimezone&SaveTimezone=True">
@@ -62,14 +62,14 @@
 			</tr>
 			</table>
 			<br><br>
-			<slot><select tabindex='3' name='timezone'>{html_options options=$TIMEZONEOPTIONS selected=$TIMEZONE_CURRENT}</select></slot>
+			<slot><select tabindex='3' name='timezone'>{$TIMEZONEOPTIONS}</select></slot>
 			<input	title="{$APP.LBL_SAVE_BUTTON_TITLE}"
 					accessKey="{$APP.LBL_SAVE_BUTTON_KEY}"
 					class="button primary"
 					type="submit"
 					name="button"
 					value="  {$APP.LBL_SAVE_BUTTON_LABEL}  " ><br />
-			{* <span class="dateFormat">{$MOD.LBL_DST_INSTRUCTIONS}</span> *}
+			<span class="dateFormat">{$MOD.LBL_DST_INSTRUCTIONS}</span>
 		</td>
 	</tr>
 </table>
@@ -89,14 +89,14 @@ lookupTimezone = function() {
             document.EditView.timezone.value = userTimezone;
         }
     }
-
+    
     var now = new Date();
-    now = new Date(now.toString()); // reset milliseconds
-    var nowGMTString = now.toGMTString();
-    var nowGMT = new Date(nowGMTString.substring(0, nowGMTString.lastIndexOf(' ')));
-    offset = ((now - nowGMT) / (1000 * 60));
-    url = 'index.php?module=Users&action=SetTimezone&to_pdf=1&userOffset=' + offset;
-    var cObj = YAHOO.util.Connect.asyncRequest('GET', url, {success: success, failure: success});
+    var d1 = new Date(now.getFullYear(), 0, 1, 0, 0, 0);
+    d1GMTString = d1.toGMTString();
+    var d2 = new Date(d1GMTString.substring(0, d1GMTString.lastIndexOf(' ') - 1));
+    offset = ((d1 - d2) / (1000 * 60));
+    url = 'index.php?module=Users&action=SetTimezone&to_pdf=1&userOffset=' + offset; 
+    var cObj = YAHOO.util.Connect.asyncRequest('GET', url, {success: success, failure: success});    
 }
 YAHOO.util.Event.addListener(window, 'load', lookupTimezone);
 -->

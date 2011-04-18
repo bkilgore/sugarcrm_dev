@@ -62,14 +62,11 @@ function clearPasswordSettings() {
 
 }
 require_once('modules/Administration/Forms.php');
-echo getClassicModuleTitle(
-        "Administration", 
-        array(
-            "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
-           $mod_strings['LBL_MANAGE_PASSWORD_TITLE'],
-           ), 
-        false
-        );
+echo get_module_title(
+                $mod_strings['LBL_MODULE_NAME'], 
+                $mod_strings['LBL_MANAGE_PASSWORD_TITLE'], 
+                true
+                );
 require_once('modules/Configurator/Configurator.php');
 $configurator = new Configurator();
 $sugarConfig = SugarConfig::getInstance();

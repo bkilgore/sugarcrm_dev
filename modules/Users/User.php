@@ -317,6 +317,30 @@ class User extends Person {
         $user->_userPreferenceFocus->resetPreferences($category);
 	}
 
+
+	/**
+	 * Interface for the User object to calling the UserPreference::isPreferenceSizeTooLarge() method in modules/UserPreferences/UserPreference.php
+	 *
+	 * @see UserPreference::isPreferenceSizeTooLarge()
+	 *
+	 * @param string $category category to check
+	 */
+	public function isPreferenceSizeTooLarge(
+	    $category = 'global'
+	    )
+	{
+	    // for BC
+	    if ( func_num_args() > 1 ) {
+	        $user = func_get_arg(1);
+	        $GLOBALS['log']->deprecated('User::resetPreferences() should not be used statically.');
+	    }
+	    else
+	        $user = $this;
+
+        return $user->_userPreferenceFocus->isPreferenceSizeTooLarge($category);
+	}
+	
+	
 	/**
 	 * Interface for the User object to calling the UserPreference::savePreferencesToDB() method in modules/UserPreferences/UserPreference.php
 	 *
@@ -719,7 +743,7 @@ EOQ;
         $user_hash = strtolower(md5($new_password));
         $this->setPreference('loginexpiration','0');
         //set new password
-        $now = TimeDate::getInstance()->nowDb();
+        $now=date("Y-m-d H:i:s");
 		$query = "UPDATE $this->table_name SET user_hash='$user_hash', system_generated_password='$system_generated', pwd_last_changed='$now' where id='$this->id'";
 		$this->db->query($query, true, "Error setting new password for $this->user_name: ");
         $_SESSION['hasExpiredPassword'] = '0';
@@ -1143,7 +1167,7 @@ EOQ;
     		//$composeOptionsLink = $json->encode( array('composeOptionsLink' => $emailLinkUrl,'id' => $focus->id) );
 			require_once('modules/Emails/EmailUI.php');
             $eUi = new EmailUI();
-            $j_quickComposeOptions = $eUi->generateComposePackageForQuickCreateFromComposeUrl($emailLinkUrl, true);
+            $j_quickComposeOptions = $eUi->generateComposePackageForQuickCreateFromComposeUrl($emailLinkUrl);
 
     		$emailLink = "<a href='javascript:void(0);' onclick='SUGAR.quickCompose.init($j_quickComposeOptions);' class='$class'>";
 
@@ -1227,7 +1251,7 @@ EOQ;
 			//Generate the compose package for the quick create options.
     		require_once('modules/Emails/EmailUI.php');
             $eUi = new EmailUI();
-            $j_quickComposeOptions = $eUi->generateComposePackageForQuickCreateFromComposeUrl($emailLinkUrl, true);
+            $j_quickComposeOptions = $eUi->generateComposePackageForQuickCreateFromComposeUrl($emailLinkUrl);
     		$emailLink = "<a href='javascript:void(0);' onclick='SUGAR.quickCompose.init($j_quickComposeOptions);' class='$class'>";
 
 		} else {

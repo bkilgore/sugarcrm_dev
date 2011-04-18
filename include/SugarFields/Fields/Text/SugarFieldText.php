@@ -45,14 +45,14 @@ class SugarFieldText extends SugarFieldBase {
 		return parent::getDetailViewSmarty($parentFieldArray, $vardef, $displayParams, $tabindex);
     }
     function getClassicEditView($field_id='description', $value='', $prefix='', $rich_text=false, $maxlength='', $tabindex=1, $cols=80, $rows=4) {
-
+    
         $this->ss->assign('prefix', $prefix);
         $this->ss->assign('field_id', $field_id);
         $this->ss->assign('value', $value);
         $this->ss->assign('tabindex', $tabindex);
-
+        
         $displayParams = array();
-        $displayParams['textonly'] = $rich_text ? false : true;
+        $displayParams['textonly'] = $rich_text ? false : true;  
         $displayParams['maxlength'] = $maxlength;
         $displayParams['rows'] = $rows;
         $displayParams['cols'] = $cols;
@@ -68,10 +68,14 @@ class SugarFieldText extends SugarFieldBase {
 			$this->ss->assign('RICH_TEXT_EDITOR_WIDTH', $width);
 		} else {
 			$this->ss->assign('RICH_TEXT_EDITOR_HEIGHT', '100px');
-			$this->ss->assign('RICH_TEXT_EDITOR_WIDTH', '95%');
-		}
+			$this->ss->assign('RICH_TEXT_EDITOR_WIDTH', '95%');			
+		}        
 
-		return $this->ss->fetch($this->findTemplate('ClassicEditView'));
+		if(file_exists('custom/include/SugarFields/Fields/Text/ClassicEditView.tpl')) {
+		   return $this->ss->fetch('custom/include/SugarFields/Fields/Text/ClassicEditView.tpl');
+		} else {
+		   return $this->ss->fetch('include/SugarFields/Fields/Text/ClassicEditView.tpl');
+		}
     }
 }
 ?>

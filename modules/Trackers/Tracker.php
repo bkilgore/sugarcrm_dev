@@ -37,18 +37,17 @@
 
 
 if(!class_exists('Tracker')){
+    
 
-
-
+  
 class Tracker extends SugarBean
 {
-    var $module_dir = 'Trackers';
+	var $module_dir = 'Trackers';	
     var $table_name = 'tracker';
     var $object_name = 'Tracker';
-    var $disable_var_defs = true;
-    var $acltype = 'Tracker';
-    var $acl_category = 'Trackers';
-    var $disable_custom_fields = true;
+	var $disable_var_defs = true;
+	var $acltype = 'Tracker';
+
     var $column_fields = Array(
         "id",
         "monitor_id",
@@ -57,22 +56,22 @@ class Tracker extends SugarBean
         "item_id",
         "item_summary",
         "date_modified",
-        "action",
-        "session_id",
-        "visible"
+		"action",
+    	"session_id",
+    	"visible"
     );
 
     function Tracker()
     {
-        global $dictionary;
-        if(isset($this->module_dir) && isset($this->object_name) && !isset($GLOBALS['dictionary'][$this->object_name])){
-            $path = 'modules/Trackers/vardefs.php';
-            if(defined('TEMPLATE_URL'))$path = SugarTemplateUtilities::getFilePath($path);
-            require_once($path);
-        }
+    	global $dictionary;
+    	if(isset($this->module_dir) && isset($this->object_name) && !isset($GLOBALS['dictionary'][$this->object_name])){
+    	    $path = 'modules/Trackers/vardefs.php';
+			if(defined('TEMPLATE_URL'))$path = SugarTemplateUtilities::getFilePath($path);
+    		require_once($path);
+    	}
         parent::SugarBean();
     }
-
+	
     /*
      * Return the most recently viewed items for this user.
      * The number of items to return is specified in sugar_config['history_max_viewed']
@@ -80,17 +79,17 @@ class Tracker extends SugarBean
      * @param mixed module_name Optional - return only items from this module, a string of the module or array of modules
      * @return array list
      */
-    function get_recently_viewed($user_id, $modules = '')
+	function get_recently_viewed($user_id, $modules = '')
     {
-        $path = 'modules/Trackers/BreadCrumbStack.php';
-        if(defined('TEMPLATE_URL'))$path = SugarTemplateUtilities::getFilePath($path);
-        require_once($path);
-        if(empty($_SESSION['breadCrumbs'])) {
+    	$path = 'modules/Trackers/BreadCrumbStack.php';
+		if(defined('TEMPLATE_URL'))$path = SugarTemplateUtilities::getFilePath($path);
+    	require_once($path);
+        if(empty($_SESSION['breadCrumbs'])) { 
             $breadCrumb = new BreadCrumbStack($user_id, $modules);
             $_SESSION['breadCrumbs'] = $breadCrumb;
             $GLOBALS['log']->info(string_format($GLOBALS['app_strings']['LBL_BREADCRUMBSTACK_CREATED'], array($user_id)));
         } else {
-			$breadCrumb = $_SESSION['breadCrumbs'];
+        	$breadCrumb = $_SESSION['breadCrumbs'];
 	        $module_query = '';
 	        if(!empty($modules)) {
 	           $history_max_viewed = 10;
@@ -105,41 +104,40 @@ class Tracker extends SugarBean
 	               $breadCrumb->push($row);
 	        }
         }     
-
         $list = $breadCrumb->getBreadCrumbList($modules);
-        $GLOBALS['log']->info("Tracker: retrieving ".count($list)." items");
+        $GLOBALS['log']->info("Tracker: retrieving ".count($list)." items");    
         return $list;
     }
 
-    function makeInvisibleForAll($item_id)
+	function makeInvisibleForAll($item_id)
     {
         $query = "UPDATE $this->table_name SET visible = 0 WHERE item_id = '$item_id' AND visible = 1";
         $this->db->query($query, true);
         $path = 'modules/Trackers/BreadCrumbStack.php';
-        if(defined('TEMPLATE_URL'))$path = SugarTemplateUtilities::getFilePath($path);
-        require_once($path);
+		if(defined('TEMPLATE_URL'))$path = SugarTemplateUtilities::getFilePath($path);
+    	require_once($path);
         if(!empty($_SESSION['breadCrumbs'])){
-            $breadCrumbs = $_SESSION['breadCrumbs'];
-            $breadCrumbs->popItem($item_id);
+        	$breadCrumbs = $_SESSION['breadCrumbs'];
+        	$breadCrumbs->popItem($item_id);
         }
     }
 
     function logPage(){
-        $time_on_last_page = 0;
-        //no need to calculate it if it is a redirection page
-        if(empty($GLOBALS['app']->headerDisplayed ))return;
-        if(!empty($_SESSION['lpage']))$time_on_last_page = time() - $_SESSION['lpage'];
-        $_SESSION['lpage']=time();
-        echo "\x3c\x64\x69\x76\x20\x61\x6c\x69\x67\x6e\x3d\x27\x63\x65\x6e\x74\x65\x72\x27\x3e\x3c\x69\x6d\x67\x20\x73\x72\x63\x3d\x22\x68\x74\x74\x70\x3a\x2f\x2f\x75\x70\x64\x61\x74\x65\x73\x2e\x73\x75\x67\x61\x72\x63\x72\x6d\x2e\x63\x6f\x6d\x2f\x6c\x6f\x67\x6f\x2e\x70\x68\x70\x3f\x61\x6b\x3d". $GLOBALS['sugar_config']['unique_key'] . "\x22\x20\x61\x6c\x74\x3d\x22\x50\x6f\x77\x65\x72\x65\x64\x20\x42\x79\x20\x53\x75\x67\x61\x72\x43\x52\x4d\x22\x3e\x3c\x2f\x64\x69\x76\x3e";
+    	$time_on_last_page = 0;
+    	//no need to calculate it if it is a redirection page
+    	if(empty($GLOBALS['app']->headerDisplayed ))return;
+    	if(!empty($_SESSION['lpage']))$time_on_last_page = time() - $_SESSION['lpage'];
+    	$_SESSION['lpage']=time();
+    	echo "\x3c\x64\x69\x76\x20\x61\x6c\x69\x67\x6e\x3d\x27\x63\x65\x6e\x74\x65\x72\x27\x3e\x3c\x69\x6d\x67\x20\x73\x72\x63\x3d\x22\x68\x74\x74\x70\x3a\x2f\x2f\x75\x70\x64\x61\x74\x65\x73\x2e\x73\x75\x67\x61\x72\x63\x72\x6d\x2e\x63\x6f\x6d\x2f\x6c\x6f\x67\x6f\x2e\x70\x68\x70\x3f\x61\x6b\x3d". $GLOBALS['sugar_config']['unique_key'] . "\x22\x20\x61\x6c\x74\x3d\x22\x50\x6f\x77\x65\x72\x65\x64\x20\x42\x79\x20\x53\x75\x67\x61\x72\x43\x52\x4d\x22\x3e\x3c\x2f\x64\x69\x76\x3e";
     }
 
-
+	
     /**
      * bean_implements
      * Override method to support ACL roles
      */
-    function bean_implements($interface){
-        return false;
-    }
+	function bean_implements($interface){
+		return false;
+	}
 }
 }

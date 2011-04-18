@@ -209,7 +209,7 @@ $display_title = $mod_strings['LBL_LIST_TITLE_GROUP_INBOX'];
 ////	OUTPUT
 ///////////////////////////////////////////////////////////////////////////////
 
-echo getClassicModuleTitle("Emails", array($mod_strings['LBL_MODULE_TITLE'].$display_title), true); 
+echo get_module_title("Emails", $mod_strings['LBL_MODULE_TITLE'].$display_title, true); 
 // admin-edit
 if(is_admin($current_user) && $_REQUEST['module'] != 'DynamicLayout' && !empty($_SESSION['editinplace'])){	
 	$header_text = "&nbsp;<a href='index.php?action=index&module=DynamicLayout&from_action=SearchForm&from_module=".$_REQUEST['module'] ."'>".SugarThemeRegistry::current()->getImage("EditLayout","border='0' alt='Edit Layout' align='bottom'")."</a>";

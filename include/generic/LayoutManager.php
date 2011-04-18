@@ -226,13 +226,8 @@ class LayoutManager
 					$widget_def['widget_class'] = 'Fielduser_name';
 					break;
 				default:
-				    if ( isset($widget_def['type']) ) {
-				        $widget_def['widget_class'] = 'Field' . $widget_def['type'];
-				    }
-				    else {
-				        $widget_def['widget_class'] = 'Field' . $this->DBHelper->getFieldType($widget_def);
-				    }
-            }
+					$widget_def['widget_class'] = 'Field' . $this->DBHelper->getFieldType($widget_def);
+			}
 		}
 		
 		if(!empty($widget_def['name']) && $widget_def['name'] == 'team_set_id'){

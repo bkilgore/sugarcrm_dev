@@ -38,25 +38,23 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 
-// load the correct demo data and main application language file depending upon the installer language selected; if
-// it's not found fall back on en_us
-if(file_exists("include/language/{$current_language}.lang.php")){
-    require_once("include/language/{$current_language}.lang.php");
-}
-else {
-    require_once("include/language/en_us.lang.php");
-}
+
+
+
+require_once('include/language/en_us.lang.php');
+
 require_once('install/UserDemoData.php');
 require_once('install/TeamDemoData.php');
-
-global $sugar_demodata;
-if(file_exists("install/demoData.{$current_language}.php")){
-   require_once("install/demoData.{$current_language}.php");
-}
-else {
-   require_once("install/demoData.en_us.php");
-}
-
+require_once('install/seed_data/basicSeedData.php');
+if(isset($sugar_config['i18n_test']) && $sugar_config['i18n_test'] == true)
+	require_once('modules/Contacts/contactSeedData_jp.php');
+else
+	require_once('modules/Contacts/contactSeedData.php');
+    if(file_exists("install/demoData.$_SESSION[demoData].php")){
+	   require_once("install/demoData.$_SESSION[demoData].php");
+    }else{
+	   require_once("install/demoData.en_us.php");
+    }
 $last_name_count = count($sugar_demodata['last_name_array']);
 $first_name_count = count($sugar_demodata['first_name_array']);
 $company_name_count = count($sugar_demodata['company_name_array']);
@@ -74,7 +72,7 @@ if(empty($app_list_strings)) {
  */
 mt_srand(93285903);
 $db = DBManagerFactory::getInstance();
-$timedate = TimeDate::getInstance();
+$timedate = new TimeDate();
 // Set the max time to one hour (helps Windows load the seed data)
 ini_set("max_execution_time", "3600");
 // ensure we have enough memory
@@ -197,7 +195,7 @@ for($i = 0; $i < $number_companies; $i++) {
 	$case->assigned_user_id = $account->assigned_user_id;
 	$case->assigned_user_name = $account->assigned_user_name;
 	$case->save();
-
+	
 	// Create a bug for the account
 	$bug = new Bug();
 	$bug->account_id = $account->id;
@@ -397,7 +395,7 @@ for($i=0; $i<$number_leads; $i++)
 	$leads_account = $accounts[$account_number];
 	$lead->primary_address_state = $leads_account->billing_address_state;
 	$lead->status = array_rand($app_list_strings['lead_status_dom']);
-	$lead->lead_source = array_rand($app_list_strings['lead_source_dom']);
+	$lead->lead_source = array_rand($app_list_strings['lead_source_dom']);	
 	if($i % 3 == 1)
 	{
 		$lead->billing_address_state = $sugar_demodata['billing_address_state']['east'];
@@ -443,8 +441,8 @@ for($i=0; $i<$number_leads; $i++)
 			$assigned_team = $team_demo_data->get_random_team();
 			$lead->assigned_user_name = $assigned_team;
 		} else {
-		}
-	}
+		} 
+	} 
 	$lead->primary_address_postalcode = mt_rand(10000,99999);
 	$lead->primary_address_country = $sugar_demodata['primary_address_country'];
 	$lead->save();
@@ -483,21 +481,33 @@ $project->estimated_end_date = $sugar_demodata['project_seed_data']['audit']['es
 $project->status = $sugar_demodata['project_seed_data']['audit']['status'];
 $project->priority = $sugar_demodata['project_seed_data']['audit']['priority'];
 $audit_plan_id = $project->save();
-
+$sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
+	'name' => 'Gather data from meetings',
+	'date_start' => '2007/11/20',
+	'date_finish' => '2007/11/20',
+	'description' => 'Need to organize the data and put it in the right spreadsheet.',
+	'duration' => '1',
+	'duration_unit' => 'Days',
+	'percent_complete' => 0,
+);
 foreach($sugar_demodata['project_seed_data']['audit']['project_tasks'] as $v){
 	$project_task = new ProjectTask();
 	$project_task->assigned_user_id = 1;
 	$project_task->name = $v['name'];
-	$project_task->date_start = $v['date_start'];
-	$project_task->date_finish = $v['date_finish'];
+	list($year, $month, $day) = $v['date_start'];
+	$project_task->date_start = create_date($year, $month, $day);
+	//$project_task->time_start = create_time(8,0,0);
+	list($year, $month, $day) = $v['date_start'];
+	$project_task->date_finish = create_date($year, $month, $day);
+	//$project_task->time_finish = create_time(8,0,0);
 	$project_task->project_id = $audit_plan_id;
 	$project_task->project_task_id = '1';
 	$project_task->description = $v['description'];
 	$project_task->duration = $v['duration'];
 	$project_task->duration_unit = $v['duration_unit'];
 	$project_task->percent_complete = $v['percent_complete'];
-	$communicate_stakeholders_id = $project_task->save();
+	$communicate_stakeholders_id = $project_task->save();	
 }
 
-
+  
 ?>

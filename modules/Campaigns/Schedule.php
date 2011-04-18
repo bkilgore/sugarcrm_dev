@@ -73,9 +73,9 @@ global $currentModule;
 
 $current_module_strings = return_module_language($current_language, 'EmailMarketing');
 if ($test)  {
-	echo getClassicModuleTitle('Campaigns', array($current_module_strings['LBL_MODULE_SEND_TEST']), false);
+	echo get_module_title('Campaigns', $current_module_strings['LBL_MODULE_SEND_TEST'], false);
 } else {
-	echo getClassicModuleTitle('Campaigns', array($current_module_strings['LBL_MODULE_SEND_EMAILS']), false);
+	echo get_module_title('Campaigns', $current_module_strings['LBL_MODULE_SEND_EMAILS'], false);
 }
 
 $focus = new EmailMarketing();

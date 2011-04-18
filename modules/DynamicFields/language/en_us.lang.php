@@ -84,7 +84,6 @@ $mod_strings = array (
 	'COLUMN_TITLE_DISPLAYED_ITEM_COUNT'=>'# Items displayed',
 	'COLUMN_TITLE_AUTOINC_NEXT' => 'Auto Increment Next Value',
     'COLUMN_DISABLE_NUMBER_FORMAT' => 'Disable Format',
-    'COLUMN_TITLE_ENABLE_RANGE_SEARCH' => 'Enable Range Search',
 	'LBL_DROP_DOWN_LIST' => 'Drop Down List',
 	'LBL_RADIO_FIELDS'=> 'Radio Fields',
 	'LBL_MULTI_SELECT_LIST'=> 'Multi Select List',
@@ -105,7 +104,6 @@ $mod_strings = array (
     'LBL_REPORTABLE'=>'Reportable',
     'ERR_RESERVED_FIELD_NAME' => "Reserved Keyword",
 	'ERR_SELECT_FIELD_TYPE' => 'Please Select a Field Type',
-	'ERR_FIELD_NAME_ALREADY_EXISTS' => 'Field Name already exists',
     'LBL_BTN_ADD' => 'Add',
     'LBL_BTN_EDIT' => 'Edit',
     'LBL_GENERATE_URL' => 'Generate URL',
@@ -119,10 +117,6 @@ $mod_strings = array (
     'LBL_IMAGE_WIDTH' => 'Width',
     'LBL_IMAGE_HEIGHT' => 'Height',
     'LBL_IMAGE_BORDER' => 'Border',
-	'COLUMN_TITLE_VALIDATE_US_FORMAT' => 'U.S. Format',
-	'LBL_DEPENDENT'=>'Dependent',
-	'LBL_VISIBLE_IF'=>'Visible If',
-	'LBL_ENFORCED'=>'Enforced',
 
 );
 

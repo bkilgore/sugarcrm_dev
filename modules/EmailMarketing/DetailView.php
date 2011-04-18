@@ -68,6 +68,7 @@ global $theme;
 
 
 $GLOBALS['log']->info("EmailMarketing Edit View");
+//echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'].": ".$focus->name, true);
 
 $xtpl=new XTemplate ('modules/EmailMarketing/DetailView.html');
 

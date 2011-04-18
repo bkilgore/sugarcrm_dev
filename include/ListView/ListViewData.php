@@ -79,7 +79,7 @@ class ListViewData {
 				        $monitor->setValue('item_summary', "lvso=".$direction."&".$this->var_order_by."=".$_REQUEST[$this->var_order_by]);
 				        $monitor->setValue('action', 'listview');
 						$monitor->setValue('user_id', $GLOBALS['current_user']->id);
-						$monitor->setValue('date_modified', TimeDate::getInstance()->nowDb());
+						$monitor->setValue('date_modified', gmdate($GLOBALS['timedate']->get_db_date_time_format()));
 				        $monitor->save();
 					}
     			}
@@ -143,7 +143,7 @@ class ListViewData {
                 $blockVariables[] = 'Home2_'.strtoupper($bean).'_ORDER_BY';
             }
             $blockVariables[] = 'Home2_CASE_ORDER_BY';
-            // Added mostly for the unit test runners, which may not have these superglobals defined
+
             $params = array();
             if ( isset($_POST) && is_array($_POST) ) {
                 $params = array_merge($params,$_POST);
@@ -152,7 +152,7 @@ class ListViewData {
                 $params = array_merge($params,$_GET);
             }
             foreach($params as $name=>$value) {
-                if(!in_array($name, $blockVariables)){
+                if(!in_array($name, $blockVariables)){ 
 					if(is_array($value)) {
 						foreach($value as $v) {
                             $base_url .= $name.urlencode('[]').'='.urlencode($v) . '&';
@@ -275,35 +275,28 @@ class ListViewData {
         // Bug 22740 - Tweak this check to strip off the table name off the order by parameter.
         // Samir Gandhi : Do not remove the report_cache.date_modified condition as the report list view is broken
         $orderby = $order['orderBy'];
-        if (strpos($order['orderBy'],'.') && ($order['orderBy'] != "report_cache.date_modified")) {
+        if (strpos($order['orderBy'],'.') && ($order['orderBy'] != "report_cache.date_modified"))
             $orderby = substr($order['orderBy'],strpos($order['orderBy'],'.')+1);
-        }
-        if ($orderby != 'date_entered' && !in_array($orderby, array_keys($filter_fields))) {
+        if($orderby != 'date_entered' && !in_array($orderby, array_keys($filter_fields))){
         	$order['orderBy'] = '';
         	$order['sortOrder'] = '';
         }
 
-		if (empty($order['orderBy'])) {
+		if(empty($order['orderBy'])) {
             $orderBy = '';
-        } else {
+        }
+		else {
             $orderBy = $order['orderBy'] . ' ' . $order['sortOrder'];
             //wdong, Bug 25476, fix the sorting problem of Oracle.
             if (isset($params['custom_order_by_override']['ori_code']) && $order['orderBy'] == $params['custom_order_by_override']['ori_code'])
                 $orderBy = $params['custom_order_by_override']['custom_code'] . ' ' . $order['sortOrder'];
         }
-        
-        if (empty($params['skipOrderSave'])) { // don't save preferences if told so
-            $current_user->setPreference('listviewOrder', $order, 0, $this->var_name); // save preference
-        }
-		
-		// If $params tells us to override for the special last_name, first_name sorting
-		if (!empty($params['overrideLastNameOrder']) && $order['orderBy'] == 'last_name') {
-			$orderBy = 'last_name '.$order['sortOrder'].', first_name '.$order['sortOrder'];
-		}
 
+        if(empty($params['skipOrderSave'])) // don't save preferences if told so
+            $current_user->setPreference('listviewOrder', $order, 0, $this->var_name); // save preference
 		$ret_array = $seed->create_new_list_query($orderBy, $where, $filter_fields, $params, 0, '', true, $seed, true);
         $ret_array['inner_join'] = '';
-        if (!empty($this->seed->listview_inner_join)) {
+        if(!empty($this->seed->listview_inner_join)) {
             $ret_array['inner_join'] = ' ' . implode(' ', $this->seed->listview_inner_join) . ' ';
         }
 
@@ -402,7 +395,10 @@ class ListViewData {
 
 			$pageData = array();
 
-			reset($rows);
+			$additionalDetailsAllow = $this->additionalDetails && $this->seed->ACLAccess('DetailView') && (file_exists('modules/' . $this->seed->module_dir . '/metadata/additionalDetails.php') || file_exists('custom/modules/' . $this->seed->module_dir . '/metadata/additionalDetails.php'));
+            if($additionalDetailsAllow) $pageData['additionalDetails'] = array();
+			$additionalDetailsEdit = $this->seed->ACLAccess('EditView');
+            reset($rows);
 			while($row = current($rows)){
                 $temp = clone $seed;
 			    $dataIndex = count($data);
@@ -415,11 +411,7 @@ class ListViewData {
 				    $pageData['tag'][$dataIndex] = $pageData['tag'][$idIndex[$row[$id_field]][0]];
 				}
 				$data[$dataIndex] = $temp->get_list_view_data($filter_fields);
-			    $pageData['rowAccess'][$dataIndex] = array('view' => $temp->ACLAccess('DetailView'), 'edit' => $temp->ACLAccess('EditView'));
-			    $additionalDetailsAllow = $this->additionalDetails && $temp->ACLAccess('DetailView') && (file_exists('modules/' . $temp->module_dir . '/metadata/additionalDetails.php') || file_exists('custom/modules/' . $temp->module_dir . '/metadata/additionalDetails.php'));
-			    //if($additionalDetailsAllow) $pageData['additionalDetails'] = array();
-			    $additionalDetailsEdit = $temp->ACLAccess('EditView');
-				if($additionalDetailsAllow) {
+			    if($additionalDetailsAllow) {
                     if($this->additionalDetailsAjax) {
 					   $ar = $this->getAdditionalDetailsAjax($data[$dataIndex]['ID']);
                     }

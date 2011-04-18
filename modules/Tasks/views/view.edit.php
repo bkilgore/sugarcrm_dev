@@ -47,30 +47,30 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 require_once('include/MVC/View/views/view.edit.php');
 
-class TasksViewEdit extends ViewEdit
+class TasksViewEdit extends ViewEdit 
 {
     /**
  	 * @see SugarView::preDisplay()
  	 */
- 	public function preDisplay()
+ 	public function preDisplay() 
  	{
  		if($_REQUEST['module'] != 'Tasks' && isset($_REQUEST['status']) && empty($_REQUEST['status'])) {
 	       $this->bean->status = '';
  		} //if
  		if(!empty($_REQUEST['status']) && ($_REQUEST['status'] == 'Completed')) {
 	       $this->bean->status = 'Completed';
- 		}
+ 		} 		
  		parent::preDisplay();
  	}
-
+    
  	/**
  	 * @see SugarView::display()
  	 */
- 	public function display()
- 	{
+ 	public function display() 
+ 	{		
  		if($this->ev->isDuplicate){
-	       $this->bean->status = $this->bean->getDefaultStatus();
- 		} //if
+	       $this->bean->status = $GLOBALS['mod_strings']['LBL_DEFAULT_STATUS'];
+ 		} //if	
  		parent::display();
  	}
 }

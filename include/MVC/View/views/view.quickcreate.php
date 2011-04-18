@@ -42,16 +42,7 @@ require_once('include/EditView/EditView2.php');
 
 class ViewQuickcreate extends ViewAjax
 {
-    /**
-     * $var true if this form is used in the Dashlet Container
-     */
-	protected $_isDCForm = false;
-	
-	/**
-	 * @var EditView object
-	 */
-	protected $ev;
-	
+	private $_isDCForm = false;
     /**
      * @see SugarView::preDisplay()
      */
@@ -114,20 +105,20 @@ class ViewQuickcreate extends ViewAjax
 			}
 		}
 
-		$this->ev = new EditView();
-		$this->ev->view = $view;
-		$this->ev->ss = new Sugar_Smarty();
+		$ev = new EditView();
+		$ev->view = $view;
+		$ev->ss = new Sugar_Smarty();
 		
-		$this->ev->ss->assign('isDCForm', $this->_isDCForm);
+		$ev->ss->assign('isDCForm', $this->_isDCForm);
 		//$_REQUEST['return_action'] = 'SubPanelViewer';
-		$this->ev->setup($module, null, $source);
-		$this->ev->showSectionPanelsTitles = false;
-	    $this->ev->defs['templateMeta']['form']['headerTpl'] = 'include/EditView/header.tpl';
-		$this->ev->defs['templateMeta']['form']['footerTpl'] = 'include/EditView/footer.tpl';
-		$this->ev->defs['templateMeta']['form']['buttons'] = array('DCMENUSAVE', 'DCMENUCANCEL', 'DCMENUFULLFORM');
-		$this->ev->defs['templateMeta']['form']['button_location'] = 'bottom';
-		$this->ev->defs['templateMeta']['form']['hidden'] = '<input type="hidden" name="is_ajax_call" value="1" />';
-		$this->ev->defs['templateMeta']['form']['hidden'] .= '<input type="hidden" name="from_dcmenu" value="1" />';
+		$ev->setup($module, null, $source);
+		$ev->showSectionPanelsTitles = false;
+	    $ev->defs['templateMeta']['form']['headerTpl'] = 'include/EditView/header.tpl';
+		$ev->defs['templateMeta']['form']['footerTpl'] = 'include/EditView/footer.tpl';
+		$ev->defs['templateMeta']['form']['buttons'] = array('DCMENUSAVE', 'DCMENUCANCEL', 'DCMENUFULLFORM');
+		$ev->defs['templateMeta']['form']['button_location'] = 'bottom';
+		$ev->defs['templateMeta']['form']['hidden'] = '<input type="hidden" name="is_ajax_call" value="1" />';
+		$ev->defs['templateMeta']['form']['hidden'] .= '<input type="hidden" name="from_dcmenu" value="1" />';
 		$defaultProcess = true;
 		if(file_exists('modules/'.$module.'/views/view.edit.php')) {
             include('modules/'.$module.'/views/view.edit.php'); 
@@ -140,11 +131,11 @@ class ViewQuickcreate extends ViewAjax
 	            	
 	            	//Check if we shold use the module's QuickCreate.tpl file
 	            	if($view->useModuleQuickCreateTemplate && file_exists('modules/'.$module.'/tpls/QuickCreate.tpl')) {
-	            	   $this->ev->defs['templateMeta']['form']['headerTpl'] = 'modules/'.$module.'/tpls/QuickCreate.tpl'; 
+	            	   $ev->defs['templateMeta']['form']['headerTpl'] = 'modules/'.$module.'/tpls/QuickCreate.tpl'; 
 	            	}
 	            	
-		            $view->ev = & $this->ev;
-		            $view->ss = & $this->ev->ss;
+		            $view->ev = & $ev;
+		            $view->ss = & $ev->ss;
 					$class = $GLOBALS['beanList'][$module];
 					if(!empty($GLOBALS['beanFiles'][$class])){
 						require_once($GLOBALS['beanFiles'][$class]);
@@ -159,10 +150,10 @@ class ViewQuickcreate extends ViewAjax
 		} //if
 		
 		if($defaultProcess) {
-		   $form_name = 'form_DC'.$this->ev->view .'_'.$module;
-		   $this->ev->formName = $form_name;
-		   $this->ev->process(true, $form_name);
-		   echo $this->ev->display(false, true);
+		   $form_name = 'form_DC'.$ev->view .'_'.$module;
+		   $ev->formName = $form_name;
+		   $ev->process(true, $form_name);
+		   echo $ev->display(false, true);
 		}
 	}
 }

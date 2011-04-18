@@ -40,11 +40,11 @@ require_once 'modules/ModuleBuilder/parsers/constants.php' ;
 
 class History
 {
-
+    
     private $_dirname ; // base directory for the history files
     private $_basename ; // base name for a history file, for example, listviewdef.php
     private $_list ; // the history - a list of history files
-
+    
     private $_previewFilename ; // the location of a file for preview
 
     /*
@@ -56,7 +56,7 @@ class History
         $GLOBALS [ 'log' ]->debug ( get_class ( $this ) . "->__construct( {$previewFilename} )" ) ;
         $this->_previewFilename = $previewFilename ;
         $this->_list = array ( ) ;
-
+        
         $this->_dirname = dirname ( $this->_previewFilename ) ;
         // create the history directory if it does not already exist
         if (! is_dir ( $this->_dirname ))
@@ -92,7 +92,7 @@ class History
     {
         return count ( $this->_list ) ;
     }
-
+    
     /*
      * Get the most recent item in the history
      * @return timestamp of the first item
@@ -101,7 +101,7 @@ class History
     {
         return end ( $this->_list ) ;
     }
-
+    
 /*
      * Get the oldest item in the history (the default layout)
      * @return timestamp of the last item
@@ -145,20 +145,19 @@ class History
         // make sure we don't have a duplicate filename - highly unusual as two people should not be using Studio/MB concurrently, but when testing quite possible to do two appends within one second...
         // because so unlikely in normal use we handle this the naive way by waiting a second so our naming scheme doesn't get overelaborated
         $retries = 0 ;
-
-        $now = TimeDate::getInstance()->getNow();
-        //$time = $now->format('c');
-        $time = $now->__get('ts');
+        
+        $time = strtotime ( gmdate ( 'r' ) ) ;
         while ( (file_exists ( $this->_previewFilename . "_" . $time ) && $retries < 5) )
+        
         {
-            $now->modify("+1 second");
-            $time = $now->__get('ts');
+            sleep ( 1 ) ;
+            $time = strtotime ( gmdate ( 'r' ) ) ;
             $retries ++ ;
         }
         // now we have a unique filename, copy the file into the history
         copy ( $path, $this->_previewFilename . "_" . $time ) ;
         $this->_list [ $time ] = $time ;
-
+        
         // finally, trim the number of files we're holding in the history to that specified in the configuration
         $max_history = (isset ( $GLOBALS [ 'sugar_config' ] [ 'studio_max_history' ] )) ? $GLOBALS [ 'sugar_config' ] [ 'studio_max_history' ] : 50 ;
         $count = count ( $this->_list ) ;
@@ -177,14 +176,14 @@ class History
                 }
             }
         }
-
+        
         // finally, remove any history preview file that might be lurking around - as soon as we append a new record it supercedes any old preview, so that must be removed (bug 20130)
         if (file_exists($this->_previewFilename))
         {
             $GLOBALS [ 'log' ]->debug( get_class($this)."->append(): removing old history file at {$this->_previewFilename}");
             unlink ( $this->_previewFilename);
         }
-
+        
         return $time ;
     }
 
@@ -197,7 +196,7 @@ class History
     {
         $filename = $this->_previewFilename . "_" . $timestamp ;
         $GLOBALS [ 'log' ]->debug ( get_class ( $this ) . ": restoring from $filename to {$this->_previewFilename}" ) ;
-
+        
         if (file_exists ( $filename ))
         {
             copy ( $filename, $this->_previewFilename ) ;

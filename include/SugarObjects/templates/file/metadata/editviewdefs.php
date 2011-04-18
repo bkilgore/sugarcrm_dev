@@ -67,10 +67,15 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
     array (
       'document_name',
-      array(
-      		'name'=>'uploadfile',
-            'displayParams' => array('onchangeSetFileNameTo' => 'document_name'),
-      ),
+      array('name'=>'uploadfile',
+            'customCode' => '{if $fields.id.value!=""}
+            				{assign var="type" value="hidden"}
+            		 		{else}
+            		 		{assign var="type" value="file"}
+            		  		{/if}
+            		  		<input name="uploadfile" type = {$type} size="30" maxlength="" onchange="setvalue(this);" value="{$fields.filename.value}">{$fields.filename.value}',
+      						'displayParams'=>array('required'=>true),
+            ),
 
 	),
 

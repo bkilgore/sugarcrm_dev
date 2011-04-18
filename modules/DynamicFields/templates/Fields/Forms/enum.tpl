@@ -61,7 +61,7 @@ app_list_strings = {$app_list_strings};
 	{if $hideLevel < 5}
 		{html_options name="default[]" id="default[]" selected=$selected_options options=$default_dropdowns multiple=$multi}
 	{else}
-		<input type='hidden' name='default[]' id='default[]' value='$vardef.default'>{$vardef.default}
+		<input type='hidden' name='default[]' value='$vardef.default'>{$vardef.default}
 	{/if}
 	</td>
 </tr>
@@ -69,9 +69,9 @@ app_list_strings = {$app_list_strings};
 	<td class='mbLBL'>{sugar_translate module="DynamicFields" label="COLUMN_TITLE_MASS_UPDATE"}:</td>
 	<td>
 	{if $hideLevel < 5}
-		<input type="checkbox" id="massupdate"  name="massupdate" value="1" {if !empty($vardef.massupdate)}checked{/if}/>
+		<input type="checkbox" name="massupdate" value="1" {if !empty($vardef.massupdate)}checked{/if}/>
 	{else}
-		<input type="checkbox" id="massupdate"  name="massupdate" value="1" disabled {if !empty($vardef.massupdate)}checked{/if}/>
+		<input type="checkbox" name="massupdate" value="1" disabled {if !empty($vardef.massupdate)}checked{/if}/>	
 	{/if}
 	</td>
 </tr>

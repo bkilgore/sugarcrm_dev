@@ -57,7 +57,7 @@ if (isset($_REQUEST['offset']) or isset($_REQUEST['record'])) {
 	header("Location: index.php?module=Groups&action=index");
 }
 
-echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$focus->user_name), true);
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'].": ".$focus->user_name, true);
 
 /* end standard DetailView layout process */
 

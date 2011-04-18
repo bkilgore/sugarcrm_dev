@@ -40,10 +40,14 @@ class TemplateDecimal extends TemplateFloat{
 	var $type = 'decimal';
 	var $default = null;
 	var $default_value = null;
-	
 	function TemplateDecimal(){
-    	parent::__construct();
+		$this->vardef_map['precision']='ext1';
 	}
+
+    function get_field_def(){
+    	$def = parent::get_field_def();
+    	return $def;
+    }
 
     function get_db_type(){
 //    	$GLOBALS['log']->debug('TemplateFloat:get_db_type()'.print_r($this,true));

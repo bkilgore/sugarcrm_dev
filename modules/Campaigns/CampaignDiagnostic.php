@@ -61,6 +61,7 @@ if(!isset($_REQUEST['inline']) || $_REQUEST['inline'] != 'inline'){
 	$params[] = $mod_strings['LBL_CAMPAIGN_DIAGNOSTICS'];
 	
 	echo getClassicModuleTitle('Campaigns', $params, true);
+    //echo "<h2>".get_module_title($mod_strings['LBL_MODULE_NAME'],$mod_strings['LBL_CAMPAIGN_DIAGNOSTICS'],true)."</h2>";
 }
 
 global $theme;

@@ -51,7 +51,7 @@ $viewdefs['Cases']['DetailView'] = array(
 	    array('name' => 'case_number', 'label' => 'LBL_CASE_NUMBER'),
 	    'priority'
 	  ),
-
+	
 	  array (
 	    'status',
 	    'account_name',
@@ -59,25 +59,25 @@ $viewdefs['Cases']['DetailView'] = array(
 	  array (
 	      'type',
 	  ),
-
+	
 	  array (
-
+	
 	    array (
 	      'name' => 'name',
 	      'label' => 'LBL_SUBJECT',
 	    ),
 	  ),
-
+	
 	  array (
 	    'description',
 	  ),
-
+	
 	  array (
 	    'resolution',
 	  ),
-
+	
 	),
-
+	
 	'LBL_PANEL_ASSIGNMENT' => array(
         array (
           array (
@@ -95,7 +95,7 @@ $viewdefs['Cases']['DetailView'] = array(
             'name' => 'date_entered',
             'customCode' => '{$fields.date_entered.value} {$APP.LBL_BY} {$fields.created_by_name.value}',
           ),
-        ),
+        ),		
 	),
 )
 

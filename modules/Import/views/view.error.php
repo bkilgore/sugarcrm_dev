@@ -90,6 +90,9 @@ class ImportViewError extends SugarView
      */
  	public function display()
     {
+        global $mod_strings;
+        
+        $this->ss->assign("MOD", $mod_strings);
         $this->ss->assign("IMPORT_MODULE", $_REQUEST['import_module']);
         $this->ss->assign("ACTION", 'Step1');
         $this->ss->assign("MESSAGE",$_REQUEST['message']);

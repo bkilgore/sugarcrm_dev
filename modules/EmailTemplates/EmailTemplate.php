@@ -202,10 +202,6 @@ class EmailTemplate extends SugarBean {
 	}
 
 	function fill_in_additional_detail_fields() {
-	    if (empty($this->body) && !empty($this->body_html))
-        {
-            $this->body = strip_tags(html_entity_decode($this->body_html));
-        }
 		$this->created_by_name = get_assigned_user_name($this->created_by);
 		$this->modified_by_name = get_assigned_user_name($this->modified_user_id);
 		$this->fill_in_additional_parent_fields();

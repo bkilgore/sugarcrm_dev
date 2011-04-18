@@ -42,9 +42,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * Contributor(s): ______________________________________..
  ********************************************************************************/
  
-$module_name = '<module_name>';
-$_module_name = '<_module_name>';
-$searchFields['<module_name>'] =
+ $searchFields['<module_name>'] =
 	array (
 		'document_name' => array( 'query_type'=>'default'),
         'category_id'=> array('query_type'=>'default', 'options' => 'document_category_dom', 'template_var' => 'CATEGORY_OPTIONS'),
@@ -52,14 +50,7 @@ $searchFields['<module_name>'] =
 		'active_date'=> array('query_type'=>'default'),
 		'exp_date'=> array('query_type'=>'default'),
 
-		//Range Search Support 
-	   'range_date_entered' => array ('query_type' => 'default', 'enable_range_search' => true, 'is_date_field' => true),
-	   'start_range_date_entered' => array ('query_type' => 'default',  'enable_range_search' => true, 'is_date_field' => true),
-	   'end_range_date_entered' => array ('query_type' => 'default', 'enable_range_search' => true, 'is_date_field' => true),
-	   'range_date_modified' => array ('query_type' => 'default', 'enable_range_search' => true, 'is_date_field' => true),
-	   'start_range_date_modified' => array ('query_type' => 'default',  'enable_range_search' => true, 'is_date_field' => true),
-       'end_range_date_modified' => array ('query_type' => 'default', 'enable_range_search' => true, 'is_date_field' => true),	
-	    //Range Search Support 	
+
 	);
 ?>
 

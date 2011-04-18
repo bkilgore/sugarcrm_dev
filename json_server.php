@@ -50,9 +50,9 @@ $SUPPORTED_METHODS = array(
 	'retrieve',
 	'query',
 	'set_accept_status',
-	'get_user_array',
-	'get_objects_from_module',
-	'email',
+	'get_user_array', 
+	'get_objects_from_module', 
+	'email', 
 	'get_full_list'
 );
 
@@ -63,7 +63,7 @@ function json_retrieve($request_id, $params) {
 	global $current_user;
 	global $beanFiles,$beanList;
     $json = getJSONobj();
-
+    
 	$record = $params[0]['record'];
 
 	require_once($beanFiles[$beanList[$params[0]['module']]]);
@@ -84,34 +84,34 @@ function json_query($request_id, $params) {
 	global $response, $sugar_config;
 	global $beanFiles, $beanList;
 	$json = getJSONobj();
-
+    
 	if($sugar_config['list_max_entries_per_page'] < 31)	// override query limits
 		$sugar_config['list_max_entries_per_page'] = 31;
 
 	$args = $params[0];
-
+	
 	//decode condition parameter values..
 	if(is_array($args['conditions'])) {
-		foreach($args['conditions'] as $key=>$condition)	{
+		foreach($args['conditions'] as $key=>$condition)	{		
 			if(!empty($condition['value'])) {
 				$where = $json->decode(utf8_encode($condition['value']));
 				// cn: bug 12693 - API change due to CSRF security changes.
 				$where = empty($where) ? $condition['value'] : $where;
 				$args['conditions'][$key]['value'] = $where;
-			}
+			}		
 		}
 	}
 
 	$list_return = array();
-
+	
 	if(! empty($args['module'])) {
 		$args['modules'] = array($args['module']);
 	}
-
+	
 	foreach($args['modules'] as $module) {
 		require_once($beanFiles[$beanList[$module]]);
 		$focus = new $beanList[$module];
-
+		
 		$query_orderby = '';
 		if(!empty($args['order'])) {
 			$query_orderby = $args['order'];
@@ -128,30 +128,30 @@ function json_query($request_id, $params) {
 			$list_return = array_merge($list_return,$curlist['list']);
 		}
 	}
-
+	
 	$app_list_strings = null;
 
 	for($i = 0;$i < count($list_return);$i++) {
 		if(isset($list_return[$i]->emailAddress) && is_object($list_return[$i]->emailAddress)) {
 			$list_return[$i]->emailAddress->handleLegacyRetrieve($list_return[$i]);
 		}
-
+		
 		$list_arr[$i]= array();
 		$list_arr[$i]['fields']= array();
 		$list_arr[$i]['module']= $list_return[$i]->object_name;
-
+		
 		foreach($args['field_list'] as $field) {
 			// handle enums
-			if(	(isset($list_return[$i]->field_name_map[$field]['type']) && $list_return[$i]->field_name_map[$field]['type'] == 'enum') ||
+			if(	(isset($list_return[$i]->field_name_map[$field]['type']) && $list_return[$i]->field_name_map[$field]['type'] == 'enum') || 
 				(isset($list_return[$i]->field_name_map[$field]['custom_type']) && $list_return[$i]->field_name_map[$field]['custom_type'] == 'enum')) {
-
+				
 				// get fields to match enum vals
 				if(empty($app_list_strings)) {
 					if(isset($_SESSION['authenticated_user_language']) && $_SESSION['authenticated_user_language'] != '') $current_language = $_SESSION['authenticated_user_language'];
 					else $current_language = $sugar_config['default_language'];
 					$app_list_strings = return_app_list_strings_language($current_language);
 				}
-
+				
 				// match enum vals to text vals in language pack for return
 				if(!empty($app_list_strings[$list_return[$i]->field_name_map[$field]['options']])) {
 					$list_return[$i]->$field = $app_list_strings[$list_return[$i]->field_name_map[$field]['options']][$list_return[$i]->$field];
@@ -175,12 +175,12 @@ function json_set_accept_status($request_id, $params) {
 	global $beanFiles,$beanList;
     $json = getJSONobj();
  	require_once($beanFiles[$beanList[$params[0]['module']]]);
-
+	
 	$focus = new $beanList[$params[0]['module']];
 	$focus->id = $params[0]['record'];
-
+	
 	$test = $focus->set_accept_status($current_user,$params[0]['accept_status']);
-
+	
 	$response = array();
 	$response['id'] = $request_id;
 	$response['result'] = array("status"=>"success","record"=>$params[0]['record'],'accept_status'=>$params[0]['accept_status']);
@@ -195,27 +195,27 @@ function json_set_accept_status($request_id, $params) {
 function json_get_user_array($request_id, $params) {
 	$json = getJSONobj();
     $args = $params[0];
-
+	
 	//decode condition parameter values..
 	if(is_array($args['conditions'])) {
-		foreach($args['conditions'] as $key=>$condition) {
+		foreach($args['conditions'] as $key=>$condition) {		
 			if(!empty($condition['value'])) {
 				$args['conditions'][$key]['value']=$json->decode($condition['value']);
 			}
 		}
 	}
-
+	
 	$response = array();
 	$response['id'] = $request_id;
 	$response['result'] = array();
 	$response['result']['list'] = array();
-
+	
 	if(showFullName()) {
 		$user_array = getUserArrayFromFullName($args['conditions'][0]['value']);
 	} else {
  		$user_array = get_user_array(false, "Active", $focus->assigned_user_id, false, $args['conditions'][0]['value']);
 	}
-
+	
 	foreach($user_array as $id=>$name) {
 		array_push($response['result']['list'], array('fields' => array('id' => $id, 'user_name' => $name), 'module' => 'Users'));
 	}
@@ -226,16 +226,16 @@ function json_get_user_array($request_id, $params) {
 function json_get_objects_from_module($request_id, $params) {
 	global $beanList, $beanFiles, $current_user;
     $json = getJSONobj();
-
+    
 	$module_name = $params[0]['module'];
 	$offset = intval($params[0]['offset']);
 	$where = $params[0]['where'];
 	$max = $params[0]['max'];
 	$order_by = $params[0]['order_by'];
     $using_cp = false;
-
+    
     if($module_name == 'CampaignProspects'){
-        $module_name = 'Prospects';
+        $module_name = 'Prospects';   
         $using_cp = true;
     }
 
@@ -259,7 +259,7 @@ function json_get_objects_from_module($request_id, $params) {
     }else{
 	  $response = $seed->get_list($order_by, $where, $offset,-1,$max,$deleted);
     }
-
+     
 	$list = $response['list'];
 	$row_count = $response['row_count'];
 
@@ -270,7 +270,7 @@ function json_get_objects_from_module($request_id, $params) {
 	}
 	$response = array();
 	$response['id'] = $request_id;
-
+   
 	$response['result'] = array('result_count'=>$row_count,'entry_list'=>$output_list);
 	$json_response = $json->encode($response, true);
 	print $json_response;
@@ -283,7 +283,7 @@ function json_email($request_id, $params) {
 	global $response, $sugar_config;
 	global $beanFiles,$beanList;
     $json = getJSONobj();
-
+    
 	$args = $params[0];
 
 	if($sugar_config['list_max_entries_per_page'] < 50)	// override query limits
@@ -298,7 +298,7 @@ function json_email($request_id, $params) {
 	foreach($args['modules'] as $module) {
 		require_once($beanFiles[$beanList[$module]]);
 		$focus = new $beanList[$module];
-
+	
 		$query_orderby = '';
 		if(!empty($args['order'])) {
 			$query_orderby = $args['order'];
@@ -309,7 +309,7 @@ function json_email($request_id, $params) {
 		}
 		$query_where = construct_where($args,$focus->table_name);
 		$list_arr = array();
-
+	
 		$curlist = $focus->get_list($query_orderby, $query_where, 0, $query_limit, -1, 0);
 		$list_return = array_merge($list_return,$curlist['list']);
 	}
@@ -318,7 +318,7 @@ function json_email($request_id, $params) {
 		$list_arr[$i]= array();
 		$list_arr[$i]['fields']= array();
 		$list_arr[$i]['module']= $list_return[$i]->object_name;
-
+	
 		foreach($args['field_list'] as $field) {
 			$list_arr[$i]['fields'][$field] = $list_return[$i]->$field;
 		}
@@ -340,17 +340,17 @@ function json_get_full_list($request_id, $params) {
 	$where = str_replace('\\','', rawurldecode($params[0]['where']));
 	$order = str_replace('\\','', rawurldecode($params[0]['order']));
 	$focus = new $beanList[$params[0]['module']];
-
+	
 	$fullList = $focus->get_full_list($order, $where, '');
 	$all_fields = array_merge($focus->column_fields,$focus->additional_column_fields);
 
 	$js_fields_arr = array();
 
 	if(isset($fullList) && !empty($fullList)) { // json error if this isn't defensive
-		$i=0;
+		$i=0; 
 		foreach($fullList as $note) {
 			$js_fields_arr[$i] = array();
-
+			
 			foreach($all_fields as $field) {
 				if(isset($note->$field)) {
 					$note->$field = from_html($note->$field);
@@ -362,11 +362,11 @@ function json_get_full_list($request_id, $params) {
 			$i++;
 		}
 	}
-
+	
 	$fin['id'] = $request_id;
 	$fin['result'] = $js_fields_arr;
 	$out = $json->encode($fin, true);
-
+	
 	print($out);
 }
 ////	END SUPPORTED METHODS
@@ -390,18 +390,18 @@ function meeting_retrieve($module,$record) {
 	require_once($beanFiles[$beanList[$module]]);
 	$focus = new $beanList[$module];
     $json = getJSONobj();
-
+    
 	if(empty($module) || empty($record))
 	{
 		$response['error'] = array("error_msg"=>"method: retrieve: missing module or record as parameters");
 		print $json->encode($response, true);
-
+		
 	}
 
 	$focus->retrieve($record);
-
+	
 	$GLOBALS['log']->debug("JSON_SERVER:retrieved meeting:");
-
+	
 	$module_arr = populateBean($focus);
 
 	if($module == 'Meetings')
@@ -438,7 +438,7 @@ function meeting_retrieve($module,$record) {
 
 // HAS MEETING SPECIFIC CODE:
 function populateBean(&$focus) {
-	$all_fields = $focus->column_fields;
+	$all_fields = $focus->list_fields;
 	// MEETING SPECIFIC
 	$all_fields = array_merge($all_fields,array('required','accept_status','name')); // need name field for contacts and users
 	//$all_fields = array_merge($focus->column_fields,$focus->additional_column_fields);
@@ -480,8 +480,8 @@ function getUserJSON() {
 
 function getUserConfigJSON() {
  require_once('include/TimeDate.php');
- $timedate = TimeDate::getInstance();
- global $current_user,$global_registry_var_name,$json,$sugar_config;
+ $td = new TimeDate();
+ global $current_user,$global_registry_var_name,$json,$_SESSION,$sugar_config;
 
  if(isset($_SESSION['authenticated_user_theme']) && $_SESSION['authenticated_user_theme'] != '')
  {
@@ -500,7 +500,11 @@ function getUserConfigJSON() {
  $user_arr['fields']['first_name'] = $current_user->first_name;
  $user_arr['fields']['last_name'] = $current_user->last_name;
  $user_arr['fields']['email'] = $current_user->email1;
- $user_arr['fields']['gmt_offset'] = $timedate->getUserUTCOffset();
+ $userTz = $td->getUserTimeZone();
+ $dstRange = $td->getDSTRange(date('Y'), $userTz);
+ $user_arr['fields']['dst_start'] = $dstRange['start'];
+ $user_arr['fields']['dst_end'] = $dstRange['end'];
+ $user_arr['fields']['gmt_offset'] = $userTz['gmtOffset'];
  $str = "\n".$global_registry_var_name.".current_user = ".$json->encode($user_arr, true).";\n";
 return $str;
 
@@ -564,7 +568,7 @@ function construct_where(&$query_obj, $table='',$module=null) {
 			$email1_condition = " {$table}id in ( SELECT  er.bean_id AS id FROM email_addr_bean_rel er, " .
 		         "email_addresses ea WHERE ea.id = er.email_address_id " .
 		         "AND ea.deleted = 0 AND er.deleted = 0 AND er.bean_module = '{$module}' AND email_address_caps LIKE '%{$email1_value}%' )";
-
+	             
 	         array_push($cond_arr,$email1_condition);
 		}
 		else {
@@ -582,26 +586,26 @@ function construct_where(&$query_obj, $table='',$module=null) {
 			}
 		}
 	}
-
+	
 	if($table == 'users.') {
 		$cond_arr[] = $table."status='Active'";
 	}
-
+	
 	return implode(" {$query_obj['group']} ",$cond_arr);
 }
 
 function getAppMetaJSON() {
 	global $global_registry_var_name, $sugar_config;
     $json = getJSONobj();
-
+    
 	$str = "\nvar ".$global_registry_var_name." = new Object();\n";
 	$str .= "\n".$global_registry_var_name.".config = {\"site_url\":\"".getJavascriptSiteURL()."\"};\n";
-
+	
 	$str .= $global_registry_var_name.".meta = new Object();\n";
 	$str .= $global_registry_var_name.".meta.modules = new Object();\n";
 	$modules_arr = array('Meetings','Calls');
 	$meta_modules = array();
-
+	
 	global $beanFiles,$beanList;
 	//header('Content-type: text/xml');
 	foreach($modules_arr as $module) {
@@ -610,7 +614,7 @@ function getAppMetaJSON() {
 		$meta_modules[$module] = array();
 		$meta_modules[$module]['field_defs'] = $focus->field_defs;
 	}
-
+	
 	$str .= $global_registry_var_name.".meta.modules.Meetings = ". $json->encode($meta_modules['Meetings'], true)."\n";
 	$str .= $global_registry_var_name.".meta.modules.Calls = ". $json->encode($meta_modules['Calls'], true)."\n";
 	return $str;
@@ -619,7 +623,7 @@ function getAppMetaJSON() {
 function getFocusData() {
 	global $global_registry_var_name;
     $json = getJSONobj();
-
+    
 	if(empty($_REQUEST['module']) )
 		return '';
 	elseif(empty($_REQUEST['record'] ) )
@@ -634,14 +638,14 @@ function getStringsJSON() {
 	global $current_language;
 	global $global_registry_var_name;
 	$json = getJSONobj();
-
+    
 	$currentModule = 'Calendar';
 	$mod_list_strings = return_mod_list_strings_language($current_language,$currentModule);
 	$str = "\n".$global_registry_var_name."['calendar_strings'] =	{\"dom_cal_month_long\":". $json->encode($mod_list_strings['dom_cal_month_long']).",\"dom_cal_weekdays_long\":". $json->encode($mod_list_strings['dom_cal_weekdays_long'])."}\n";
-
+	
 	if(empty($_REQUEST['module']))
 		$_REQUEST['module'] = 'Home';
-
+	
 	$currentModule = $_REQUEST['module'];
 	$mod_strings = return_module_language($current_language,$currentModule);
 	return $str . "\n".$global_registry_var_name."['meeting_strings'] =	". $json->encode($mod_strings, true)."\n";
@@ -685,15 +689,15 @@ $GLOBALS['log']->debug("JSON_SERVER: current_language:".$current_language);
 // if this is a get, than this is spitting out static javascript as if it was a file
 // wp: DO NOT USE THIS. Include the javascript inline using include/json_config.php
 // using <script src=json_server.php></script> does not cache properly on some browsers
-// resulting in 2 or more server hits per page load. Very bad for SSL.
+// resulting in 2 or more server hits per page load. Very bad for SSL. 
 if(strtolower($_SERVER['REQUEST_METHOD'])== 'get') {
 	echo "alert('DEPRECATED API\nPlease report as a bug.');";
 	/**
 	 * Deprecated for security reasons.
-	 *
+	 * 
 	 * DO NOT USE.
-	 *
-	 *
+	 * 
+	 * 
 	$current_user = authenticate();
 	if(empty($current_user)) {
 		$GLOBALS['log']->debug("JSON_SERVER: current_user isn't set");
@@ -703,14 +707,14 @@ if(strtolower($_SERVER['REQUEST_METHOD'])== 'get') {
 	$str = '';
 	$str .= getAppMetaJSON();
 	$GLOBALS['log']->debug("JSON_SERVER:getAppMetaJSON");
-
+	
 	if($_GET['module'] != '_configonly') {
 		$str .= getFocusData();
 		$GLOBALS['log']->debug("JSON_SERVER: getFocusData");
 		$str .= getStringsJSON();
 		$GLOBALS['log']->debug("JSON_SERVER:getStringsJSON");
 	}
-
+	
 	$str .= getUserConfigJSON();
 	$GLOBALS['log']->debug("JSON_SERVER:getUserConfigJSON");
 	print $str;
@@ -736,8 +740,8 @@ if(strtolower($_SERVER['REQUEST_METHOD'])== 'get') {
 		$request = $json->decode($GLOBALS['HTTP_RAW_POST_DATA'], true);
 	else
 		$request = $json->decode(file_get_contents("php://input"), true);
-
-
+	
+	
 	if(!is_array($request)) {
 		$response['error'] = array("error_msg"=>"malformed request");
 		print $json->encode($response, true);
@@ -748,7 +752,7 @@ if(strtolower($_SERVER['REQUEST_METHOD'])== 'get') {
 		$response['error'] = array("error_msg"=>"missing parameters");
 		print $json->encode($response, true);
 	}
-
+	
 	$response['id'] = $request['id'];
 
 	if(in_array($request['method'], $SUPPORTED_METHODS)) {

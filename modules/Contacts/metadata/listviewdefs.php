@@ -152,6 +152,9 @@ $listViewDefs['Contacts'] = array(
     'ALT_ADDRESS_COUNTRY' => array(
         'width' => '10', 
         'label' => 'LBL_ALT_ADDRESS_COUNTRY'),
+    'DATE_ENTERED' => array(
+        'width' => '10', 
+        'label' => 'LBL_DATE_ENTERED'),
     'CREATED_BY_NAME' => array(
         'width' => '10', 
         'label' => 'LBL_CREATED'),
@@ -171,9 +174,5 @@ $listViewDefs['Contacts'] = array(
         'default' => false,
         'sortable' => false,
         ),
-    'DATE_ENTERED' => array(
-        'width' => '10', 
-        'label' => 'LBL_DATE_ENTERED',
-		'default' => true)       
 );
 ?>

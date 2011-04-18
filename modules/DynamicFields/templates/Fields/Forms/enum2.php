@@ -51,9 +51,11 @@
  	} else if (isset($vardef['default'])){
  		$selected_options = $vardef['default'];
  	}
-
-    $edit_mod_strings = return_module_language($GLOBALS['current_language'], 'EditCustomFields');
-
+ 	
+ 	if(!isset($edit_mod_strings)){
+		$edit_mod_strings = return_module_language($GLOBALS['current_language'], 'EditCustomFields');
+	}
+	
 	if(!empty($_REQUEST['type']) && $_REQUEST['type'] == 'radioenum'){
 		$edit_mod_strings['LBL_DROP_DOWN_LIST'] = $edit_mod_strings['LBL_RADIO_FIELDS'];
 	}
@@ -93,7 +95,7 @@
     $selected_dropdown = '';
     if(!empty($vardef['options'])){
     	$selected_dropdown = $vardef['options'];
-
+ 		
     }
     $show = true;
 	if(!empty($_REQUEST['refresh_dropdown']))

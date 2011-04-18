@@ -40,15 +40,15 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 class component{
 	protected $_has_testing_enabled = false;
 	protected $_source;
-
+	
 	public function __construct() {}
-
+	
 	public function init() {}
-
+	
 	/**
 	 * fillBean
 	 * This function wraps the call to getItem, but takes an additional SugarBean argument
-	 * and loads the SugarBean's fields with the results as defined in the connector
+	 * and loads the SugarBean's fields with the results as defined in the connector 
 	 * loadBean configuration mapping
 	 *
 	 * @param $args Array of arguments to pass into getItem
@@ -65,7 +65,7 @@ class component{
 	    } else if(!empty($module) && ($bean = loadBean($module))) {
 	       return $this->fillBean($args, $module, $bean);
 	    } else {
-	       throw new Exception("Invalid bean");
+	       throw Exception();
 	    }
 	    return $result;
 	}
@@ -73,14 +73,14 @@ class component{
 	/**
 	 * fillBeans
 	 * This function wraps the call to getList, but takes an additional Array argument
-	 * and loads the SugarBean's fields with the results as defined in the connector
+	 * and loads the SugarBean's fields with the results as defined in the connector 
 	 * loadBean configuration mapping
 	 *
 	 * @param $args Array of arguments to pass into getItem
 	 * @param $module String value of the module to map bean to
 	 * @param $bean Array to load SugarBean intances into
 	 * @throws Exception Thrown if errors are found
-	 */
+	 */	
 	public function fillBeans($args=array(), $module=null, $beans=array()) {
 		$results = array();
 		$args = $this->mapInput($args, $module);
@@ -88,12 +88,12 @@ class component{
 		   $GLOBALS['log']->fatal($GLOBALS['app_strings']['ERR_MISSING_MAPPING_ENTRY_FORM_MODULE']);
 		   throw new Exception($GLOBALS['app_strings']['ERR_MISSING_MAPPING_ENTRY_FORM_MODULE']);
 		}
-
-
+		
+		
 		require_once('include/connectors/filters/FilterFactory.php');
 		$filter = FilterFactory::getInstance(get_class($this->_source));
 		$list = $filter->getList($args, $module);
-
+		
 		if(!empty($list)) {
 			$resultSize = count($list);
 			if(!empty($beans)) {
@@ -101,12 +101,12 @@ class component{
 			   	  throw new Exception($GLOBALS['app_strings']['ERR_CONNECTOR_FILL_BEANS_SIZE_MISMATCH']);
 			   }
 			} else {
-
+			   
 			   for($x=0; $x < $resultSize; $x++) {
 			   	   $beans[$x] = loadBean($module);
 			   }
 			}
-
+			
 		    $keys = array_keys($beans);
 			$count = 0;
 			foreach($list as $entry) {
@@ -119,14 +119,14 @@ class component{
 			   	   $results[] = $this->mapOutput($beans[$keys[$count]], $entry);
 			   	   $count++;
 			}
-
+			
 			$field_defs = $this->getFieldDefs();
 		    $map = $this->getMapping();
 			$hasOptions = !empty($map['options']) ? true : false;
 			if($hasOptions) {
 			   $options = $map['options'];
 			   $optionFields = array();
-
+			   
 			   foreach($field_defs as $name=>$field) {
 			   	       if(!empty($field['options']) && !empty($map['options'][$field['options']]) && !empty($map['beans'][$module][$name])) {
 			   	       	  $optionFields[$name] = $map['beans'][$module][$name];
@@ -136,48 +136,48 @@ class component{
 			   foreach($results as $key=>$bean) {
 			   	   foreach($optionFields as $sourceField=>$sugarField) {
 			   	   	       $options_map = $options[$field_defs[$sourceField]['options']];
-			   	   	       $results[$key]->$sugarField =  !empty($options_map[$results[$key]->$sugarField]) ? $options_map[$results[$key]->$sugarField] : $results[$key]->$sugarField;
+			   	   	       $results[$key]->$sugarField =  !empty($options_map[$results[$key]->$sugarField]) ? $options_map[$results[$key]->$sugarField] : $results[$key]->$sugarField; 
 			   	   }
 			   } //foreach
 			}
 		}
-
+	
 		return $results;
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Obtain a list of items
 	 *
 	 * @param string $module ideally this method should return a list of beans of type $module.
 	 * @param Mixed $args this represents the 'query' on the data source.
 	 */
-
-
+ 	
+ 	
  	/**
  	 * Given a bean, persist it to a data source
  	 *
  	 * @param SugarBean $bean
  	 */
  	public function save($bean){}
-
-
+ 	
+ 	
  	/**
  	 * getConfig
  	 * Returns the configuration Array as definied in the config.php file
- 	 *
+ 	 * 
  	 * @return $config Array of the configuration mappings as defined in config.php
  	 */
 	public function getConfig(){
  		return $this->_source->getConfig;
  	}
-
-
+ 	
+ 	
  	public function getFieldDefs() {
  		return $this->_source->getFieldDefs();
  	}
-
+ 	
  	/**
  	 * setConfig
  	 * Used by the Factories to set the config on the corresponding object
@@ -191,7 +191,7 @@ class component{
 	public function setConfig($config){
  		$this->_source->setConfig($config);
  	}
-
+ 	
  	/**
  	 * mapInput
  	 */
@@ -207,7 +207,7 @@ class component{
  			if(!empty($mapping[$arg]) || !empty($field_defs[$arg])) {
  				if(!empty($mapping[$arg])){
  					$arg = $mapping[$arg];
- 				}
+ 				}			
 				if(!empty($field_defs[$arg]['input'])){
 					$in_field = $field_defs[$arg]['input'];
 					$temp = explode('.', $in_field);
@@ -224,18 +224,18 @@ class component{
 		} //foreach
 		return $input_params;
  	}
-
+ 	
  	public function mapOutput($bean, $result){
  		if(is_object($bean)) {
  			$map = $this->getMapping();
  			$mapping = $map['beans'][$bean->module_dir];
-
+ 			
  		    //Check for situation where nothing was mapped or the only field mapped was id
  			if(empty($mapping) || (count($mapping) == 1 && isset($mapping['id']))) {
  			   $GLOBALS['log']->error($GLOBALS['mod_strings']['ERROR_NO_DISPLAYABLE_MAPPED_FIELDS']);
  			   throw new Exception($GLOBALS['mod_strings']['ERROR_NO_DISPLAYABLE_MAPPED_FIELDS']);
- 			}
-
+ 			} 			
+ 			
  			$mapped = array();
  			if(!empty($mapping)) {
 		 		foreach($mapping as $source_field => $sugar_field){
@@ -249,11 +249,11 @@ class component{
  					}
  				}
  			}
-
+ 			
  			//set the data_source_id field which contain the unique id for the source
  			$source_field = 'id';
  			$bean->data_source_id = $this->getFieldValue($bean, $result, $source_field);
-
+ 			
  			//now let's check for any fields that have not been mapped which may be required
  			$required_fields = $this->_source->getFieldsWithParams('required', true);
  			if(!empty($required_fields)){
@@ -263,7 +263,7 @@ class component{
  					}
  				}
  			}
-
+ 			
 	 		return $bean;
  		}
  		return $bean;
@@ -275,7 +275,7 @@ class component{
 		if(!empty($def['output'])){
 	 		$out_field = $def['output'];
 	 	}
-
+	 	
  		$value = SugarArray::staticGet($result, $out_field);
 
 		if(is_array($def)){
@@ -292,28 +292,28 @@ class component{
 		 }
 		 return $value;
  	}
-
+ 	
  	public function saveConfig($persister=null) {
  		$this->_source->saveConfig($persister);
  	}
-
+ 	
  	public function loadConfig($persister=null) {
 		$this->_source->loadConfig($persister);
  	}
-
+ 	
  	public function setMapping($map=array()) {
  		$this->_source->setMapping($map);
  	}
-
+ 	
  	public function getMapping() {
  		return $this->_source->getMapping();
  	}
-
+ 	
 	public function getModuleMapping($module) {
  		$map = $this->getMapping();
 		return !empty($map['beans'][$module]) ? $map['beans'][$module] : array();
- 	}
-
+ 	}	
+ 	
  	public function getModuleFieldDef($module, $field){
  		$map = $this->getMapping();
  		$field_defs = $this->getFieldDefs();
@@ -332,13 +332,13 @@ class component{
  				return $field;
  		}
  	}
-
+ 	
  	public function getSource(){
  		return $this->_source;
  	}
-
+ 	
  	public function setSource($source){
  		$this->_source = $source;
- 	}
+ 	}	
 }
 ?>

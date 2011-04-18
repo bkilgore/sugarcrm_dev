@@ -43,12 +43,12 @@ class ProjectViewTemplatesDetail extends ViewDetail
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
     	return array(
-    	   $this->_getModuleTitleListParam($browserTitle),
+    	   $this->_getModuleTitleListParam(),
     	   "<a href='index.php?module=Project&action=EditView&record={$this->bean->id}'>{$this->bean->name}</a>",
     	   $mod_strings['LBL_PROJECT_TEMPLATE']
     	   );

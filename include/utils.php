@@ -42,6 +42,7 @@
  * Contributor(s): ______________________________________..
  ********************************************************************************/
 require_once('include/SugarObjects/SugarConfig.php');
+require_once('include/utils/external_cache.php');
 require_once('include/utils/security_utils.php');
 
 
@@ -107,7 +108,6 @@ function make_sugar_config(&$sugar_config)
 	'cache_dir' => empty($cache_dir) ? 'cache/' : $cache_dir,
 	'calculate_response_time' => empty($calculate_response_time) ? true : $calculate_response_time,
 	'create_default_user' => empty($create_default_user) ? false : $create_default_user,
-	'chartEngine' => 'Jit',
 	'date_formats' => empty($dateFormats) ? array(
 	'Y-m-d'=>'2010-12-23',
 	'd-m-Y' => '23-12-2010',
@@ -189,7 +189,6 @@ function make_sugar_config(&$sugar_config)
 	'default_swap_last_viewed' => empty($swap_last_viewed) ? false : $swap_last_viewed,
 	'default_swap_shortcuts' => empty($swap_shortcuts) ? false : $swap_shortcuts,
 	'default_navigation_paradigm' => empty($navigation_paradigm) ? 'gm' : $navigation_paradigm,
-    'default_call_status' => 'Planned',
 	'js_lang_version' => 1,
 	'passwordsetting' => empty($passwordsetting) ? array (
 	    'SystemGeneratedPasswordON' => '',
@@ -204,6 +203,7 @@ function make_sugar_config(&$sugar_config)
 	    'systexpirationtype' => '0',
 	    'systexpirationlogin' => '',
 		) : $passwordsetting,
+
 	);
 }
 
@@ -221,7 +221,6 @@ function get_sugar_config_defaults() {
 	'cache_dir' => 'cache/',
 	'calculate_response_time' => true,
 	'create_default_user' => false,
- 	'chartEngine' => 'Jit',
 	'date_formats' => array (
 	'Y-m-d' => '2010-12-23', 'm-d-Y' => '12-23-2010', 'd-m-Y' => '23-12-2010',
 	'Y/m/d' => '2010/12/23', 'm/d/Y' => '12/23/2010', 'd/m/Y' => '23/12/2010',
@@ -302,7 +301,7 @@ function get_sugar_config_defaults() {
 	'asp', 'cfm', 'js', 'vbs', 'html', 'htm' ),
 	'upload_maxsize' => 3000000,
 	'import_max_execution_time' => 3600,
-//	'use_php_code_json' => returnPhpJsonStatus(),
+	'use_php_code_json' => returnPhpJsonStatus(),
 	'verify_client_ip' => true,
 	'js_custom_version' => '',
 	'js_lang_version' => 1,
@@ -488,21 +487,8 @@ function return_name($row, $first_column, $last_column)
 function get_languages()
 {
 	global $sugar_config;
-	$lang = $sugar_config['languages'];
-    if(!empty($sugar_config['disabled_languages'])){
-        foreach(explode(',', $sugar_config['disabled_languages']) as $disable) {
-            unset($lang[$disable]);
-        }
-    }
-	return $lang;
-}
-
-function get_all_languages()
-{
-	global $sugar_config;
 	return $sugar_config['languages'];
 }
-
 
 function get_language_display($key)
 {
@@ -609,7 +595,7 @@ function get_user_array($add_blank=true, $status="Active", $assigned_user="", $u
  * @param args string where clause entry
  * @return array Array of Users' details that match passed criteria
  */
-function getUserArrayFromFullName($args, $hide_portal_users = false) {
+function getUserArrayFromFullName($args) {
 	global $locale;
 	$db = DBManagerFactory::getInstance();
 
@@ -632,9 +618,6 @@ function getUserArrayFromFullName($args, $hide_portal_users = false) {
 	}
 
 	$query  = "SELECT id, first_name, last_name, user_name FROM users WHERE status='Active' AND deleted=0 AND ";
-	if ( $hide_portal_users ) {
-	    $query .= " portal_only=0 AND ";
-	}
 	$query .= $inClause;
 	$query .= " ORDER BY last_name ASC";
 
@@ -704,13 +687,13 @@ function safe_map_named($request_var, & $focus, $member_var, $always_copy)
 	}
 }
 
-/**
+/** 
  * This function retrieves an application language file and returns the array of strings included in the $app_list_strings var.
- *
+ * 
  * @param string $language specific language to load
  * @return array lang strings
  */
-function return_app_list_strings_language($language)
+function return_app_list_strings_language($language) 
 {
 	global $app_list_strings;
 	global $sugar_config;
@@ -726,7 +709,7 @@ function return_app_list_strings_language($language)
 
 	$default_language = $sugar_config['default_language'];
 	$temp_app_list_strings = $app_list_strings;
-
+	
 	$langs = array();
 	if ($language != 'en_us') {
 	    $langs[] = 'en_us';
@@ -735,9 +718,9 @@ function return_app_list_strings_language($language)
 	    $langs[] = $default_language;
 	}
 	$langs[] = $language;
-
+	
 	$app_list_strings_array = array();
-
+	
 	foreach ( $langs as $lang ) {
 	    $app_list_strings = array();
 	    if(file_exists("include/language/$lang.lang.php")) {
@@ -752,14 +735,14 @@ function return_app_list_strings_language($language)
             include("include/language/$lang.lang.php.override");
             $GLOBALS['log']->info("Found override language file: $lang.lang.php.override");
         }
-        
+
         $app_list_strings_array[] = $app_list_strings;
     }
-    
-    $app_list_strings = array();
-    foreach ( $app_list_strings_array as $app_list_strings_item ) {
-        $app_list_strings = sugarArrayMerge($app_list_strings, $app_list_strings_item);
-    }
+
+  	$app_list_strings = array();
+  	foreach ( $app_list_strings_array as $app_list_strings_item ) {
+  	    $app_list_strings = sugarArrayMerge($app_list_strings, $app_list_strings_item);
+  	} 	
 
     foreach ( $langs as $lang ) {
         if(file_exists("custom/application/Ext/Language/$lang.lang.ext.php")) {
@@ -813,13 +796,13 @@ function _mergeCustomAppListStrings($file , $app_list_strings){
    return $app_list_strings;
 }
 
-/**
+/** 
  * This function retrieves an application language file and returns the array of strings included.
- *
+ * 
  * @param string $language specific language to load
  * @return array lang strings
  */
-function return_application_language($language)
+function return_application_language($language) 
 {
 	global $app_strings, $sugar_config;
 
@@ -842,11 +825,10 @@ function return_application_language($language)
 	if ($default_language != 'en_us' && $language != $default_language) {
 	    $langs[] = $default_language;
 	}
-
 	$langs[] = $language;
-
+	
 	$app_strings_array = array();
-
+	
 	foreach ( $langs as $lang ) {
 	    $app_strings = array();
 	    if(file_exists("include/language/$lang.lang.php")) {
@@ -876,7 +858,7 @@ function return_application_language($language)
     foreach ( $app_strings_array as $app_strings_item ) {
         $app_strings = sugarArrayMerge($app_strings, $app_strings_item);
     }
-
+	
 	if(!isset($app_strings)) {
 		$GLOBALS['log']->fatal("Unable to load the application language strings");
 		return null;
@@ -901,19 +883,19 @@ function return_application_language($language)
 	$app_strings = $temp_app_strings;
 
 	sugar_cache_put($cache_key, $return_value);
-
+	
 	return $return_value;
 }
 
-/**
+/** 
  * This function retrieves a module's language file and returns the array of strings included.
- *
+ * 
  * @param string $language specific language to load
  * @param string $module module name to load strings for
  * @param bool $refresh optional, true if you want to rebuild the language strings
  * @return array lang strings
  */
-function return_module_language($language, $module, $refresh=false)
+function return_module_language($language, $module, $refresh=false) 
 {
 	global $mod_strings;
 	global $sugar_config;
@@ -924,14 +906,6 @@ function return_module_language($language, $module, $refresh=false)
 		$stack  = debug_backtrace();
 		$GLOBALS['log']->warn("Variable module is not in return_module_language ". var_export($stack, true));
 		return array();
-	}
-
-	$cache_key = "mod_strings_lang.".$language.$module;
-	// Check for cached value
-	$cache_entry = sugar_cache_retrieve($cache_key);
-	if(!empty($cache_entry))
-	{
-		return $cache_entry;
 	}
 
 	// Store the current mod strings for later
@@ -963,7 +937,7 @@ function return_module_language($language, $module, $refresh=false)
             LanguageManager::loadModuleLanguage($module, $sugar_config['default_language'],$refresh),
                 $loaded_mod_strings
             );
-
+     
     // Load in en_us strings by default
     if($language != 'en_us' && $sugar_config['default_language'] != 'en_us')
         $loaded_mod_strings = sugarArrayMerge(
@@ -985,7 +959,6 @@ function return_module_language($language, $module, $refresh=false)
 	else
 		$mod_strings = $temp_mod_strings;
 
-    sugar_cache_put($cache_key, $return_value);
 	return $return_value;
 }
 
@@ -1546,7 +1519,7 @@ function array_csort() {
  * Contributor(s): ______________________________________..
  */
 function parse_calendardate($local_format) {
-	preg_match('/\(?([^-]{1})[^-]*-([^-]{1})[^-]*-([^-]{1})[^-]*\)/', $local_format, $matches);
+	preg_match("/\(?([^-]{1})[^-]*-([^-]{1})[^-]*-([^-]{1})[^-]*\)/", $local_format, $matches);
 	$calendar_format = "%" . $matches[1] . "-%" . $matches[2] . "-%" . $matches[3];
 	return str_replace(array("y", "ￄ1�7", "a", "j"), array("Y", "Y", "Y", "d"), $calendar_format);
 }
@@ -1671,23 +1644,6 @@ function getDefaultXssTags() {
 }
 
 /**
- * Remove potential xss vectors from strings
- * @param string str String to search for XSS attack vectors
- * @param bool cleanImg Flag to allow <img> tags to survive - only used by InboundEmail for inline images.
- * @return string
- */
-function remove_xss($str, $cleanImg=true)
-{
-    $potentials = clean_xss($str, $cleanImg);
-    if(is_array($potentials) && !empty($potentials)) {
-        foreach($potentials as $bad) {
-            $str = str_replace($bad, "", $str);
-        }
-    }
-    return $str;
-}
-
-/**
  * Detects typical XSS attack patterns
  * @param string str String to search for XSS attack vectors
  * @param bool cleanImg Flag to allow <img> tags to survive - only used by InboundEmail for inline images.
@@ -1714,12 +1670,12 @@ function clean_xss($str, $cleanImg=true) {
 	// cn: bug 13079 - "on\w" matched too many non-events (cONTact, strONG, etc.)
 	$jsEvents  = "onblur|onfocus|oncontextmenu|onresize|onscroll|onunload|ondblclick|onclick|";
 	$jsEvents .= "onmouseup|onmouseover|onmousedown|onmouseenter|onmouseleave|onmousemove|onload|onchange|";
-	$jsEvents .= "onreset|onselect|onsubmit|onkeydown|onkeypress|onkeyup|onabort|onerror|ondragdrop";
+	$jsEvents .= "onreset|onselect|onsubmit|onkeydown|onkeypress|onkeyup|onabort|onerror";
 
-	$attribute_regex	= "#<[^/>][^>]+({$jsEvents})[^=>]*=[^>]*>#sim";
+	$attribute_regex	= "#<[^/>][^>]+({$jsEvents}\w+)[^=>]*=[^>]*>#sim";
 	$javascript_regex	= '@<[^/>][^>]+(expression\(|j\W*a\W*v\W*a|v\W*b\W*s\W*c\W*r|&#|/\*|\*/)[^>]*>@sim';
 	$imgsrc_regex		= '#<[^>]+src[^=]*=([^>]*?http://[^>]*)>#sim';
-	$css_url			= '#url\(.*\.\w+\)#';
+	$css_url			= "#url\(.*\.\w+\)#";
 
 
 	$str = str_replace("\t", "", $str);
@@ -1779,16 +1735,16 @@ function clean_string($str, $filter = "STANDARD") {
 	global  $sugar_config;
 
 	$filters = Array(
-	"STANDARD"        => '#[^A-Z0-9\-_\.\@]#i',
-	"STANDARDSPACE"   => '#[^A-Z0-9\-_\.\@\ ]#i',
-	"FILE"            => '#[^A-Z0-9\-_\.]#i',
-	"NUMBER"          => '#[^0-9\-]#i',
-	"SQL_COLUMN_LIST" => '#[^A-Z0-9,_\.]#i',
-	"PATH_NO_URL"     => '#://#i',
-	"SAFED_GET"		  => '#[^A-Z0-9\@\=\&\?\.\/\-_~]#i', /* range of allowed characters in a GET string */
+	"STANDARD"        => "#[^A-Z0-9\-_\.\@]#i",
+	"STANDARDSPACE"   => "#[^A-Z0-9\-_\.\@\ ]#i",
+	"FILE"            => "#[^A-Z0-9\-_\.]#i",
+	"NUMBER"          => "#[^0-9\-]#i",
+	"SQL_COLUMN_LIST" => "#[^A-Z0-9,_\.]#i",
+	"PATH_NO_URL"     => "#://#i",
+	"SAFED_GET"		  => "#[^A-Z0-9\@\=\&\?\.\/\-_~]#i", /* range of allowed characters in a GET string */
 	"UNIFIED_SEARCH"	=> "#[\\x00]#", /* cn: bug 3356 & 9236 - MBCS search strings */
-	"AUTO_INCREMENT"	=> '#[^0-9\-,\ ]#i',
-	"ALPHANUM"        => '#[^A-Z0-9\-]#i',
+	"AUTO_INCREMENT"	=> "#[^0-9\-,\ ]#i",
+	"ALPHANUM"        => "#[^A-Z0-9\-]#i",
 	);
 
 	if (preg_match($filters[$filter], $str)) {
@@ -2226,8 +2182,7 @@ function get_bean_select_array($add_blank=true, $bean_name, $display_columns, $w
 
 		$db = DBManagerFactory::getInstance();
 		$temp_result = Array();
-		$query = "SELECT id, {$display_columns} as display from {$focus->table_name} ";
-		$query .= "where ";
+		$query = "SELECT id, {$display_columns} as display from {$focus->table_name} where ";
 		if ( $where != '')
 		{
 			$query .= $where." AND ";
@@ -2379,7 +2334,7 @@ function js_escape($str, $keep=true){
 }
 
 function br2nl($str) {
-	$regex = "#<[^>]+br.+?>#i";
+	$regex = "#<[^>]+br.+?>#";
 	preg_match_all($regex, $str, $matches);
 
 	foreach($matches[0] as $match) {
@@ -2390,7 +2345,7 @@ function br2nl($str) {
 	$str = str_replace("\r\n", "\n", $str); // make from windows-returns, *nix-returns
 	$str = str_replace("\n\r", "\n", $str); // make from windows-returns, *nix-returns
 	$str = str_replace("\r", "\n", $str); // make from windows-returns, *nix-returns
-	$str = str_ireplace($brs, "\n", $str); // to retrieve it
+	$str = str_replace($brs, "\n", $str); // to retrieve it
 
 	return $str;
 }
@@ -2630,7 +2585,6 @@ function sugar_cleanup($exit = false) {
 	set_include_path(realpath(dirname(__FILE__) . '/..') . PATH_SEPARATOR . get_include_path());
 	chdir(realpath(dirname(__FILE__) . '/..'));
 	global $sugar_config;
-	require_once('include/utils/LogicHook.php');
 	LogicHook::initialize();
 	$GLOBALS['logic_hook']->call_custom_logic('', 'server_round_trip');
 
@@ -2650,24 +2604,24 @@ function sugar_cleanup($exit = false) {
 	}
 
 	//check to see if this is not an ajax call AND the user preference error flag is set
-	if(
+	if( 
 		(isset($_SESSION['USER_PREFRENCE_ERRORS']) && $_SESSION['USER_PREFRENCE_ERRORS'])
-		&& ($_REQUEST['action']!='modulelistmenu' && $_REQUEST['action']!='DynamicAction')
-		&& (empty($_REQUEST['to_pdf']) || !$_REQUEST['to_pdf'] )
-		&& (empty($_REQUEST['sugar_body_only']) || !$_REQUEST['sugar_body_only'] )
-
+		&& ($_REQUEST['action']!='modulelistmenu' && $_REQUEST['action']!='DynamicAction') 
+		&& (empty($_REQUEST['to_pdf']) || !$_REQUEST['to_pdf'] )  
+		&& (empty($_REQUEST['sugar_body_only']) || !$_REQUEST['sugar_body_only'] ) 
+		
 	){
 		global $app_strings;
 		//this is not an ajax call and the user preference error flag is set, so reset the flag and print js to flash message
 		$err_mess = $app_strings['ERROR_USER_PREFS'];
 		$_SESSION['USER_PREFRENCE_ERRORS'] = false;
-		echo "
+		echo " 
 		<script>
 			ajaxStatus.flashStatus('$err_mess',7000);
-		</script>";
-
-	}
-
+		</script>";				
+		
+	}	
+	
 	pre_login_check();
 	if(class_exists('DBManagerFactory')) {
 		$db = DBManagerFactory::getInstance();
@@ -2995,9 +2949,30 @@ function is_writable_windows($file) {
 /**
  * best guesses Timezone based on webserver's TZ settings
  */
-function lookupTimezone($userOffset = 0)
-{
-    return TimeDate::guessTimezone($userOffset);
+function lookupTimezone($userOffset = 0){
+	require_once('include/timezone/timezones.php');
+
+	$defaultZones= array('America/New_York'=>1, 'America/Los_Angeles'=>1,'America/Chicago'=>1, 'America/Denver'=>1,'America/Anchorage'=>1, 'America/Phoenix'=>1, 'Europe/Amsterdam'=>1,'Europe/Athens'=>1,'Europe/London'=>1, 'Australia/Sydney'=>1, 'Australia/Perth'=>1);
+	global $timezones;
+	$serverOffset = date('Z');
+	if(date('I')) {
+		$serverOffset -= 3600;
+	}
+	if(!is_int($userOffset)) {
+		return '';
+	}
+	$gmtOffset = $serverOffset/60 + $userOffset * 60;
+	$selectedZone = ' ';
+	foreach($timezones as $zoneName=>$zone) {
+
+		if($zone['gmtOffset'] == $gmtOffset) {
+			$selectedZone = $zoneName;
+		}
+		if(!empty($defaultZones[$selectedZone]) ) {
+			return $selectedZone;
+		}
+	}
+	return $selectedZone;
 }
 
 function convert_module_to_singular($module_array){
@@ -3421,9 +3396,16 @@ function sugarArrayMergeRecursive($gimp, $dom) {
  * @return bool True if NOT found or WRONG version
  */
 function returnPhpJsonStatus() {
+	$goodVersions = array('1.1.1',);
+
 	if(function_exists('json_encode')) {
 		$phpInfo = getPhpInfo(8);
-        return version_compare($phpInfo['json']['json version'], '1.1.1', '<');
+
+		if(!in_array($phpInfo['json']['json version'], $goodVersions)) {
+			return true; // bad version found
+		} else {
+			return false; // all requirements met
+		}
 	}
 	return true; // not found
 }
@@ -3443,7 +3425,6 @@ function getTrackerSubstring($name) {
 	static $max_tracker_item_length;
 
 	//Trim the name
-	$name = html_entity_decode($name, ENT_QUOTES, 'UTF-8');
 	$strlen = function_exists('mb_strlen') ? mb_strlen($name) : strlen($name);
 
 	global $sugar_config;
@@ -3637,7 +3618,8 @@ function createGroupUser($name) {
 	$group->is_group	= 1;
 	$group->deleted		= 0;
 	$group->status		= 'Active'; // cn: bug 6711
-	$group->setPreference('timezone', TimeDate::userTimezone());
+	$timezone = lookupTimezone();
+	$group->setPreference('timezone', $timezone);
 	$group->save();
 
 	return $group->id;
@@ -4169,24 +4151,5 @@ function sugar_microtime()
 	$now = explode(' ', microtime());
 	$unique_id = $now[1].str_replace('.', '', $now[0]);
 	return $unique_id;
-}
-
-/**
- * Extract urls from a piece of text
- * @param  $string
- * @return array of urls found in $string
- */
-function getUrls($string)
-{
-	$lines = explode("<br>", trim($string));
-	$urls = array();
-	foreach($lines as $line){
-    	$regex = '/http?\:\/\/[^\" ]+/i';
-    	preg_match_all($regex, $line, $matches);
-    	foreach($matches[0] as $match){
-    		$urls[] = $match;
-    	}
-	}
-    return $urls;
 }
 ?>

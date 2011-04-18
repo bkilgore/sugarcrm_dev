@@ -71,8 +71,7 @@ $focus = new User();
 $focus->retrieve($_POST['record']);
 
 // Flag to determine whether to save a new password or not.
-// Bug 43241 - Changed $focus->id to $focus->user_name to make sure that a system generated password is made when converting employee to user
-if(empty($focus->user_name)) $newUser = true;
+if(empty($focus->id)) $newUser = true;
 else $newUser = false;
 	
 

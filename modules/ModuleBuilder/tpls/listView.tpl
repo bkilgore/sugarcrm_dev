@@ -98,31 +98,23 @@ studiotabs.reset();
             {/if}
             </td>
             <td></td>
-            <td align="right" class="editIcon">
-                {* BEGIN SUGARCRM flav=pro ONLY *}
-                {if isset($field_defs.$key.calculated) && $field_defs.$key.calculated}
-                    <img src="{sugar_getimagepath file='SugarLogic/icon_calculated.png'}" />
-                {/if}
-                {if isset($field_defs.$key.dependency) && $field_defs.$key.dependency}
-                    <img src="{sugar_getimagepath file='SugarLogic/icon_dependent.png'}" />
-                {/if}
-                {* END SUGARCRM flav=pro ONLY *}
+            <td align="right">
                 <img src="{sugar_getimagepath file='edit_inline.gif'}" style="cursor: pointer;"
 				onclick="var value_label = document.getElementById('subslot{$modCounter}label').innerHTML.replace(/^\s+|\s+$/g,''); 
 				    {if !($view|substr:-6 == "search") }
 					var value_width = document.getElementById('subslot{$modCounter}width').innerHTML;
 					{/if}
-					ModuleBuilder.getContent('module=ModuleBuilder&action=editProperty&view_module={$view_module|escape:'url'}'+
-							'{if isset($subpanel)}&subpanel={$subpanel|escape:'url'}{/if}'+
-							'{if $MB}&MB={$MB|escape:'url'}&view_package={$view_package|escape:'url'}{/if}'+
+					ModuleBuilder.getContent('module=ModuleBuilder&action=editProperty&view_module={$view_module}'+
+							'{if isset($subpanel)}&subpanel={$subpanel}{/if}'+
+							'{if $MB}&MB={$MB}&view_package={$view_package}{/if}'+
 							'&id_label=subslot{$modCounter}label'+
 							'&name_label=label_'+
-							  '{if isset($value.label)}{$value.label|escape:'url'}'+
-							  '{elseif !empty($value.vname)}{$value.vname|escape:'url'}'+
-							  '{else}{$key|escape:'url'}{/if}'+
-							'&title_label={$MOD.LBL_LABEL_TITLE}&value_label=' + encodeURIComponent(value_label)
+							  '{if isset($value.label)}{$value.label}'+
+							  '{elseif !empty($value.vname)}{$value.vname}'+
+							  '{else}{$key}{/if}'+
+							'&title_label={$MOD.LBL_LABEL_TITLE}&value_label=' + value_label
 							{if ($view|substr:-6 != "search") }
-							+ '&id_width=subslot{$modCounter}width&name_width={$MOD.LBL_WIDTH|escape:'url'}&value_width=' + encodeURIComponent(value_width)
+							+ '&id_width=subslot{$modCounter}width&name_width={$MOD.LBL_WIDTH}&value_width=' + value_width
 							{/if}
 					);"
 				>
@@ -130,7 +122,7 @@ studiotabs.reset();
             </tr>
             <tr class='fieldValue'>
                 {if empty($hideKeys)}<td>[{$key}]</td>{/if}
-                <td align="right" colspan="2" class="percentage">
+                <td align="right" colspan="2">
 					{if $view|substr:-6 == "search" }
 					<span style="display:none" id='subslot{$modCounter}width'>{$value.width}</span>	<span style="display:none">%</span>
 					{else}

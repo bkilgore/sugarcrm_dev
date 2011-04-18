@@ -45,7 +45,7 @@ global $currentModule;
 global $gridline;
 
 
-echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_UPGRADE_TITLE']), false);
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_UPGRADE_TITLE'], true);
 $str1="";
 if ($GLOBALS['db']->dbType=='oci8') {
 	

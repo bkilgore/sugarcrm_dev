@@ -108,13 +108,6 @@
               &nbsp;{$MOD.LBL_ACT}</td>
           </tr>
           {/if}
-          {foreach from=$custom_mappings item=item name=custommappings}
-          {capture assign=mapping_label}{$MOD.LBL_CUSTOM_MAPPING_}{$item|upper}{/capture}
-          <tr>
-            <td colspan="3" scope="row"><input class="radio" type="radio" name="source" value="{$item}" />
-              &nbsp;{$mapping_label}</td>
-          </tr>
-          {/foreach}
           {foreach from=$custom_imports key=key item=item name=saved}
           {if $smarty.foreach.saved.first}
           <tr>

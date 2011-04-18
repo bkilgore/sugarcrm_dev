@@ -46,30 +46,30 @@ $ACLbeanList=$beanList;
 
 
 if(is_admin($current_user)){
-    foreach($ACLbeanList as $module=>$class){
+	foreach($ACLbeanList as $module=>$class){
 
-        if(empty($installed_classes[$class]) && isset($beanFiles[$class]) && file_exists($beanFiles[$class])){
-            if($class == 'Tracker'){
-            } else {
-                require_once($beanFiles[$class]);
-                $mod = new $class();
-                $GLOBALS['log']->debug("DOING: $class");
-                if($mod->bean_implements('ACL') && empty($mod->acl_display_only)){
-                    // BUG 10339: do not display messages for upgrade wizard
-                    if(!isset($_REQUEST['upgradeWizard'])){
-                        echo translate('LBL_ADDING','ACL','') . $mod->module_dir . '<br>';
-                    }
-                    if(!empty($mod->acltype)){
-                        ACLAction::addActions($mod->getACLCategory(), $mod->acltype);
-                    }else{
-                        ACLAction::addActions($mod->getACLCategory());
-                    }
-
-                    $installed_classes[$class] = true;
-                }
-            }
-        }
-    }
+		if(empty($installed_classes[$class]) && isset($beanFiles[$class]) && file_exists($beanFiles[$class])){
+			if($class == 'Tracker'){
+			} else {
+				require_once($beanFiles[$class]);
+				$mod = new $class();
+				if($mod->bean_implements('ACL') && empty($mod->acl_display_only)){
+					// BUG 10339: do not display messages for upgrade wizard
+					if(!isset($_REQUEST['upgradeWizard'])){
+						echo translate('LBL_ADDING','ACL','') . $mod->module_dir . '<br>';
+					}
+	
+	                if(!empty($mod->acltype)){
+	                	ACLAction::addActions($mod->module_dir, $mod->acltype);
+	                }else{
+	                	ACLAction::addActions($mod->module_dir);
+	                }				
+	
+	                $installed_classes[$class] = true;
+				}
+			}
+		}
+	}
 
 
 }

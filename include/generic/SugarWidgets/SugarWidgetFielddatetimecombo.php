@@ -121,3 +121,5 @@ class SugarWidgetFieldDateTimecombo extends SugarWidgetFieldDateTime {
         }
     }	
 }
+?>
+

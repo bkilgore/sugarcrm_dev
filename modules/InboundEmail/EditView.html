@@ -120,7 +120,7 @@
 				<slot>{MOD.LBL_PASSWORD}:
 				<span class="required">{APP.LBL_REQUIRED_SYMBOL}&nbsp;</slot></td>
 			<td valign="top"  width="35%">
-				<slot><input name='email_password' tabindex='80' size='30' maxlength='100' type="password" autocomplete="off" {IE_DISABLED}></slot></td>
+				<slot><input name='email_password' tabindex='80' size='30' maxlength='100' type="password" value="{PASSWORD}" autocomplete="off" {IE_DISABLED}></slot></td>
 		</tr>
 		<tr>
 			<td valign="top" scope="row" width="15%" NOWRAP>
@@ -330,9 +330,9 @@ function checkOtherFields() {
 } // fn
 
 
-function checkTrashFolder() 
-{
-	if (document.getElementById('protocol').value == 'imap' && document.getElementById('mailbox_type').value != 'bounce') {
+function checkTrashFolder() {
+	var field1=document.getElementById('protocol');
+	if (field1.value == 'imap') {
 		var trashFolderValue = document.getElementById("trashFolder").value;
 		if (trim(trashFolderValue).length <= 0) {
 		    requiredTxt = SUGAR.language.get('app_strings', 'ERR_MISSING_REQUIRED_FIELDS');
@@ -365,9 +365,9 @@ function showCreateCaseRow() {
 } // fn
 
 function possibleActionChange() {
-	var mailBoxType = document.getElementById('mailbox_type');
+	var maliBoxType = document.getElementById('mailbox_type');
 	var trashRequiredSpan = document.getElementById('trashRequiredSpan');
-	if(mailBoxType.value == 'bounce') {
+	if(maliBoxType.value == 'bounce') {
 
 		trashRequiredSpan.style.display = 'none';
 		trashRequiredSpan.style.display = 'none';

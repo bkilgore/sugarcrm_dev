@@ -46,7 +46,7 @@ if(ini_get('zlib.output_compression') == 1) { // ini_get() returns 1/0, not valu
 		$iniError = $mod_strings['ERR_INI_ZLIB'];
 	}
 }
-
+ 
 // hack to allow "&", "%" and "+" through a $_GET var
 // set by ie_test_open_popup() javascript call
 foreach($_REQUEST as $k => $v) {
@@ -96,22 +96,18 @@ if($popupBoolean) {
 if(isset($_REQUEST['ssl']) && ($_REQUEST['ssl'] == "true" || $_REQUEST['ssl'] == 1)) {
 	$msg .= $mod_strings['LBL_FIND_SSL_WARN'];
 	$useSsl = true;
-}
+} 
 
 
 $ie                 = new InboundEmail();
-if(!empty($_REQUEST['ie_id'])) {
-    $ie->retrieve($_REQUEST['ie_id']);
-}
 $ie->email_user     = $_REQUEST['email_user'];
 $ie->server_url     = $_REQUEST['server_url'];
 $ie->port           = $_REQUEST['port'];
 $ie->protocol       = $_REQUEST['protocol'];
 //Bug 23083.Special characters in email password results in IMAP authentication failure
-if(!empty($_REQUEST['email_password'])) {
-    $ie->email_password = html_entity_decode($_REQUEST['email_password'], ENT_QUOTES);
-    $ie->email_password = str_rot13($ie->email_password);
-}
+$ie->email_password = html_entity_decode($_REQUEST['email_password'], ENT_QUOTES);
+$ie->email_password = str_rot13($ie->email_password);
+
 $ie->mailbox        = 'INBOX';
 
 if($popupBoolean) {
@@ -158,7 +154,7 @@ echo /*'
 					<div id="testSettingsErr">'.$iniError.'</div>
 				</td>
 			</tr>';
-
+			
 if($popupBoolean) {
 /*	echo '	<tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr>
 				<td></td>

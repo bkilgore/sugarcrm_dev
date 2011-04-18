@@ -123,9 +123,8 @@ function portal_validate_authenticated($session_id){
     // This little construct checks to see if the session validated
     if(session_start()) {
         $valid_session = true;
-
-		if(!empty($_SESSION['is_valid_session']) && $_SESSION['ip_address'] == query_client_ip() && $valid_session != null && ($_SESSION['type'] == 'contact' || $_SESSION['type'] == 'lead' || $_SESSION['type'] == 'portal')){
-			global $current_user;
+        if(!empty($_SESSION['is_valid_session']) && $_SESSION['ip_address'] == query_client_ip() && $valid_session != null && ($_SESSION['type'] == 'contact' || $_SESSION['type'] == 'lead' || $_SESSION['type'] == 'portal')){
+            global $current_user;
             $current_user = new User();
             $current_user->retrieve($_SESSION['portal_id']);
             login_success();

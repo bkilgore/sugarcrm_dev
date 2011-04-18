@@ -49,7 +49,7 @@ function enableQS(noReload){
     	if(typeof sqs_objects == 'undefined') {
     	   return;
     	}
-        
+    	
     	var Dom = YAHOO.util.Dom;
     	
     	//Get all the fields where sqsEnabled is an attribue, these should be the input text fields for quicksearch
@@ -80,6 +80,7 @@ function enableQS(noReload){
         	   		continue;
         	   	}
         	}
+        	
         	//Track if this field has already been processed.  The way the enableQS function is called
         	//is a bit problematic in that it lends itself to a lot of duplicate processing
         	if(QSProcessedFieldsArray[qs_index_id]) {
@@ -143,7 +144,6 @@ function enableQS(noReload){
                     	sqs : sqs,
 						animSpeed : 0.25,
                     	qs_obj: qs_obj,
-                    	inputElement: qsFields[qsField],
                     	//YUI requires the data, even POST, to be URL encoded
                     	generateRequest : function(sQuery) {
 	                    	var out = SUGAR.util.paramsToUrl({
@@ -158,22 +158,18 @@ function enableQS(noReload){
 	                    //Method to fill in form fields with the returned results. 
 	                    //Should be called on select, and must be called from the AC instance scope.
 	                    setFields : function (data, filter) {
-	                    	this.updateFields(data, filter);	
-	                    },
-	                    
-	                    updateFields: function(data, filter) {
-	                    	for(var i in this.fields) {		
+	                    	
+	                    	for(var i in this.fields) {
+	                    		
 	                    		for (var key in this.qs_obj.field_list) {
-	                    		   //Check that the field exists and matches the filter
+	                    			//Check that the field exists and matches the filter
 	                	           if (this.fields[i] == this.qs_obj.field_list[key] && 
 	                	        	   document.forms[this.qs_obj.form].elements[this.qs_obj.populate_list[key]] &&
 	                	        	   this.qs_obj.populate_list[key].match(filter)) {
-	                	        	   //bug: 30823 - remove the apostrophe
-	                	        	   var displayValue = data[i].replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&#039;/gi,'\'').replace(/&quot;/gi,'"');
-	                	        	   document.forms[this.qs_obj.form].elements[this.qs_obj.populate_list[key]].value = displayValue;
+	                	        	   document.forms[this.qs_obj.form].elements[this.qs_obj.populate_list[key]].value = data[i];
 	                	           }
 	                	       }
-	                    	}		                    	
+	                    	}
 	                    },
 	                    clearFields : function() {
 	                    	for (var key in this.qs_obj.field_list) {
@@ -184,80 +180,6 @@ function enableQS(noReload){
 							this.oldValue = "";
 	                    }
                     });
-
-                    //C.L. Bug 36575: In event of account_name quicksearch, check to see if we need to warn user
-                    //that address fields may change.  This code has similarities to code block in set_return method
-                    //of sugar_3.js when building the alert message contents.
-                    if(/^(billing_|shipping_)?account_name$/.exec(qsFields[qsField].name))
-                    {
-                      
-                       //C.L. Bug 36106 no-op function for clearFields (do not clear out values)
-                       search.clearFields = function() {};
-                    	
-                       search.setFields = function(data, filter) 
-                       {
-                    	    var label_str = '';
-	                		var label_data_str = '';
-	                		var current_label_data_str = '';        		
-	                		var label_data_hash = new Array();
-	                    	
-	                    	for(var i in this.fields) {
-	                    		for (var key in this.qs_obj.field_list) {
-	                    		   //Check that the field exists and matches the filter
-	                	           if (this.fields[i] == this.qs_obj.field_list[key] && 
-	                	        	   document.forms[this.qs_obj.form].elements[this.qs_obj.populate_list[key]] &&
-	                	        	   document.getElementById(this.qs_obj.populate_list[key]+'_label') &&
-	                	        	   this.qs_obj.populate_list[key].match(filter)) {
-	                	        	   
-	                	        	    var displayValue = data[i].replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&#039;/gi,'\'').replace(/&quot;/gi,'"');
-		   	        					var data_label =  document.getElementById(this.qs_obj.populate_list[key]+'_label').innerHTML.replace(/\n/gi,'');
-			        					
-			        					label_and_data = data_label  + ' ' + displayValue;
-			        					
-			        					//Append to current_label_data_str only if the label and data are unique
-			        					if(document.forms[this.qs_obj.form].elements[this.qs_obj.populate_list[key]] && !label_data_hash[data_label])
-			        					{
-			        						label_str += data_label + ' \n';
-			        						label_data_str += label_and_data + '\n';
-			        						label_data_hash[data_label] = true;
-				        					current_label_data_str += data_label + ' ' + document.forms[this.qs_obj.form].elements[this.qs_obj.populate_list[key]].value + '\n';
-			        					}			        					
-	                	           }
-	                	       }
-	                    	}
-	                    	
-	        			    if(label_str != current_label_data_str && current_label_data_str != label_data_str) {    	
-	        			    	
-	        			    	module_key = (typeof document.forms[form_id].elements['module'] != 'undefined') ? document.forms[form_id].elements['module'].value : 'app_strings';
-	        			    	warning_label = SUGAR.language.translate(module_key, 'NTC_OVERWRITE_ADDRESS_PHONE_CONFIRM') + '\n\n' + label_data_str;       			    	
-	        			    		        			    	
-	       			        	if(!confirm(warning_label))
-	       						{
-	       			        		this.updateFields(data,/account_id/); 
-	       						} else {
-	       							
-	       							if(Dom.get('shipping_checkbox')) 
-	       							{
-	       							  if(this.inputElement.id == 'shipping_account_name')
-	       							  {
-	       								  //If the copy address checkbox is checked, update account and office_phone
-	       							      filter = Dom.get('shipping_checkbox').checked ? /(account_id|office_phone)/ : filter;
-	       							  } else if(this.inputElement.id == 'billing_account_name') {
-	       								  //If the copy address is checked, update account, office phone and billing addresses
-	       								  filter = Dom.get('shipping_checkbox').checked ? filter : /(account_id|office_phone|billing)/;
-	       							  }
-	       							} else if(Dom.get('alt_checkbox')) {
-	       							  filter = Dom.get('alt_checkbox').checked ? filter : /^(?!alt)/;
-	       							}
-	       						
-	       							this.updateFields(data,filter);
-	       						}
-	        			    } else {
-		                        this.updateFields(data,filter); 	        			    	
-	        			    }
-                       };
-                    }
-                    
                     
                     if ( typeof(SUGAR.config.quicksearch_querydelay) != 'undefined' ) {
                         search.queryDelay = SUGAR.config.quicksearch_querydelay;
@@ -309,10 +231,6 @@ function enableQS(noReload){
 						}
                     });
 
-					search.typeAheadEvent.subscribe(function (e, args) {
-						this.getInputEl().value = this.getInputEl().value.replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&#039;/gi,'\'').replace(/&quot;/gi,'"');			
-					});					
-					
                     
                     if (typeof QSFieldsArray[combo_id] == 'undefined' && qsFields[qsField].id) {
                         QSFieldsArray[combo_id] = search;

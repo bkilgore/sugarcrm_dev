@@ -362,15 +362,4 @@ class DeployedMetaDataImplementation extends AbstractMetaDataImplementation impl
         }
 		return $ret;
 	}
-
-    /**
-     * This is just a wrapper to the private method _saveToFile
-     * @param  $file    the file name to save to
-     * @param  $defs    the defs to save to the file
-     * @return void
-     */
-    public function saveToFile($file, $defs)
-    {
-        $this->_saveToFile ( $file, $defs ) ;
-    }
 }

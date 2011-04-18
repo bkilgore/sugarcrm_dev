@@ -116,7 +116,6 @@ class DashletGeneric extends Dashlet {
             if(!empty($options['displayRows'])) $this->displayRows = $options['displayRows'];
             if(!empty($options['displayColumns'])) $this->displayColumns = $options['displayColumns'];
             if(isset($options['myItemsOnly'])) $this->myItemsOnly = $options['myItemsOnly'];
-            if(isset($options['autoRefresh'])) $this->autoRefresh = $options['autoRefresh'];
         }
 
         $this->layoutManager = new LayoutManager();
@@ -147,8 +146,7 @@ class DashletGeneric extends Dashlet {
         $chooser->args['values_array'][1] = array();
 
         $this->loadCustomMetadata();
-        // Bug 39517 - Don't add custom fields automatically to the available fields to display in the listview
-        //$this->addCustomFields();
+        $this->addCustomFields();
         if($this->displayColumns) {
              // columns to display
              foreach($this->displayColumns as $num => $name) {
@@ -221,9 +219,7 @@ class DashletGeneric extends Dashlet {
                                      'myItems' => $GLOBALS['mod_strings']['LBL_DASHLET_CONFIGURE_MY_ITEMS_ONLY'],
                                      'displayRows' => $GLOBALS['mod_strings']['LBL_DASHLET_CONFIGURE_DISPLAY_ROWS'],
                                      'title' => $GLOBALS['mod_strings']['LBL_DASHLET_CONFIGURE_TITLE'],
-                                     'save' => $GLOBALS['app_strings']['LBL_SAVE_BUTTON_LABEL'],
-                                     'autoRefresh' => $GLOBALS['app_strings']['LBL_DASHLET_CONFIGURE_AUTOREFRESH'],
-                                     ));
+                                     'save' => $GLOBALS['app_strings']['LBL_SAVE_BUTTON_LABEL']));
         $this->configureSS->assign('id', $this->id);
         $this->configureSS->assign('showMyItemsOnly', $this->showMyItemsOnly);
         $this->configureSS->assign('myItemsOnly', $this->myItemsOnly);
@@ -235,12 +231,6 @@ class DashletGeneric extends Dashlet {
         $displayRowOptions = $GLOBALS['sugar_config']['dashlet_display_row_options'];
         $this->configureSS->assign('displayRowOptions', $displayRowOptions);
         $this->configureSS->assign('displayRowSelect', $this->displayRows);
-        
-        if($this->isAutoRefreshable()) {
-       		$this->configureSS->assign('isRefreshable', true);
-			$this->configureSS->assign('autoRefreshOptions', $this->getAutoRefreshOptions());
-			$this->configureSS->assign('autoRefreshSelect', $this->autoRefresh);
-		}
     }
     /**
      * Displays the options for this Dashlet
@@ -350,7 +340,7 @@ class DashletGeneric extends Dashlet {
         if(isset($this->filters) || $this->myItemsOnly) {
             $whereArray = $this->buildWhere();
         }
-	
+
         $this->lvs->export = false;
         $this->lvs->multiSelect = false;
         // columns
@@ -372,12 +362,12 @@ class DashletGeneric extends Dashlet {
         }
         $this->lvs->displayColumns = $displayColumns;
 
-
         $this->lvs->lvd->setVariableName($this->seedBean->object_name, array());
         $lvdOrderBy = $this->lvs->lvd->getOrderBy(); // has this list been ordered, if not use default
-
-        $nameRelatedFields = array();
-        if(empty($lvdOrderBy['orderBy'])) {
+        if(!empty($lvsParams['orderBy']) && !empty($lvsParams['sortOrder'])){
+            $lvsParams['overrideOrder'] = true;
+        }
+        else if(empty($lvdOrderBy['orderBy'])) {
             foreach($displayColumns as $colName => $colParams) {
                 if(!empty($colParams['defaultOrderColumn'])) {
                     $lvsParams['overrideOrder'] = true;
@@ -386,13 +376,7 @@ class DashletGeneric extends Dashlet {
                 }
             }
         }
-		// Check for 'last_name' column sorting with related fields (last_name, first_name)
-		// See ListViewData.php for actual sorting change.
-		if ($lvdOrderBy['orderBy'] == 'last_name' && !empty($displayColumns['NAME']) && !empty($displayColumns['NAME']['related_fields']) && 
-			in_array('last_name', $displayColumns['NAME']['related_fields']) &&
-			in_array('first_name', $displayColumns['NAME']['related_fields'])) {
-				$lvsParams['overrideLastNameOrder'] = true;
-		}
+
 
         if(!empty($this->displayTpl))
         {
@@ -400,7 +384,7 @@ class DashletGeneric extends Dashlet {
             $where = '';
             if(!empty($whereArray)){
                 $where = '(' . implode(') AND (', $whereArray) . ')';
-            }
+            }            
             $this->lvs->setup($this->seedBean, $this->displayTpl, $where , $lvsParams, 0, $this->displayRows/*, $filterFields*/);
             if(in_array('CREATED_BY', array_keys($displayColumns))) { // handle the created by field
                 foreach($this->lvs->data['data'] as $row => $data) {
@@ -417,6 +401,7 @@ class DashletGeneric extends Dashlet {
             }
 
             $this->lvs->ss->assign('dashletId', $this->id);
+
         }
     }
 
@@ -426,7 +411,7 @@ class DashletGeneric extends Dashlet {
      * @return string HTML that displays Dashlet
      */
     function display() {
-        return parent::display() . $this->lvs->display(false) . $this->processAutoRefresh();
+        return parent::display() . $this->lvs->display(false);
     }
 
     /**
@@ -473,7 +458,6 @@ class DashletGeneric extends Dashlet {
         if(!empty($req['displayColumnsDef'])) {
             $options['displayColumns'] = explode('|', $req['displayColumnsDef']);
         }
-        $options['autoRefresh'] = empty($req['autoRefresh']) ? '0' : $req['autoRefresh'];
         return $options;
     }
 

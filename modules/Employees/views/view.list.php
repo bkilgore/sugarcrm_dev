@@ -44,14 +44,12 @@ class EmployeesViewList extends ViewList
  	{
  		$this->lv = new ListViewSmarty();
  		$this->lv->delete = false;
- 		$this->lv->email = false;
  		if (!is_admin($GLOBALS['current_user'])&& !is_admin_for_module($GLOBALS['current_user'],'Users')){
             $this->lv->multiSelect = false;
         }
  	}
  	
-	public function listViewProcess()
-	{
+	function listViewProcess(){
 		$this->processSearchForm();
 		$this->lv->searchColumns = $this->searchForm->searchColumns;
 		
@@ -68,5 +66,7 @@ class EmployeesViewList extends ViewList
 			$savedSearchName = empty($_REQUEST['saved_search_select_name']) ? '' : (' - ' . $_REQUEST['saved_search_select_name']);
 			echo $this->lv->display();
 		}
+		
+		
  	}
 }

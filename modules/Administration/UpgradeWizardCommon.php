@@ -133,7 +133,6 @@ function getImageForType( $type ){
 }
 
 function getLanguagePackName( $the_file ){
-    global $app_list_strings;
     require_once( "$the_file" );
     if( isset( $app_list_strings["language_pack_name"] ) ){
         return( $app_list_strings["language_pack_name"] );
@@ -160,7 +159,6 @@ function getUITextForMode( $mode ){
 function run_upgrade_wizard_sql( $script ){
     global $unzip_dir;
     global $sugar_config;
-    global $mod_strings;
 
     $db_type = $sugar_config['dbconfig']['db_type'];
     $script = str_replace( "%db_type%", $db_type, $script );

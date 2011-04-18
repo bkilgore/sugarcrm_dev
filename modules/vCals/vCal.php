@@ -69,8 +69,6 @@ class vCal extends SugarBean {
 	// This is used to retrieve related fields from form posts.
 	var $additional_column_fields = Array();
 
-	const UTC_FORMAT = 'Ymd\THi00\Z';
-
 	function vCal()
 	{
 
@@ -142,12 +140,16 @@ class vCal extends SugarBean {
 			'week');
 
 		// loop thru each activity, get start/end time in UTC, and return FREEBUSY strings
-		foreach($acts_arr as $act)
+		for ($i = 0;$i < count($acts_arr);$i++)
 		{
-			$startTimeUTC = $act->start_time->format(self::UTC_FORMAT);
-			$endTimeUTC = $act->end_time->format(self::UTC_FORMAT);
+			$act =$acts_arr[$i];
+			$utcFormat = 'Ymd\THi';
+
+			$startTimeUTC = gmdate($utcFormat, $act->start_time->ts) . "00Z";
+			$endTimeUTC = gmdate($utcFormat, $act->end_time->ts) . "00Z";
 
 			$str .= "FREEBUSY:". $startTimeUTC ."/". $endTimeUTC."\n";
+
 		}
 		return $str;
 
@@ -156,7 +158,7 @@ class vCal extends SugarBean {
         // return a freebusy vcal string
         function get_vcal_freebusy($user_focus,$cached=true)
         {
-           global $locale, $timedate;
+           global $locale;
            $str = "BEGIN:VCALENDAR\n";
            $str .= "VERSION:2.0\n";
            $str .= "PRODID:-//SugarCRM//SugarCRM Calendar//EN\n";
@@ -166,24 +168,39 @@ class vCal extends SugarBean {
            $email = $user_focus->email1;
 
            // get current date for the user
-           $now_date_time = $timedate->getNow(true);
+           $now_date_time = new DateTimeUtil(array(), true);
 
-           // get start date ( 1 day ago )
-           $start_date_time = $now_date_time->get("yesterday");
+           // get start date GMT ( 1 day ago )
+           $date_arr = array(
+             'day'=>$now_date_time->day - 1,
+             'month'=>($now_date_time->month),
+             'hour'=>($now_date_time->hour),
+             'min'=>($now_date_time->min),
+             'year'=>$now_date_time->year);
+
+           $start_date_time = new DateTimeUtil($date_arr,true);
+
 
            // get date 2 months from start date
 			global $sugar_config;
-			$timeOffset = 2;
+			$timeOffset = 0;
             if (isset($sugar_config['vcal_time']) && $sugar_config['vcal_time'] != 0 && $sugar_config['vcal_time'] < 13)
 			{
 				$timeOffset = $sugar_config['vcal_time'];
 			}
-           $end_date_time = $start_date_time->get("+$timeOffset months");
+           $date_arr = array(
+             'day'=>$start_date_time->day,
+             'month'=>($start_date_time->month + $timeOffset),
+             'hour'=>($start_date_time->hour),
+             'min'=>($start_date_time->min),
+             'year'=>$start_date_time->year);
+
+           $end_date_time = new DateTimeUtil($date_arr,true);
 
            // get UTC time format
-           $utc_start_time = $start_date_time->asDb();
-           $utc_end_time = $end_date_time->asDb();
-           $utc_now_time = $now_date_time->asDb();
+           $utc_start_time = $start_date_time->get_utc_date_time();
+           $utc_end_time = $end_date_time->get_utc_date_time();
+           $utc_now_time = $now_date_time->get_utc_date_time();
 
            $str .= "ORGANIZER;CN=$name:$email\n";
            $str .= "DTSTART:$utc_start_time\n";

@@ -88,8 +88,8 @@
 		<td colspan='3'>
 		    <ul id="ul1" class="listContainer">
 		    {foreach from=$options key='name' item='val'}
-                {if (!isset($val) || $val =='')}{assign var='name' value=$MOD.LBL_BLANK}{/if}
-		    	<li class="draggable" id="{$name}" >
+		    	{if (!isset($val) || $val =='')}{assign var='name' value=$MOD.LBL_BLANK}{/if}
+			    <li class="draggable" id="{$name}" >
 			      <table width='100%'>
 			        <tr>
 			           <td>
@@ -154,7 +154,6 @@ YAHOO.util.Event.addListener(addListenerFields,"keydown", function(e){
 		YAHOO.util.Event.stopEvent(e);
 	}
 });
-
 </script>
 {/literal}
 </div>

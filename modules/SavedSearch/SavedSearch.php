@@ -252,10 +252,10 @@ class SavedSearch extends SugarBean {
 		header("Location: index.php?action=index&module={$_REQUEST['search_module']}&advanced={$_REQUEST['advanced']}&query=true&clear_query=true");
 	}
     
-	function handleSave($prefix, $redirect = true, $useRequired = false, $id = null, $searchModuleBean) { 
+	function handleSave($prefix, $redirect = true, $useRequired = false, $id = null) { 
 		
-		global $current_user, $timedate;
-		
+
+		global $current_user;
 		$focus = new SavedSearch();
 		if($id) $focus->retrieve($id);
         
@@ -269,57 +269,9 @@ class SavedSearch extends SugarBean {
 		if($id == null) $focus->name = $contents['saved_search_name'];
 		$focus->search_module = $contents['search_module'];
 		  
-		foreach($contents as $input=>$value) 
-		{
-			if(in_array($input, $ignored_inputs)) 
-			{ 
-				unset($contents[$input]);
-				continue;
-			}
-			
-			//Filter date fields to ensure it is saved to DB format, but also avoid empty values
-			if(!empty($value) && preg_match('/^(start_range_|end_range_|range_)?(.*?)(_advanced|_basic)$/', $input, $match))
-			{
-			   $field = $match[2];
-			   if(isset($searchModuleBean->field_defs[$field]['type']))
-			   {
-			   	  $type = $searchModuleBean->field_defs[$field]['type'];
-			   	  
-			   	  //Avoid macro values for the date types
-			   	  if(($type == 'date' || $type == 'datetime' || $type == 'datetimecombo') && !preg_match('/^\[.*?\]$/', $value))
-			   	  {
-			   	  	 $db_format = $timedate->to_db_date($value, false);
-			   	  	 $contents[$input] = $db_format;
-			   	  } else if ($type == 'int' || $type == 'currency' || $type == 'decimal' || $type == 'float') {
-			   	  	
-			   	  	if(preg_match('/[^\d]/', $value)) {
-				   	  	 require_once('modules/Currencies/Currency.php');
-				   	  	 $contents[$input] = unformat_number($value);
-				   	  	 //Flag this value as having been unformatted
-				   	  	 $contents[$input . '_unformatted_number'] = true;
-				   	  	 //If the type is of currency and there was a currency symbol (non-digit), save the symbol
-				   	  	 if($type == 'currency' && preg_match('/^([^\d])/', $value, $match))
-				   	  	 {
-				   	  	 	$contents[$input . '_currency_symbol'] = $match[1];
-				   	  	 }
-			   	  	} else {
-			   	  		 //unset any flags
-			   	  		 if(isset($contents[$input . '_unformatted_number']))
-			   	  		 {
-			   	  		 	unset($contents[$input . '_unformatted_number']);
-			   	  		 }
-			   	  		 
-			   	  		 if(isset($contents[$input . '_currency_symbol']))
-			   	  		 {
-			   	  		 	unset($contents[$input . '_currency_symbol']);
-			   	  		 }
-			   	  	}
-			   	  }
-			   }
-			}
-			
+		foreach($contents as $input => $value) {
+			if(in_array($input, $ignored_inputs)) unset($contents[$input]);
 		}
-
 		$contents['advanced'] = true;
         
 		$focus->contents = base64_encode(serialize($contents));
@@ -333,10 +285,7 @@ class SavedSearch extends SugarBean {
 		$orderBy = empty($contents['orderBy'])? 'name' : $contents['orderBy'];
         $search_query = "&orderBy=" . $orderBy . "&sortOrder=".$contents['sortOrder'] . "&query=" . $_REQUEST['query'] . "&searchFormTab=" . $_REQUEST['searchFormTab'].'&showSSDIV=' . $contents['showSSDIV'];
         
-        if($redirect)
-        {
-        	$this->handleRedirect($focus->search_module, $search_query, $saved_search_id, 'true');
-        }
+        $this->handleRedirect($focus->search_module, $search_query, $saved_search_id, 'true');
     }
 	
 	function handleRedirect($return_module, $search_query, $saved_search_id, $advanced = 'false') {
@@ -362,43 +311,13 @@ class SavedSearch extends SugarBean {
     }
     
     function populateRequest(){
-   
-    	global $timedate;
-    	
-        if(isset($this->contents['search_module']))
-        {
-           $searchModuleBean = loadBean($this->contents['search_module']);	
-        }
-        
         foreach($this->contents as $key=>$val){
-            if($key != 'advanced' && $key != 'module' && !strpos($key, '_ORDER_BY') && $key != 'lvso') { 
-            	if(isset($searchModuleBean) && !empty($val) && preg_match('/^(start_range_|end_range_|range_)?(.*?)(_advanced|_basic)$/', $key, $match))
-            	{
-            	   $field = $match[2];
-				   if(isset($searchModuleBean->field_defs[$field]['type']))
-				   {
-				   	  $type = $searchModuleBean->field_defs[$field]['type'];
-				   	  
-				   	  //Avoid macro values for the date types
-				   	  if(($type == 'date' || $type == 'datetime' || $type == 'datetimecombo') && preg_match('/^\d{4}-\d{2}-\d{2}$/', $val) && !preg_match('/^\[.*?\]$/', $val))
-				   	  {
-				   	  	 $val = $timedate->to_display_date($val, false);
-				   	  }  else if (($type == 'int' || $type == 'currency' || $type == 'decimal' || $type == 'float') && isset($this->contents[$key . '_unformatted_number']) && preg_match('/^\d+$/', $val)) {
-				   	  	 require_once('modules/Currencies/Currency.php');
-				   	  	 $val = format_number($val);
-				   	  	 if($type == 'currency' && isset($this->contents[$key . '_currency_symbol']))
-				   	  	 {
-				   	  	 	$val = $this->contents[$key . '_currency_symbol'] . $val;
-				   	  	 }
-				   	  }
-				   }           		
-            	}
-            	
+            // todo wp: remove this
+            if($key != 'advanced' && $key != 'module' && !strpos($key, '_ORDER_BY') && $key != 'lvso') { // cn: bug 6546 storequery stomps correct value for 'module' in Activities
                 $_REQUEST[$key] = $val;	
                 $_GET[$key] = $val;	
             }
         }
-         
     }
 }
 

@@ -50,7 +50,7 @@ if(isset($_REQUEST['module_name'])){
 	global $current_user;
 	
     echo SugarThemeRegistry::current()->getCSS();
-	echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$_REQUEST['module_name']), true);
+	echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_MODULE_NAME'].": ". $_REQUEST['module_name'], true);
 	
 		
 

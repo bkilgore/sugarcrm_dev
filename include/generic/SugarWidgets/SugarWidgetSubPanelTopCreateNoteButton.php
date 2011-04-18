@@ -147,15 +147,5 @@ class SugarWidgetSubPanelTopCreateNoteButton extends SugarWidgetSubPanelTopButto
 		return $button;
 	}
 
-
-	function display($defines, $additionalFormFields = null)
-	{
-	    $focus = new Note;
-		if ( !$focus->ACLAccess('EditView') ) {
-		    return '';
-	    }
-		
-		return parent::display($defines, $additionalFormFields);
-	}
 }
 ?>

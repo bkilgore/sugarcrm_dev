@@ -71,7 +71,6 @@ $mod_strings = array (
 	'LBL_NUMBER'						=> 'Number:',
 	'LBL_PRIORITY'						=> 'Priority:',
 	'LBL_PROJECTS_SUBPANEL_TITLE' 		=> 'Projects',
-	'LBL_DOCUMENTS_SUBPANEL_TITLE' 		=> 'Documents',
 	'LBL_RESOLUTION'					=> 'Resolution:',
 	'LBL_SEARCH_FORM_TITLE'				=> 'Case Search',
 	'LBL_STATUS'						=> 'Status:',

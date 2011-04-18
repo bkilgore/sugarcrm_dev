@@ -42,7 +42,7 @@
 <table width="100%">
 	{foreach from=$charts item=chart}
 	<tr>
-		<td width="100%" align="left"><a href="javascript:void(0)" onclick="{$chart.onclick}">{$chart.icon}</a>&nbsp;<a class="mbLBLL" href="#" onclick="{$chart.onclick}">{$chart.title}</a><br /></td>
+		<td width="100%" align="left"><a href="#" onclick="{$chart.onclick}">{$chart.icon}</a>&nbsp;<a class="mbLBLL" href="#" onclick="{$chart.onclick}">{$chart.title}</a><br /></td>
 	</tr>
 	{/foreach}
 </table>

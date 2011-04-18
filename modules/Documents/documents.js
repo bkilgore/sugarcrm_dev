@@ -43,7 +43,6 @@ related_doc_id=JSON.stringifyNoSecurity(related_doc_id);var conditions=new Array
 function RevisionListHandler(){}
 RevisionListHandler.prototype.display=function(result){var names=result['list'];var rev_tag=document.getElementById('related_doc_rev_id');rev_tag.options.length=0;for(i=0;i<names.length;i++){rev_tag.options[i]=new Option(names[i].fields['revision'],names[i].fields['id'],false,false);}
 rev_tag.disabled=false;}
-function setvalue(source){src=new String(source.value);target=new String(source.form.document_name.value);if(target.length==0)
-{lastindex=src.lastIndexOf("/");if(lastindex==-1){lastindex=src.lastIndexOf("\\");}
-if(lastindex==-1){source.form.document_name.value=src;}else{source.form.document_name.value=src.substr(++lastindex,src.length);}}}
+function setvalue(source){src=new String(source.value);target=new String(source.form.document_name.value);if(target.length==0){lastindex=src.lastIndexOf("/");if(lastindex==-1){lastindex=src.lastIndexOf("\\");}
+if(lastindex==-1){source.form.document_name.value=src;source.form.escaped_document_name.value=src;}else{source.form.document_name.value=src.substr(++lastindex,src.length);source.form.escaped_document_name.value=src.substr(lastindex,src.length);}}}
 function toggle_template_type(istemplate){template_type=document.getElementById('template_type');if(istemplate.checked){template_type.disabled=false;}else{template_type.disabled=true;}}

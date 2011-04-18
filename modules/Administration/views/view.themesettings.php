@@ -51,7 +51,7 @@ class AdministrationViewThemesettings extends SugarView
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
@@ -78,7 +78,6 @@ class AdministrationViewThemesettings extends SugarView
             $_REQUEST['disabled_themes'] = implode(',',$disabledThemes);
             $configurator = new Configurator();
             $configurator->config['disabled_themes'] = $_REQUEST['disabled_themes'];
-            $configurator->config['default_theme'] = $_REQUEST['default_theme'];
             $configurator->handleOverride();
             echo "true";
         } else {
@@ -106,14 +105,14 @@ class AdministrationViewThemesettings extends SugarView
         {
         	$disabled[] = array("theme" => $theme, "dir" => $dir);
         }
-        $this->ss->assign("THEMES", get_select_options_with_id(SugarThemeRegistry::allThemes(), $GLOBALS['sugar_config']['default_theme']));
+        
         $this->ss->assign('enabled_modules', json_encode($enabled));
         $this->ss->assign('disabled_modules', json_encode($disabled));
         $this->ss->assign('mod', $mod_strings);
         $this->ss->assign('APP', $app_strings);
         $this->ss->assign('currentTheme', SugarThemeRegistry::current());
         
-        echo $this->getModuleTitle(false);
+        echo $this->getModuleTitle();
         echo $this->ss->fetch('modules/Administration/templates/themeSettings.tpl');
     }
 }

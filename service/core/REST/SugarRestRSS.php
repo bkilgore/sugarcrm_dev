@@ -42,108 +42,83 @@ require_once('service/core/REST/SugarRest.php');
  * This class is a serialize implementation of REST protocol
  *
  */
-class SugarRestRSS extends SugarRest
-{
+class SugarRestRSS extends SugarRest{
+	
 	/**
 	 * It will serialize the input object and echo's it
-	 *
+	 * 
 	 * @param array $input - assoc array of input values: key = param name, value = param type
 	 * @return String - echos serialize string of $input
 	 */
-	public function generateResponse($input)
-	{
-		if(!isset($input['entry_list'])) {
-		    $this->fault($app_strings['ERR_RSS_INVALID_RESPONSE']);
-		}
+	function generateResponse($input){
+		$method = !empty($_REQUEST['method'])? $_REQUEST['method']: '';
+		if($method != 'get_entry_list')$this->fault('RSS currently only supports the get_entry_list method');
 		ob_clean();
-		$this->generateResponseHeader(count($input['entry_list']));
+		$this->generateResponseHeader($input['result_count']);
 		$this->generateItems($input);
 		$this->generateResponseFooter();
 	} // fn
 	
-	protected function generateResponseHeader($count)
-	{
-	    global $app_strings, $sugar_version, $sugar_flavor;
-	    
-		$date = TimeDate::httpTime();
-		
-		echo <<<EORSS
-<?xml version="1.0" encoding="UTF-8" ?>
+	function generateResponseHeader($count){
+		$date = gmdate("D, d M Y H:i:s") . " GMT";
+echo'<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
-    <title>{$app_strings['LBL_RSS_FEED']} &raquo; {$app_strings['LBL_BROWSER_TITLE']}</title>
-    <link>{$GLOBALS['sugar_config']['site_url']}</link>
-    <description>{$count} {$app_strings['LBL_RSS_RECORDS_FOUND']}</description>
-    <pubDate>{$date}</pubDate>
-    <generator>SugarCRM $sugar_version $sugar_flavor</generator>
-
-EORSS;
+<title>SugarCRM  RSS Feed</title>
+<link>http://cnn.com</link>
+<description>' . $count. ' records found</description>
+<pubDate>' . $date . '</pubDate>
+<generator>SugarCRM</generator>
+<ttl>' . $count . '</ttl>
+';
 	}
 	
-	protected function generateItems($input)
-	{
-        global $app_strings;
-	    
-	    if(!empty($input['entry_list'])){
-            foreach($input['entry_list'] as $item){
-                $this->generateItem($item);
-            }
-        }
-    }
-
-    protected function generateItem($item)
-    {
-        $name = !empty($item['name_value_list']['name']['value'])?htmlentities( $item['name_value_list']['name']['value']): '';
-        $url = $GLOBALS['sugar_config']['site_url']  . htmlentities('/index.php?module=' . $item['module_name']. '&action=DetailView&record=' . $item['id']);
-        $date = TimeDate::httpTime(TimeDate::getInstance()->fromDb($item['name_value_list']['date_modified']['value'])->getTimestamp());
-        $description = '';
-        $displayFieldNames = true;
-        if(count($item['name_value_list']) == 2 &&isset($item['name_value_list']['name']))$displayFieldNames = false;
-        foreach($item['name_value_list'] as $k=>$v){
-            if ( $k == 'name' || $k == 'date_modified') {
-                continue;
-            }
-            if($displayFieldNames) $description .= '<b>' .htmlentities( $k) . ':<b>&nbsp;';
-            $description .= htmlentities( $v['value']) . "<br>";
-        }
-        
-        echo <<<EORSS
-    <item>
-        <title>$name</title>
-        <link>$url</link>
-        <description><![CDATA[$description]]></description>
-        <pubDate>$date GMT</pubDate>
-        <guid>{$item['id']}</guid>
-    </item>
-
-EORSS;
-    }
-    
-    protected function generateResponseFooter()
-    {
-		echo <<<EORSS
-</channel>
-</rss>
-EORSS;
+function generateItems($input){
+	if(!empty($input['entry_list'])){
+		foreach($input['entry_list'] as $item){
+			$this->generateItem($item);
+		}
+		
 	}
+}
 
+function generateItem($item){
+echo "<item>\n";
+$name  = !empty($item['name_value_list']['name'])?htmlentities( $item['name_value_list']['name']): '';
+echo "<title>$name</title>\n";
+echo "<link>". $GLOBALS['sugar_config']['site_url']  . htmlentities('/index.php?module=' . $item['module_name']. '&record=' . $item['id']) .  "</link>\n";
+echo "<description><![CDATA[";
+$displayFieldNames = true;
+if(count($item['name_value_list']) == 2 &&isset($item['name_value_list']['name']))$displayFieldNames = false;
+foreach($item['name_value_list'] as $k=>$v){
+	if($k =='name')continue;
+	if($k == 'date_modified')continue;
+	if($displayFieldNames) echo '<b>' .htmlentities( $k) . ':<b>&nbsp;';
+	echo htmlentities( $v) . "\n<br>";
+}
+echo "]]></description>\n";
+if(!empty($item['name_value_list']['date_modified'])){
+	$date = date("D, d M Y H:i:s", strtotime($item['name_value_list']['date_modified'])) . " GMT";
+	echo "<pubDate>$date</pubDate>";
+}
+
+echo "<guid>" . $item['id']. "</guid>\n";
+echo "</item>\n";
+}
+function generateResponseFooter(){
+		echo'</channel></rss>';
+	}
+	
 	/**
-	 * Returns a fault since we cannot accept RSS as an input type
+	 * This method calls functions on the implementation class and returns the output or Fault object in case of error to client
 	 *
-	 * @see SugarRest::serve()
+	 * @return unknown
 	 */
-	public function serve()
-	{
-	    global $app_strings;
-	    
-	    $this->fault($app_strings['ERR_RSS_INVALID_INPUT']);
-	}
+	function serve(){
+		$this->fault('RSS is not a valid input_type');
+	} // fn
 	
-	/**
-	 * @see SugarRest::fault()
-	 */
-	public function fault($faultObject)
-	{
+	function fault($faultObject){
 		ob_clean();
 		$this->generateResponseHeader();
 		echo '<item><name>';
@@ -157,5 +132,8 @@ EORSS;
 		echo $error;
 		echo '</name></item>';
 		$this->generateResponseFooter();
+		
 	}
-}
+	
+	
+} // clazz

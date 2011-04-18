@@ -42,12 +42,10 @@
       {{sugar_button module="$module" id="$button" view="$view"}}
    {{/foreach}}
 {{else}}
-{{sugar_button module="$module" id="SAVE" view="$view" location="FOOTER"}}
-{{sugar_button module="$module" id="CANCEL" view="$view" location="FOOTER"}}
+{{sugar_button module="$module" id="SAVE" view="$view"}}
+{{sugar_button module="$module" id="CANCEL" view="$view"}}
 {{/if}}
-{{if empty($form.hideAudit) || !$form.hideAudit}}
 {{sugar_button module="$module" id="Audit" view="$view"}}
-{{/if}}
 </div>
 {{/if}}
 </form>

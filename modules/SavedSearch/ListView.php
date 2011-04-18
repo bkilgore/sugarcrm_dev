@@ -51,7 +51,7 @@ require_once('include/ListView/ListViewSmarty.php');
 
 global $app_strings, $app_list_strings, $current_language, $currentModule, $mod_strings;
 
-echo getClassicModuleTitle('SavedSearch', array($mod_strings['LBL_MODULE_TITLE']), false);
+echo get_module_title('SavedSearch', $mod_strings['LBL_MODULE_TITLE'], false);
 echo get_form_header($mod_strings['LBL_SEARCH_FORM_TITLE'], '', false);
 
 $search_form = new XTemplate ('modules/SavedSearch/SearchForm.html');

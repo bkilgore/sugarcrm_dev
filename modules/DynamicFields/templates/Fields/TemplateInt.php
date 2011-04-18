@@ -35,13 +35,11 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * "Powered by SugarCRM".
  ********************************************************************************/
 
-require_once('modules/DynamicFields/templates/Fields/TemplateRange.php');
 
-class TemplateInt extends TemplateRange
-{
+class TemplateInt extends TemplateText{
 	
 	function __construct(){
-		parent::__construct();
+		//parent::__construct();
 		$this->vardef_map['autoinc_next'] = 'autoinc_next';
 		$this->vardef_map['autoinc_start'] = 'autoinc_start';
 		$this->vardef_map['auto_increment'] = 'auto_increment';

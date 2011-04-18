@@ -37,19 +37,11 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 require_once('modules/DynamicFields/templates/Fields/TemplateCurrencyId.php');
-require_once('modules/DynamicFields/templates/Fields/TemplateRange.php');
-
-class TemplateCurrency extends TemplateRange 
-{
+class TemplateCurrency extends TemplateText{
     var $max_size = 25;
     var $len = 26 ;
     var $type='currency';
 
-    function __construct()
-    {
-    	parent::__construct();
-    }
-    
     function delete($df){
     	parent::delete($df);
     	//currency id

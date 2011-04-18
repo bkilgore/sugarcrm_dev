@@ -102,13 +102,7 @@ if(is_admin($current_user)) {
 	       	
 	       $repairClass->module_list[] = $module;
 	       foreach($views as $view) {
-                try{
-                    $parser = ParserFactory::getParser($view, $module);
-                }
-                catch(Exception $e){
-                    $GLOBALS['log']->fatal("Caught exception in RepairFieldCasing script: ".$e->getMessage());
-                    continue;
-                }
+	       		$parser = ParserFactory::getParser($view, $module);
 	       		if(isset($parser->_viewdefs['panels'])) {
 	       		   foreach($parser->_viewdefs['panels'] as $panel_id=>$panel) {
 	       		   	  foreach($panel as $row_id=>$row) {

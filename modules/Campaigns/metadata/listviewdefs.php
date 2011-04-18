@@ -81,10 +81,6 @@ $listViewDefs['Campaigns'] = array(
         'default' => true,
         'studio' => false,
         'nowrap' => true,
-        'sortable' => false),
-	'DATE_ENTERED' => array (
-	    'width' => '10',
-	    'label' => 'LBL_DATE_ENTERED',
-	    'default' => true),              
+        'sortable' => false),                
 );
 ?>

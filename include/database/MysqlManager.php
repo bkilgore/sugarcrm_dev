@@ -77,7 +77,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 * required  This field dictates whether it is a required value.
 *           The default value is �FALSE�.
 * isPrimary This field identifies the primary key of the table.
-*           If none of the fields have this flag set to �TRUE�,
+*           If none of the fields have this flag set to �TRUE�, 
 *           the first field definition is assume to be the primary key.
 *           Default value for this field is �FALSE�.
 * default   This field sets the default value for the field definition.
@@ -97,7 +97,7 @@ class MysqlManager extends DBManager
      * @see DBManager::$dbType
      */
     public $dbType = 'mysql';
-
+    
     /**
      * @see DBManager::$backendFunctions
      */
@@ -107,22 +107,22 @@ class MysqlManager extends DBManager
         'row_count'          => 'mysql_num_rows',
         'affected_row_count' => 'mysql_affected_rows',
         );
-
+    
     /**
      * @see DBManager::checkError()
      */
     public function checkError(
-        $msg = '',
+        $msg = '', 
         $dieOnError = false
         )
     {
         if (parent::checkError($msg, $dieOnError))
             return true;
-
+        
         if (mysql_errno($this->getDatabase())) {
             if ($this->dieOnError || $dieOnError){
                 $GLOBALS['log']->fatal("MySQL error ".mysql_errno($this->database).": ".mysql_error($this->database));
-                sugar_die ($GLOBALS['app_strings']['ERR_DB_FAIL']);
+                sugar_die ($userMsg.$GLOBALS['app_strings']['ERR_DB_FAIL']);
             }
             else {
                 $this->last_error = $msg."MySQL error ".mysql_errno($this->database).": ".mysql_error($this->database);
@@ -145,10 +145,10 @@ class MysqlManager extends DBManager
      * @return resource result set
      */
     public function query(
-        $sql,
-        $dieOnError = false,
-        $msg = '',
-        $suppress = false,
+        $sql, 
+        $dieOnError = false, 
+        $msg = '', 
+        $suppress = false, 
         $autofree = false
         )
     {
@@ -159,7 +159,7 @@ class MysqlManager extends DBManager
         $this->query_time = microtime(true);
         $this->lastsql = $sql;
         if ($suppress==true) {
-        }
+        } 
         else {
             $result = mysql_query($sql, $this->database);
         }
@@ -167,12 +167,12 @@ class MysqlManager extends DBManager
         $this->lastmysqlrow = -1;
         $this->query_time = microtime(true) - $this->query_time;
         $GLOBALS['log']->info('Query Execution Time:'.$this->query_time);
-
-
+        
+		
         $this->checkError($msg.' Query Failed:' . $sql . '::', $dieOnError);
         if($autofree)
             $this->lastResult[] =& $result;
-
+        
         return $result;
     }
 
@@ -182,17 +182,17 @@ class MysqlManager extends DBManager
     public function limitQuery(
         $sql,
         $start,
-        $count,
-        $dieOnError = false,
+        $count, 
+        $dieOnError = false, 
         $msg = '')
     {
-        if ($start < 0)
+        if ($start < 0) 
             $start = 0;
         $GLOBALS['log']->debug('Limit Query:' . $sql. ' Start: ' .$start . ' count: ' . $count);
-
+        
         $sql = "$sql LIMIT $start,$count";
         $this->lastsql = $sql;
-
+        
         if(!empty($GLOBALS['sugar_config']['check_query'])){
             $this->checkQuery($sql);
         }
@@ -211,7 +211,7 @@ class MysqlManager extends DBManager
         $result   = $this->query('EXPLAIN ' . $sql);
         $badQuery = array();
         while ($row = $this->fetchByAssoc($result)) {
-            if (empty($row['table']))
+            if (empty($row['table'])) 
                 continue;
             $badQuery[$row['table']] = '';
             if (strtoupper($row['type']) == 'ALL')
@@ -223,10 +223,10 @@ class MysqlManager extends DBManager
             if (!empty($row['Extra']) && substr_count($row['Extra'], 'Using temporary') > 0)
                 $badQuery[$row['table']] .= ' Using Temporary Table;';
         }
-
+        
         if ( empty($badQuery) )
             return true;
-
+        
         foreach($badQuery as $table=>$data ){
             if(!empty($data)){
                 $warning = ' Table:' . $table . ' Data:' . $data;
@@ -239,7 +239,7 @@ class MysqlManager extends DBManager
                 }
             }
         }
-
+        
         return false;
     }
 
@@ -247,15 +247,15 @@ class MysqlManager extends DBManager
      * @see DBManager::describeField()
      */
     protected function describeField(
-        $name,
+        $name, 
         $tablename
         )
     {
         global $table_descriptions;
-        if(isset($table_descriptions[$tablename])
+        if(isset($table_descriptions[$tablename]) 
                 && isset($table_descriptions[$tablename][$name]))
             return 	$table_descriptions[$tablename][$name];
-
+        
         $table_descriptions[$tablename] = array();
         $sql = "DESCRIBE $tablename";
         $result = $this->query($sql);
@@ -266,7 +266,7 @@ class MysqlManager extends DBManager
         }
         if(isset($table_descriptions[$tablename][$name]))
             return 	$table_descriptions[$tablename][$name];
-
+        
         return array();
     }
 
@@ -274,14 +274,14 @@ class MysqlManager extends DBManager
      * @see DBManager::getFieldsArray()
      */
     public function getFieldsArray(
-        &$result,
+        &$result, 
         $make_lower_case=false)
     {
         $field_array = array();
 
         if(! isset($result) || empty($result))
             return 0;
-
+        
         $i = 0;
         while ($i < mysql_num_fields($result)) {
             $meta = mysql_fetch_field($result, $i);
@@ -290,7 +290,7 @@ class MysqlManager extends DBManager
 
             if($make_lower_case == true)
                 $meta->name = strtolower($meta->name);
-
+            
             $field_array[] = $meta->name;
             $i++;
         }
@@ -298,20 +298,20 @@ class MysqlManager extends DBManager
         return $field_array;
     }
 
-
+   
 
     /**
      * @see DBManager::fetchByAssoc()
      */
     public function fetchByAssoc(
-        &$result,
-        $rowNum = -1,
+        &$result, 
+        $rowNum = -1, 
         $encode = true
         )
     {
         if (!$result)
             return false;
-
+        
         if ($result && $rowNum > -1){
             if ($this->getRowCount($result) > $rowNum)
                 mysql_data_seek($result, $rowNum);
@@ -322,14 +322,14 @@ class MysqlManager extends DBManager
 
         if ($encode && $this->encode && is_array($row))
             return array_map('to_html', $row);
-
+        
         return $row;
     }
 
     /**
      * @see DBManager::getTablesArray()
      */
-    public function getTablesArray()
+    public function getTablesArray() 
     {
         global $sugar_config;
         $GLOBALS['log']->debug('Fetching table list');
@@ -352,7 +352,7 @@ class MysqlManager extends DBManager
     /**
      * @see DBManager::version()
      */
-    public function version()
+    public function version() 
     {
         return $this->getOne("SELECT version() version");
     }
@@ -370,7 +370,7 @@ class MysqlManager extends DBManager
             $result = $this->query("SHOW TABLES LIKE '".$tableName."'");
             return ($this->getRowCount($result) == 0) ? false : true;
         }
-
+        
         return false;
     }
 
@@ -395,20 +395,20 @@ class MysqlManager extends DBManager
     {
         return mysql_real_escape_string($string, $this->getDatabase());
     }
-
+    
     /**
      * @see DBManager::connect()
      */
 	public function connect(
-        array $configOptions = null,
+        array $configOptions = null, 
         $dieOnError = false
         )
     {
 		global $sugar_config;
-
+		
         if(is_null($configOptions))
 			$configOptions = $sugar_config['dbconfig'];
-
+		
         if ($sugar_config['dbconfigoption']['persistent'] == true) {
             $this->database = @mysql_pconnect(
                 $configOptions['db_host_name'],
@@ -451,26 +451,26 @@ class MysqlManager extends DBManager
 
         $GLOBALS['log']->info("Connect:".$this->database);
     }
-
+    
     /**
      * @see DBManager::repairTableParams()
      *
-     * For MySQL, we can write the ALTER TABLE statement all in one line, which speeds things
+     * For MySQL, we can write the ALTER TABLE statement all in one line, which speeds things 
      * up quite a bit. So here, we'll parse the returned SQL into a single ALTER TABLE command.
      */
     public function repairTableParams(
-        $tablename,
+        $tablename,  
         $fielddefs,
-        $indices,
+        $indices, 
         $execute = true,
         $engine = null
         )
     {
         $sql = parent::repairTableParams($tablename,$fielddefs,$indices,false,$engine);
-
+        
         if ( $sql == '' )
             return '';
-
+        
         if ( stristr($sql,'create table') )
         {
             if ($execute) {
@@ -479,38 +479,38 @@ class MysqlManager extends DBManager
 	        }
             return $sql;
         }
-
+        
         // first, parse out all the comments
         $match = array();
         preg_match_all("!/\*.*?\*/!is", $sql, $match);
         $commentBlocks = $match[0];
         $sql = preg_replace("!/\*.*?\*/!is",'', $sql);
-
+        
         // now, we should only have alter table statements
         // let's replace the 'alter table name' part with a comma
         $sql = preg_replace("!alter table $tablename!is",', ', $sql);
-
+        
         // re-add it at the beginning
         $sql = substr_replace($sql,'',strpos($sql,','),1);
         $sql = str_replace(";","",$sql);
         $sql = str_replace("\n","",$sql);
         $sql = "ALTER TABLE $tablename $sql";
-
+        
         if ( $execute )
             $this->query($sql,'Error with MySQL repair table');
-
+        
         // and re-add the comments at the beginning
         $sql = implode("\n",$commentBlocks) . "\n". $sql . "\n";
-
+        
         return $sql;
     }
-
+    
     /**
      * @see DBManager::convert()
      */
     public function convert(
-        $string,
-        $type,
+        $string, 
+        $type, 
         array $additional_parameters = array(),
         array $additional_parameters_oracle_only = array()
         )
@@ -519,9 +519,9 @@ class MysqlManager extends DBManager
         $additional_parameters_string = '';
         if (!empty($additional_parameters))
             $additional_parameters_string = ','.implode(',',$additional_parameters);
-
+        
         switch ($type) {
-        case 'today': return "CURDATE()";
+        case 'today': return "CURDATE()";	
         case 'left': return "LEFT($string".$additional_parameters_string.")";
         case 'date_format': return "DATE_FORMAT($string".$additional_parameters_string.")";
         case 'datetime': return "DATE_FORMAT($string, '%Y-%m-%d %H:%i:%s')";
@@ -529,30 +529,31 @@ class MysqlManager extends DBManager
         case 'CONCAT': return "CONCAT($string,".implode(",",$additional_parameters).")";
         case 'text2char': return "$string";
         }
-
+        
         return "$string";
     }
-
+    
     /**
      * @see DBManager::concat()
      */
     public function concat(
-        $table,
+        $table, 
         array $fields
         )
     {
         $ret = '';
-
+        
         foreach ( $fields as $index => $field )
             if (empty($ret))
-                $ret = "CONCAT(". db_convert($table.".".$field,'IFNULL', array("''"));
-            else
+                $ret = "CONCAT(". db_convert($table.".".$field,'IFNULL', array("''"));	
+            else 
                 $ret.=	",' ',".db_convert($table.".".$field,'IFNULL', array("''"));
-
-		if (!empty($ret)) {
-		    $ret = "TRIM($ret))";
-		}
-
+		
+		if (!empty($ret)) 
+		    $ret .= ')';
+		
 		return $ret;
     }
 }
+
+?>

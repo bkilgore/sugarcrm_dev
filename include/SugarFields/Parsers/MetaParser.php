@@ -687,6 +687,9 @@ function mergeTemplateMeta($templateMeta, $moduleDir, $masterCopy) {
    if(isset($masterTemplateMeta['javascript'])) {
    	  //Insert the getJSPath code back into src value
    	  $masterTemplateMeta['javascript'] = preg_replace('/src\s*=\s*[\'\"].*?(modules\/|include\/)([^\.]*?\.js)([^\'\"]*?)[\'\"]/i', 'src="@sq . getJSPath(@sq${1}${2}@sq) . @sq"', $masterTemplateMeta['javascript']);
+   	  // BEGIN SUGAR INT
+   	  //$GLOBALS['log']->fatal(var_export($masterTemplateMeta['javascript'], true));
+   	  // END SUGAR INT
    }
    
    return $masterTemplateMeta;	

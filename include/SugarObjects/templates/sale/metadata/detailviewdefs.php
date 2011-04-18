@@ -46,7 +46,14 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $module_name = '<module_name>';
 $_object_name = '<_object_name>';
 $viewdefs[$module_name]['DetailView'] = array(
-    'templateMeta' => array('form' => array('buttons'=>array('EDIT', 'DUPLICATE', 'DELETE', 'FIND_DUPLICATES',)),
+    'templateMeta' => array('form' => array('buttons'=>array('EDIT', 'DUPLICATE', 'DELETE',
+                                                         array('customCode'=>'<input title="{$APP.LBL_DUP_MERGE}" ' .
+                                                         		'accesskey="M" ' .
+                                                         		'class="button" ' .
+                                                         		'onclick="this.form.return_module.value=\''.$module_name.'\';this.form.return_action.value=\'DetailView\';this.form.return_id.value=\'{$fields.id.value}\'; this.form.action.value=\'Step1\'; this.form.module.value=\'MergeRecords\';" ' .
+                                                         		'name="button" ' .
+                                                         		'value="{$APP.LBL_DUP_MERGE}" ' .
+                                                         		'type="submit">'),)),
        						'maxColumns' => '2',
                             'widths' => array(
                                             array('label' => '10', 'field' => '30'),

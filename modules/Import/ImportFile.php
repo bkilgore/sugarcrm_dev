@@ -197,11 +197,9 @@ class ImportFile
         }
         
         // Bug 26219 - Convert all line endings to the same style as PHP_EOL
-        foreach ( $this->_currentRow as $key => $value ) {
-            // use preg_replace instead of str_replace as str_replace may cause extra lines on Windows
-            $this->_currentRow[$key] = preg_replace("[\r\n|\n|\r]", PHP_EOL, $value);
-        }
-            
+        foreach ( $this->_currentRow as $key => $value )
+            $this->_currentRow[$key] = str_replace(array("\r\n", "\n", "\r"),PHP_EOL,$value);
+        
         $this->_rowsCount++;
         $this->_rowCountedForErrors = false;
         

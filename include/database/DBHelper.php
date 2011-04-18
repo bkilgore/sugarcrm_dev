@@ -1029,7 +1029,10 @@ abstract class DBHelper
      * @param array  $changes changes
      * @see DBHelper::getDataChanges()
      */
-    public function save_audit_records(SugarBean $bean, $changes)
+    public function save_audit_records(
+        SugarBean &$bean,
+        &$changes
+        )
 	{
 		global $current_user;
 		$sql = "INSERT INTO ".$bean->get_audit_table_name();
@@ -1051,7 +1054,7 @@ abstract class DBHelper
 			$values['before_value_string']=$bean->dbManager->getHelper()->massageValue($changes['before'], $fieldDefs['before_value_string']);
 			$values['after_value_string']=$bean->dbManager->getHelper()->massageValue($changes['after'], $fieldDefs['after_value_string']);
 		}
-		$values['date_created']=$bean->dbManager->getHelper()->massageValue(TimeDate::getInstance()->nowDb(), $fieldDefs['date_created'] );
+		$values['date_created']=$bean->dbManager->getHelper()->massageValue(gmdate($GLOBALS['timedate']->get_db_date_time_format()), $fieldDefs['date_created']);
 		$values['created_by']=$bean->dbManager->getHelper()->massageValue($current_user->id, $fieldDefs['created_by']);
 
 		$sql .= "(".implode(",", array_keys($values)).") ";

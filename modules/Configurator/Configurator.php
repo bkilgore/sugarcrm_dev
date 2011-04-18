@@ -42,7 +42,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 class Configurator {
 	var $config = '';
 	var $override = '';
-	var $allow_undefined = array ('stack_trace_errors', 'export_delimiter', 'use_real_names', 'developerMode', 'default_module_favicon', 'authenticationClass', 'SAML_loginurl', 'SAML_X509Cert', 'dashlet_auto_refresh_min', 'show_download_tab');
+	var $allow_undefined = array ('stack_trace_errors', 'export_delimiter', 'use_real_names', 'developerMode', 'default_module_favicon', 'authenticationClass', 'SAML_loginurl', 'SAML_X509Cert');
 	var $errors = array ('main' => '');
 	var $logger = NULL;
 	var $previous_sugar_override_config_array = array();
@@ -76,7 +76,6 @@ class Configurator {
 			}}
             
 		}
-		 
 	}
 
 	function handleOverride($fromParseLoggerSettings=false) {
@@ -188,22 +187,7 @@ class Configurator {
 			$this->saveCompanyLogo($_POST['company_logo']);
 		}
 	}
-	
-	function checkTempImage($path){
-		$exists = false;
-		if(file_exists($path)){
-			$supportedExtensions = array('jpg', 'png', 'jpeg');
-			$img_size = getimagesize($path);
-			$filetype = $img_size['mime'];
-	    	$ext = end(explode(".", $path));
-	    	$exists = true;
-		}
-    	if(!$exists || substr_count('..', $path) > 0 || $ext === $path || !in_array($ext, $supportedExtensions) || ($filetype != 'image/jpeg' && $filetype != 'image/png') ){
-        	$GLOBALS['log']->fatal("A user ({$GLOBALS['current_user']->id}) attempted to use an invalid file for the logo - {$path}");
-        	sugar_die('Invalid File Type');
-		}
-		return $path;
-	}
+    
     /**
      * Saves the company logo to the custom directory for the default theme, so all themes can use it
      *
@@ -211,7 +195,6 @@ class Configurator {
      */
 	function saveCompanyLogo($path) 
     {
-    	$path = $this->checkTempImage($path);
         mkdir_recursive('custom/'.SugarThemeRegistry::current()->getDefaultImagePath(), true);
         copy($path,'custom/'. SugarThemeRegistry::current()->getDefaultImagePath(). '/company_logo.png');
         sugar_cache_clear('company_logo_attributes');

@@ -36,28 +36,21 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 
-$default_modules_sources = array (
-  'Accounts' =>
+$default_connectors = array (
+  'ext_rest_linkedin' => 
   array (
-    'ext_rest_linkedin' => 'ext_rest_linkedin',
-  ),
-  'Contacts' =>
-  array (
-    'ext_rest_linkedin' => 'ext_rest_linkedin',
-  ),
-
-  'Leads' =>
-  array (
-    'ext_rest_linkedin' => 'ext_rest_linkedin',
-  ),
-  'Prospects' =>
-  array (
-    'ext_rest_linkedin' => 'ext_rest_linkedin',
-
-  ),
+    'id' => 'ext_rest_linkedin',
+    'name' => 'LinkedIn&#169;',
+    'enabled' => true,
+    'directory' => 'modules/Connectors/connectors/sources/ext/rest/linkedin',
+    'modules' => 
+    array ( 
+    ),
+  ), 
 
 );
 
+// Gather a list of the previous Connectors available for a potential merge
 $previous_connectors = array();
 if(file_exists('custom/modules/Connectors/metadata/connectors.php')){
     require('custom/modules/Connectors/metadata/connectors.php');
@@ -66,13 +59,35 @@ if(file_exists('custom/modules/Connectors/metadata/connectors.php')){
         $connector_id = $connector_array['id'];
         $previous_connectors[$connector_id] = $connector_id;
     }
-}
+} 
+
+$default_modules_sources = array (
+  'Accounts' => 
+  array (
+    'ext_rest_linkedin' => 'ext_rest_linkedin',
+  ),
+  'Contacts' => 
+  array (
+    'ext_rest_linkedin' => 'ext_rest_linkedin',
+  ),
+   
+  'Leads' =>
+  array (
+    'ext_rest_linkedin' => 'ext_rest_linkedin',
+  ),
+  'Prospects' =>
+  array (
+    'ext_rest_linkedin' => 'ext_rest_linkedin',
+     
+  ),
+    
+);
 
 // Merge in old modules the customer added instead of overriding it completely with defaults
 // If they have customized their connectors modules
 if(file_exists('custom/modules/Connectors/metadata/display_config.php')){
     require('custom/modules/Connectors/metadata/display_config.php');
-
+    
     // Remove the default settings from being copied over since they already existed
     foreach($default_modules_sources as $module => $sources){
         foreach($sources as $source_key => $source){
@@ -83,17 +98,15 @@ if(file_exists('custom/modules/Connectors/metadata/display_config.php')){
             }
         }
     }
-
+    
     // Merge in the new connector default settings with the current settings
-    if ( isset($modules_sources) && is_array($modules_sources) ) {
-        foreach($modules_sources as $module => $sources){
-            if(!empty($default_modules_sources[$module])){
-                $merged = array_merge($modules_sources[$module], $default_modules_sources[$module]);
-                $default_modules_sources[$module] = $merged;
-            }
-            else{
-                $default_modules_sources[$module] = $modules_sources[$module];
-            }
+    foreach($modules_sources as $module => $sources){
+        if(!empty($default_modules_sources[$module])){
+            $merged = array_merge($modules_sources[$module], $default_modules_sources[$module]);
+            $default_modules_sources[$module] = $merged;
+        }
+        else{
+            $default_modules_sources[$module] = $modules_sources[$module];
         }
     }
 }
@@ -102,15 +115,17 @@ if(!file_exists('custom/modules/Connectors/metadata')) {
    mkdir_recursive('custom/modules/Connectors/metadata');
 }
 
+if(!write_array_to_file('connectors', $default_connectors, 'custom/modules/Connectors/metadata/connectors.php')) {
+   $GLOBALS['log']->fatal('Cannot write file custom/modules/Connectors/metadata/connectors.php');
+}	
+
 if(!write_array_to_file('modules_sources', $default_modules_sources, 'custom/modules/Connectors/metadata/display_config.php')) {
    $GLOBALS['log']->fatal('Cannot write file custom/modules/Connectors/metadata/display_config.php');
 }
 
-/*
 require_once('include/connectors/utils/ConnectorUtils.php');
 if(!ConnectorUtils::updateMetaDataFiles()) {
-   $GLOBALS['log']->fatal('Cannot update metadata files for connectors');
+   $GLOBALS['log']->fatal('Cannot update metadata files for connectors');	
 }
-*/
 
 ?>

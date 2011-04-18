@@ -59,7 +59,7 @@ $mod_strings = array (
 	'LBL_SUBCATEGORY' => 'Sub Category',
 	'LBL_STATUS' => 'Status',
 	'LBL_CREATED_BY'=> 'Created by',
-	'LBL_DATE_ENTERED'=> 'Date Created',
+	'LBL_DATE_ENTERED'=> 'Date Entered',
 	'LBL_DATE_MODIFIED'=> 'Date Modified',
 	'LBL_DELETED' => 'Deleted',
 	'LBL_MODIFIED'=> 'Modified by ID',
@@ -82,18 +82,13 @@ $mod_strings = array (
 	'LBL_FILE_EXTENSION'  => 'File Extension',
 	'LBL_LAST_REV_MIME_TYPE' => 'Last revision MIME type',
 	'LBL_CAT_OR_SUBCAT_UNSPEC'=>'Unspecified',
-    'LBL_HOMEPAGE_TITLE' => 'My Documents',
 	//quick search
 	'LBL_NEW_FORM_TITLE' => 'New Document',
 	//document edit and detail view
 	'LBL_DOC_NAME' => 'Document Name:',
 	'LBL_FILENAME' => 'File Name:',
-	'LBL_LIST_FILENAME' => 'File:',
 	'LBL_DOC_VERSION' => 'Revision:',
-	'LBL_FILE_UPLOAD' => 'File:',
-
 	'LBL_CATEGORY_VALUE' => 'Category:',
-	'LBL_LIST_CATEGORY' => 'Category',
 	'LBL_SUBCATEGORY_VALUE'=> 'Sub Category:',
 	'LBL_DOC_STATUS'=> 'Status:',
 	'LBL_LAST_REV_CREATOR' => 'Revision Created By:',
@@ -154,7 +149,7 @@ $mod_strings = array (
 
 	'LBL_TREE_TITLE' => 'Documents',
 	//sub-panel vardefs.
-	'LBL_LIST_DOCUMENT_NAME'=>'Name',
+	'LBL_LIST_DOCUMENT_NAME'=>'Document Name',
 	'LBL_CONTRACT_NAME'=>'Contract Name:',
 	'LBL_LIST_IS_TEMPLATE'=>'Template?',
 	'LBL_LIST_TEMPLATE_TYPE'=>'Document Type',
@@ -167,23 +162,6 @@ $mod_strings = array (
     'LBL_CREATED_USER' => 'Created User',
     'LBL_THEREVISIONS_SUBPANEL_TITLE' => 'Reversions',
     'LBL_DOCUMENT_INFORMATION' => 'Document Overview',
-	'LBL_DOC_ID' => 'Document Source ID',
-	'LBL_DOC_TYPE' => 'Source',
-	'LBL_LIST_DOC_TYPE' => 'Source',
-    'LBL_DOC_TYPE_POPUP' => 'Select a source to which this document will be uploaded<br> and from which it will be available.',
-	'LBL_DOC_URL' => 'Document Source URL',
-    'LBL_SEARCH_EXTERNAL_DOCUMENT' => 'File Name',
-    'LBL_EXTERNAL_DOCUMENT_NOTE' => 'The first 20 most recently modified files are displayed in descending order in the list below. Use the Search to find other files.',
-    'LBL_LIST_EXT_DOCUMENT_NAME' => 'File Name',
-
-    // Links around the world
-    'LBL_ACCOUNTS_SUBPANEL_TITLE' => 'Accounts',
-    'LBL_CONTACTS_SUBPANEL_TITLE' => 'Contacts',
-    'LBL_OPPORTUNITIES_SUBPANEL_TITLE' => 'Opportunities',
-    'LBL_CASES_SUBPANEL_TITLE' => 'Cases',
-    'LBL_BUGS_SUBPANEL_TITLE' => 'Bugs',
-    'LBL_QUOTES_SUBPANEL_TITLE' => 'Quotes',
-	'LBL_PRODUCTS_SUBPANEL_TITLE' => 'Products',
 );
 
 

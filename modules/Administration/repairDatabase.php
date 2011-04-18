@@ -57,7 +57,7 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 			header("Content-Disposition: attachment; filename=repairSugarDB.sql");
 			header("Content-Type: text/sql; charset={$app_strings['LBL_CHARSET']}");
 			header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-			header("Last-Modified: " . TimeDate::httpTime());
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 			header("Cache-Control: post-check=0, pre-check=0", false);
 			header("Content-Length: " . strlen($_POST['sql']));
 
@@ -94,7 +94,7 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 
 		if (!$export && empty ($_REQUEST['repair_silent'])) {
 			if ( empty($hideModuleMenu) )
-		        echo getClassicModuleTitle($mod_strings['LBL_REPAIR_DATABASE'], array($mod_strings['LBL_REPAIR_DATABASE']), true);
+		        echo get_module_title($mod_strings['LBL_REPAIR_DATABASE'], $mod_strings['LBL_REPAIR_DATABASE'], true);
 			echo "<h1 id=\"rdloading\">{$mod_strings['LBL_REPAIR_DATABASE_PROCESSING']}</h1>";
 			ob_flush();
 		}
@@ -103,7 +103,7 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 
 		VardefManager::clearVardef();
 		$repairedTables = array();
-
+		
 		foreach ($beanFiles as $bean => $file) {
 			if(file_exists($file)){
 				require_once ($file);
@@ -126,7 +126,7 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 				}
 			}
 		}
-
+		
 		$olddictionary = $dictionary;
 
 		unset ($dictionary);
@@ -135,21 +135,20 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 		foreach ($dictionary as $meta) {
 			$tablename = $meta['table'];
 			if (isset($repairedTables[$tablename])) continue;
-
+			
 			$fielddefs = $meta['fields'];
 			$indices = $meta['indices'];
-			$engine = isset($meta['engine'])?$meta['engine']:null;
-			$sql .= $db->repairTableParams($tablename, $fielddefs, $indices, $execute, $engine);
+			$sql .= $db->repairTableParams($tablename, $fielddefs, $indices, $execute);
 			$repairedTables[$tablename] = true;
 		}
 
 		$dictionary = $olddictionary;
 
-
+		
 
 		if (empty ($_REQUEST['repair_silent'])) {
 			echo "<script type=\"text/javascript\">document.getElementById('rdloading').style.display = \"none\";</script>";
-
+			
 			if (isset ($sql) && !empty ($sql)) {
 
 				$qry_str = "";
@@ -172,5 +171,5 @@ if (is_admin($current_user) || isset ($from_sync_client) || is_admin_for_any_mod
 	}
 
 } else {
-	sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']);
+	sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
 }

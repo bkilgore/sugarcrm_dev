@@ -141,7 +141,7 @@ function campaign_process_bounced_emails(&$email, &$email_header)
 {
 	global $sugar_config;
 	$emailFromAddress = $email_header->fromaddress;
-	$email_description = $email->raw_source;
+	$email_description = $email->description;
     $email_description .= retrieveErrorReportAttachment($email);
 
 	if (preg_match('/MAILER-DAEMON|POSTMASTER/i',$emailFromAddress)) 

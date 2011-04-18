@@ -36,14 +36,14 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 
-
+                                                                                       
 require_once('include/generic/SugarWidgets/SugarWidget.php');
-
+                                                                                       
 
 global $current_user;
-
+                                                                                       
 $global_currency_obj = null;
-
+                                                                                       
 function get_currency()
 {
         global $current_user,$global_currency_obj;
@@ -51,7 +51,7 @@ function get_currency()
         {
         $global_currency_obj = new Currency();
       //  $global_currency_symbol = '$';
-
+                                                                                       
         if($current_user->getPreference('currency') )
         {
                 $global_currency_obj->retrieve($current_user->getPreference('currency'));
@@ -79,7 +79,7 @@ class SugarWidgetFieldCurrency extends SugarWidgetFieldInt
                     $key = $this->_get_column_alias($layout_def);
                 }
                 $key = strtoupper($key);
-
+                
                 if ( $this->isSystemCurrency($layout_def) ) {
                     $currency_id = '-99';
                 } else {
@@ -88,7 +88,7 @@ class SugarWidgetFieldCurrency extends SugarWidgetFieldInt
                 if ( empty($currency_id) ) {
                     $currency_id = '-99';
                 }
-
+                
                 if ( !isset($currencies[$currency_id]) ) {
                     $currencies[$currency_id] = new Currency();
                     $currencies[$currency_id]->retrieve($currency_id);
@@ -107,27 +107,27 @@ class SugarWidgetFieldCurrency extends SugarWidgetFieldInt
             $display = $symbol.$this->displayListPlain($layout_def);
             return $display;
         }
-
+                             
     function displayListPlain($layout_def) {
 //        $value = $this->_get_list_value($layout_def);
-        $value = format_number(parent::displayListPlain($layout_def), null, null, array('convert' => false, 'currency_symbol' => false));
+        $value = format_number(parent::displayListPlain($layout_def), 2, 2, array('convert' => false, 'currency_symbol' => false));
         return $value;
-    }
+    }                                                          
  function queryFilterEquals(&$layout_def)
  {
      return $this->_get_column_select($layout_def)."=".$GLOBALS['db']->quote(unformat_number($layout_def['input_name0']))."\n";
  }
-
+                                                                                       
  function queryFilterNot_Equals(&$layout_def)
  {
      return $this->_get_column_select($layout_def)."!=".$GLOBALS['db']->quote(unformat_number($layout_def['input_name0']))."\n";
  }
-
+                                                                                       
  function queryFilterGreater(&$layout_def)
  {
      return $this->_get_column_select($layout_def)." > ".$GLOBALS['db']->quote(unformat_number($layout_def['input_name0']))."\n";
  }
-
+                                                                                       
  function queryFilterLess(&$layout_def)
  {
      return $this->_get_column_select($layout_def)." < ".$GLOBALS['db']->quote(unformat_number($layout_def['input_name0']))."\n";
@@ -155,12 +155,12 @@ class SugarWidgetFieldCurrency extends SugarWidgetFieldInt
          } else {
              $table = '';
          }
-
+         
          $add_currency_id = false;
          if(!empty($table)) {
          	$cols = $GLOBALS['db']->getHelper()->get_columns($table);
             $add_currency_id = isset($cols['currency_id']) ? true : false;
-
+            
             if(!$add_currency_id && preg_match('/.*?_cstm$/i', $table)) {
                $table = str_replace('_cstm', '', $table);
                $cols = $GLOBALS['db']->getHelper()->get_columns($table);
@@ -170,10 +170,9 @@ class SugarWidgetFieldCurrency extends SugarWidgetFieldInt
          
          if($add_currency_id) {         	
          	return $this->_get_column_select($layout_def)." ".$this->_get_column_alias($layout_def)." , ".$table.".currency_id ". $this->getTruncatedColumnAlias($this->_get_column_alias($layout_def)."_currency") . "\n";
-
          } else {
          	return $this->_get_column_select($layout_def)." ".$this->_get_column_alias($layout_def)."\n";
-         }
+         }      
      } else {
          return $this->_get_column_select($layout_def)." ".$this->_get_column_alias($layout_def)."\n";
      }

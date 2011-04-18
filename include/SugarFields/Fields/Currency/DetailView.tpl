@@ -39,5 +39,5 @@
 {sugar_number_format var={{sugarvar key='value' stringFormat='false'}} }
 </span>
 {{if !empty($displayParams.enableConnectors)}}
-{{sugarvar_connector view='DetailView'}}
+{{sugarvar_connector view='DetailView'}} 
 {{/if}}

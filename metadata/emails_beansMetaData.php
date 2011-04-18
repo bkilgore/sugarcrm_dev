@@ -70,7 +70,7 @@ $dictionary['emails_beans'] = array('table' => 'emails_beans',
 		array(
 			'name'		=> 'bean_module',
 			'type'		=> 'varchar',
-			'len'		=> '100',
+			'len'		=> '36',
 			'comment' 	=> 'bean\'s Module',
 		),
         array(  'name'      => 'campaign_data',

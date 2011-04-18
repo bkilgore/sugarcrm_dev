@@ -45,12 +45,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 require_once('include/OutboundEmail/OutboundEmail.php');
-global $current_user;
-if ( !is_admin($current_user)
-		&& !is_admin_for_module($GLOBALS['current_user'],'Emails')
- 	    && !is_admin_for_module($GLOBALS['current_user'],'Campaigns') ){
-sugar_die("Unauthorized access to administration.");
-}
+
 
 //Do not allow users to spoof for sendmail if the config flag is not set.
 if( !isset($sugar_config['allow_sendmail_outbound']) || !$sugar_config['allow_sendmail_outbound'])

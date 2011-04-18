@@ -115,7 +115,6 @@ class SugarTinyMCE {
 		}
 		
 		$config = $this->defaultConfig;
-		$config['directionality'] = SugarThemeRegistry::current()->directionality;
 		$config['elements'] = $targets;
 		$config['theme_advanced_buttons1'] = $this->buttonConfigs['default']['buttonConfig']; 
 		$config['theme_advanced_buttons2'] = $this->buttonConfigs['default']['buttonConfig2']; 

@@ -35,6 +35,12 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  * "Powered by SugarCRM".
  ********************************************************************************/
 
+/*********************************************************************************
+
+ * Description:
+ * Portions created by SugarCRM are Copyright (C) SugarCRM, Inc. All Rights
+ * Reserved. Contributor(s): ______________________________________..
+ *********************************************************************************/
 
 class SugarChart {
 
@@ -54,9 +60,6 @@ class SugarChart {
 	var $currency_symbol;
 	var $thousands_symbol;
 	var $is_currency;
-	var $supports_image_export = false;
-	var $print_html_legend_pdf = false;
-	var $image_export_type = "";
 	
 	public function __construct() {
 		$this->db = &DBManagerFactory::getInstance();
@@ -78,7 +81,6 @@ class SugarChart {
 			$this->div = 1;
 			$this->is_currency = false;
         }
-        $this->image_export_type = (extension_loaded('gd') && function_exists('gd_info')) ? "png" : "jpg";
 	}
 	
 	function getData($query){
@@ -532,8 +534,6 @@ class SugarChart {
 						if($this->is_currency) {
 						  $sub_amount = $this->formatNumber($this->convertCurrency($new_data[$groupByKey][$i]['total']));
 						  $sub_amount_formatted = $this->currency_symbol . $sub_amount . 'K';
-						  //bug: 38877 - do not format the amount for the value as it breaks the chart
-						  $sub_amount = $this->convertCurrency($new_data[$groupByKey][$i]['total']);
 						} else {
 						  $sub_amount = $new_data[$groupByKey][$i]['total'];
 						  $sub_amount_formatted = $sub_amount;
@@ -691,32 +691,28 @@ class SugarChart {
 		// generate strings for chart if it does not exist
 		global $current_language, $theme, $sugar_config,$app_strings;
 		
-		$this->app_strings = $app_strings;
-		$this->chartStringsXML = $GLOBALS['sugar_config']['tmp_dir'].'chart_strings.' . $current_language .'.lang.xml';
-		if (!file_exists($this->chartStringsXML)){
-			$this->generateChartStrings($this->chartStringsXML);
+		$chartStringsXML = $GLOBALS['sugar_config']['tmp_dir'].'chart_strings.' . $current_language .'.lang.xml';
+		if (!file_exists($chartStringsXML)){
+			$this->generateChartStrings($chartStringsXML);
 		}
-				
-		$templateFile = "";			
-		return $templateFile;
+							
+		$this->ss->assign("chartName", $name);
+		$this->ss->assign("chartXMLFile", $xmlFile);
+		$this->ss->assign("chartStringsXML", $chartStringsXML);
+		
+		// chart styles and color definitions
+		$this->ss->assign("chartStyleCSS", SugarThemeRegistry::current()->getCSSURL('chart.css'));
+		$this->ss->assign("chartColorsXML", SugarThemeRegistry::current()->getImageURL('sugarColors.xml'));
+		
+		$this->ss->assign("width", $width);
+		$this->ss->assign("height", $height);
+		
+		$this->ss->assign("resize", $resize);
+		$this->ss->assign("app_strings", $app_strings);				
+		return $this->ss->fetch('include/SugarCharts/tpls/chart.tpl');
 	}
 
-	function getDashletScript($id,$xmlFile="") {
-		
-	$xmlFile = (!$xmlFile) ? $sugar_config['tmp_dir']. $current_user->id . '_' . $this->id . '.xml' : $xmlFile;
-	$chartStringsXML = $GLOBALS['sugar_config']['tmp_dir'].'chart_strings.' . $current_language .'.lang.xml'; 
-	
-	$this->ss->assign('chartName', $id);
-    $this->ss->assign('chartXMLFile', $xmlFile);
-    $this->ss->assign('chartStyleCSS', SugarThemeRegistry::current()->getCSSURL('chart.css'));
-    $this->ss->assign('chartColorsXML', SugarThemeRegistry::current()->getImageURL('sugarColors.xml'));
-    $this->ss->assign('chartLangFile', $GLOBALS['sugar_config']['tmp_dir'].'chart_strings.' . $GLOBALS['current_language'] .'.lang.xml');
- 	        
-		$templateFile = "";
-		return $templateFile;
-	}
-	
-	
+
   /**
          This function is used for localize all the characters in the Chart. And it can also sort all the dom_values by the sequence defined in the dom, but this may produce a lot of extra empty data in the xml file, when the chart is sorted by two key cols.
          If the data quantity is large, it maybe a little slow.
@@ -814,28 +810,5 @@ class SugarChart {
         }
         return $data;
     }
-    
-    function getChartResources() {
-		
-		$resources = "";
-		return $resources;
-	}
-	
-	function getMySugarChartResources() {
-		
-		$mySugarRources = "";
-		return $mySugarResources;
-	}
-	
-	/**
-     * wrapper function to return chart array after any additional processing
-	 * 
-     * @param 	array $chartsArray 	array of chart config items that need processing
-     * @return	array $chartArray after it has been process
-     */
-	function chartArray($chartsArray) {
-
-		return $chartsArray;
-	}
 
 } // end class def

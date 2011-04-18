@@ -53,6 +53,9 @@ $file_name = $json->decode(html_entity_decode($_REQUEST['file_name']));
 
 $filesize = '';
 if(file_exists($file_name)){
+	//$fh = fopen($file_name, 'r');
+    //$license_contents = fread($fh, filesize($file_name));
+    //fclose($fh);
     $filesize =filesize($file_name);
 }
 

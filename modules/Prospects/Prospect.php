@@ -116,7 +116,7 @@ class Prospect extends Person {
 		if($custom_join)
 				$custom_join['join'] .= $relate_link_join;
                          $query = "SELECT
-                                prospects.*,email_addresses.email_address email_address,
+                                prospects.*,email_addresses.email_address email1,
                                 users.user_name as assigned_user_name ";
 						if($custom_join){
    							$query .= $custom_join['select'];

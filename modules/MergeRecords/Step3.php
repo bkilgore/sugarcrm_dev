@@ -47,7 +47,7 @@ if (!defined('sugarEntry') || !sugarEntry)
 
 
 require_once ('include/JSON.php');
-$timedate = TimeDate::getInstance();
+$timedate = new TimeDate();
 global $app_strings;
 global $mod_strings;
 global $app_list_strings;
@@ -57,8 +57,8 @@ global $currentModule;
 global $theme;
 global $filter_for_valid_editable_attributes;
 //filter condition for fields in vardefs that can participate in merge.
-$filter_for_valid_editable_attributes =
-    array(
+$filter_for_valid_editable_attributes = 
+    array( 
 		array('type'=>'datetimecombo','source'=>'db'),
          array('type'=>'datetime','source'=>'db'),
          array('type'=>'varchar','source'=>'db'),
@@ -91,7 +91,7 @@ if (isset($_REQUEST['change_parent']) && $_REQUEST['change_parent']=='1') {
             $merge_ids_array[] = $id;
         }
      }
-     //add the existing parent to merged_id array.
+     //add the existing parent to merged_id array.   
      $merge_ids_array[] = $_REQUEST['record'];
 } elseif (isset($_REQUEST['remove']) && $_REQUEST['remove']=='1') {
     $base_id=$_REQUEST['record'];
@@ -100,7 +100,7 @@ if (isset($_REQUEST['change_parent']) && $_REQUEST['change_parent']=='1') {
         if ($id != $removed_id) {
             $merge_ids_array[] = $id;
         }
-     }
+     }       
 } else {
     $base_id=$_REQUEST['record'];
      foreach ($_REQUEST['mass'] as $id) {
@@ -158,15 +158,15 @@ $field_count = 1;
 $json = new JSON(JSON_LOOSE_TYPE);
 $diff_field_count=0;
 foreach ($temp_field_array as $field_array) {
-
-
-    if (show_field($field_array)
+    
+        
+    if (show_field($field_array) 
     ) {
-
+        
         $select_row_curr_field_value = null;
         $b_values_different = false;
         $section_name='merge_row_similar';
-
+    
         //Prcoess locaton of the field. if values are different show field in first section. else 2nd.
         $select_row_curr_field_value = $focus->merge_bean->$field_array['name'];
         foreach ($merge_ids_array as $id) {
@@ -190,21 +190,21 @@ foreach ($temp_field_array as $field_array) {
             $xtpl->assign("REQUIRED_SYMBOL","<span class='required'>".$app_strings['LBL_REQUIRED_SYMBOL']."</span>");
         } else {
             $xtpl->assign("REQUIRED_SYMBOL","");
-        }
-
+        }            
+        
         $xtpl->assign("CELL_WIDTH", "20%");
         $xtpl->parse("main.".$section_name.".merge_cell_label");
-
+        
         if (isset ($field_array['custom_type']) && $field_array['custom_type'] != '')
             $field_check = $field_array['custom_type'];
         else
             $field_check = $field_array['type'];
 
-
+            
         if(preg_match('/.*?_address_street$/', $field_array['name'])) {
            $field_check = 'text';
-        }
-
+        }    
+            
         $xtpl->assign("EDIT_FIELD_NAME", $field_array['name']);
         $xtpl->assign("TAB_INDEX", $field_count);
 
@@ -220,7 +220,7 @@ foreach ($temp_field_array as $field_array) {
             case ('float') :
             case ('double') :
             case ('currency') :
-
+            
                 $xtpl->assign("EDIT_FIELD_VALUE", $select_row_curr_field_value);
                 $xtpl->assign("CELL_WIDTH", $col_width);
                 $xtpl->parse("main.".$section_name.".merge_cell_edit_text");
@@ -252,7 +252,7 @@ foreach ($temp_field_array as $field_array) {
                     $related_name=get_related_name($field_array,$focus->merge_bean->$field_array['id_name']);
                     if ($related_name !== false ) {
                        $select_row_curr_field_value=$related_name;
-                    }
+                    } 
                 }
                 if($field_check == 'link') {//relate type should not enter this.
                     $exclude[$field_array['name']] = $field_array['name'];
@@ -342,7 +342,7 @@ foreach ($temp_field_array as $field_array) {
                     }
                	    display_field_value($mergeBeanArray[$id]-> $field_array['name']);
                     $field_name="main.".$section_name.".merge_cell_field_value";
-                    break;
+                    break; 
                 default :
                     display_field_value($mergeBeanArray[$id]-> $field_array['name']);
                     $field_name="main.".$section_name.".merge_cell_field_value";
@@ -366,9 +366,9 @@ foreach ($temp_field_array as $field_array) {
             }
             $encoded_json_data = $json->encode($json_data);
             $xtpl->assign('ENCODED_JSON_DATA', $encoded_json_data);
-            $xtpl->parse($field_name);
+            $xtpl->parse($field_name);            
         }
-
+        
         $xtpl->parse("main.".$section_name);
         $field_count ++;
     }
@@ -390,8 +390,8 @@ if ($diff_field_count>0) {
     $xtpl->assign("GROUP_PARTITION","<tr height=3><td colspan=20' class='listViewHRS1'></td></tr>");
 } else {
     $xtpl->assign("SIMILAR_HEADER","<tr height='20'><td colspan=2><strong>{$mod_strings['LBL_SAME_COL_VALUES']}</strong></td>".implode(' ',$header_cols)."</tr>");
-}
-$merge_verify=$mod_strings['LBL_DELETE_MESSAGE'].'\\n';
+}       
+$merge_verify=$mod_strings['LBL_DELETE_MESSAGE'].'\\n'; 
 foreach ($merge_records_names as $name) {
 	$merge_verify.= $name."\\n";
 }
@@ -416,7 +416,7 @@ $javascript->setFormName('EditView');
 $javascript->setSugarBean($focus->merge_bean);
 $javascript->addAllFields('');
 if (isset($focus->merge_bean->field_defs['team_name'])) {
-    $javascript->addFieldGeneric('team_name', 'varchar', $app_strings['LBL_TEAM'] ,'true');
+    $javascript->addFieldGeneric('team_name', 'varchar', $app_strings['LBL_TEAM'] ,'true');    
 }
 $xtpl->assign("VALIDATION_JS", $javascript->getScript());
 
@@ -429,18 +429,18 @@ $xtpl->out("main");
 function display_field_value($value) {
     global $xtpl, $max_data_length, $mod_strings;
     if (strlen($value)-$max_data_length > 3) {
-        $xtpl->assign("FIELD_VALUE", substr($value,0,$max_data_length).'...');
+        $xtpl->assign("FIELD_VALUE", substr($value,0,$max_data_length).'...');                    
     } else {
-        $xtpl->assign("FIELD_VALUE", $value);
+        $xtpl->assign("FIELD_VALUE", $value);                        
     }
-    $xtpl->assign("HOVER_TEXT", $mod_strings['LBL_MERGE_VALUE_OVER'] .': ' . $value);
+    $xtpl->assign("HOVER_TEXT", $mod_strings['LBL_MERGE_VALUE_OVER'] .': ' . $value);                    
 }
 /*
  * implements the rules that decide which fields will participate in a merge.
  */
 function show_field($field_def) {
-    global $filter_for_valid_editable_attributes,$invalid_attribute_by_name;
-    //field in invalid attributes list?
+    global $filter_for_valid_editable_attributes,$invalid_attribute_by_name;  
+    //field in invalid attributes list? 
     if (isset($invalid_attribute_by_name[$field_def['name']])) {
         return false;
     }
@@ -450,25 +450,25 @@ function show_field($field_def) {
             return false;
         }
         if ($field_def['duplicate_merge']=='enabled' or $field_def['duplicate_merge']==true) {
-            return true;
+            return true;        
         }
     }
-
+    
     //field has auto_increment set to true do not participate in merge.
     //we have a unique index on that field.
     if (isset($field_def['auto_increment']) and $field_def['auto_increment']==true) {
         return false;
     }
-
+    
     //set required attribute values in $field_def
     if (!isset($field_def['source']) or empty($field_def['source'])) {
         $field_def['source']='db';
     }
-
+    
     if (!isset($field_def['dbType']) or empty($field_def['dbType']) and isset($field_def['type'])) {
         $field_def['dbType']=$field_def['type'];
     }
-
+     
     foreach ($filter_for_valid_editable_attributes as $attribute_set) {
         $b_all=false;
         foreach ($attribute_set as $attr=>$value) {
@@ -477,7 +477,7 @@ function show_field($field_def) {
             } else {
                 $b_all=false;
                 break;
-            }
+            }       
         }
         if ($b_all) {
             return true;
@@ -486,7 +486,7 @@ function show_field($field_def) {
     return false;
 }
 /* if the attribute of type relate and name is empty fetch using the vardef entries.
- *
+ * 
  */
 function get_related_name($field_def,$id_value) {
     if (!empty($field_def['rname']) && !empty($field_def['id_name']) && !empty($field_def['table'])) {
@@ -496,7 +496,7 @@ function get_related_name($field_def,$id_value) {
             $col_name = $field_def['rname'];
             //if this module is non db and has a module set, then check to see if this field should be concatenated
             if (!empty($field_def['module']) && $field_def['source'] == 'non-db'){
-                global $beanList, $beanFiles;
+                global $beanList, $beanFiles;    
                   //get the bean field defs based on the module param
                   $bean = $beanList[$field_def['module']];
                   require_once ($beanFiles[$bean]);
@@ -506,13 +506,13 @@ function get_related_name($field_def,$id_value) {
 	                //if field defs has concat field array set, then concatenate values
 	                if(isset($related_def['db_concat_fields']) && !empty($related_def['db_concat_fields'])){
 	                    $temp_str = '';
-
+	            
 	                    if ( ( $focus->db->dbType == 'mysql' ) || ( $focus->db->dbType == 'oci8' ) ){
 	                        foreach($related_def['db_concat_fields'] as $vals){
 	                            if(empty($temp_str)){
 	                                $temp_str .= ' concat('. $vals;
 	                            }else{
-	                                $temp_str .= ", ' ', " .$vals;
+	                                $temp_str .= ", ' ', " .$vals;   
 	                            }
 	                        }
 	                        $temp_str .= ')';
@@ -521,16 +521,16 @@ function get_related_name($field_def,$id_value) {
 	                            if(empty($temp_str)){
 	                                $temp_str .= $vals;
 	                            }else{
-	                                $temp_str .= " + ' ' + " .$vals;
+	                                $temp_str .= " + ' ' + " .$vals;   
 	                            }
 	                        }
 	                    }
-
+	                        
 	                    $col_name = $temp_str;
 	                }
                   }
             }
-
+            
             $query = "select ".$col_name." from " .$field_def['table'] ." where id='$id_value'";
 
             $result=$GLOBALS['db']->query($query);

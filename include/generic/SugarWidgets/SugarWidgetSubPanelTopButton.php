@@ -1,4 +1,4 @@
-    <?php
+<?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 /*********************************************************************************
  * SugarCRM is a customer relationship management program developed by
@@ -91,7 +91,7 @@ class SugarWidgetSubPanelTopButton extends SugarWidget
 		}
 	}
 	
-    function &_get_form($defines, $additionalFormFields = null, $asUrl = false)
+    function &_get_form($defines, $additionalFormFields = null)
     {
         global $app_strings;
         global $currentModule;
@@ -125,39 +125,36 @@ class SugarWidgetSubPanelTopButton extends SugarWidget
         $defines['parent_bean_name'] = get_class( $defines['focus']);
 		$relationship_name = $this->get_subpanel_relationship_name($defines);
         
-        
-        $formValues = array();
+        $form = 'form' . $relationship_name;
+        $button = '<form action="index.php" method="post" name="form" id="' . $form . "\">\n";
 
         //module_button is used to override the value of module name
-        $formValues['module'] = $defines['child_module_name'];
-        $formValues[strtolower($defines['parent_bean_name'])."_id"] = $defines['focus']->id;
+        $button .= "<input type='hidden' name='module' value='".$defines['child_module_name']."'>\n";
+        $button .= "<input type='hidden' name='".strtolower($defines['parent_bean_name'])."_id' value='".$defines['focus']->id."'>\n";
 
         if(isset($defines['focus']->name))
         {
-            $formValues[strtolower($defines['parent_bean_name'])."_name"] = $defines['focus']->name;
-            // #26451,add these fields for custom one-to-many relate field.
+            $button .= "<input type='hidden' name='".strtolower($defines['parent_bean_name'])."_name' value='".$defines['focus']->name."'>";
+            #26451,add these fields for custom one-to-many relate field.
             if(!empty($defines['child_module_name'])){
-                $formValues[$relationship_name."_name"] = $defines['focus']->name;
+            	$button .= "<input type='hidden' name='". $relationship_name ."_name' value='".$defines['focus']->name."'>";
             	$childFocusName = !empty($GLOBALS['beanList'][$defines['child_module_name']]) ? $GLOBALS['beanList'][$defines['child_module_name']] : "";
             	if(!empty($GLOBALS['dictionary'][ $childFocusName ]["fields"][$relationship_name .'_name']['id_name'])){
-            		$formValues[$GLOBALS['dictionary'][ $childFocusName ]["fields"][$relationship_name .'_name']['id_name']] = $defines['focus']->id;
+            		$button .= "<input type='hidden' name='". $GLOBALS['dictionary'][ $childFocusName ]["fields"][$relationship_name .'_name']['id_name'] ."' value='".$defines['focus']->id."'>";
             	}
             }
         }
-        
-        $formValues['return_module'] = $currentModule;
-        
+
+        $button .= '<input type="hidden" name="return_module" value="' . $currentModule . "\" />\n";
+
         if($currentModule == 'Campaigns'){
-            $formValues['return_action'] = "DetailView";
+            $button .= '<input type="hidden" name="return_action" value="DetailView" />';
         }else{
-            $formValues['return_action'] = $defines['action'];
-            if ( $formValues['return_action'] == 'SubPanelViewer' ) {
-                $formValues['return_action'] = 'DetailView';
-            }
+            $button .= '<input type="hidden" name="return_action" value="' . $defines['action'] . "\" />\n";    
         }
         
-        $formValues['return_id'] = $defines['focus']->id;
-        $formValues['return_relationship'] = $relationship_name;
+        $button .= '<input type="hidden" name="return_id" value="' . $defines['focus']->id . "\" />\n";
+        $button .= '<input type="hidden" name="return_relationship" value="' . $relationship_name . "\" />\n";        
         switch ( strtolower( $currentModule ) )
         {
             case 'prospects' :
@@ -176,7 +173,7 @@ class SugarWidgetSubPanelTopButton extends SugarWidget
             default :
                $name = (isset($defines['focus']->name)) ? $defines['focus']->name : "";
         }
-        $formValues['return_name'] = $name;
+        $button .= '<input type="hidden" name="return_name" value="' . $name . "\" />\n";
         
         // TODO: move this out and get $additionalFormFields working properly
         if(empty($additionalFormFields['parent_type']))
@@ -217,41 +214,22 @@ class SugarWidgetSubPanelTopButton extends SugarWidget
 
         if (!empty($defines['child_module_name']) and $defines['child_module_name']=='Contacts' and !empty($defines['parent_bean_name']) and $defines['parent_bean_name']=='contact' ) {
             if (!empty($defines['focus']->id ) and !empty($defines['focus']->name)) {
-                $formValues['reports_to_id'] = $defines['focus']->id;
-                $formValues['reports_to_name'] = $defines['focus']->name;
+                $button .= '<input type="hidden" name="reports_to_id" value="'. $defines['focus']->id .'"  />' . "\n";
+                $button .= '<input type="hidden" name="reports_to_name" value="'. $defines['focus']->name .'"  />' . "\n";
             }
         }
-        $formValues['action'] = "EditView";
+        $button .= '<input type="hidden" name="action" value="EditView" />' . "\n";
         
-        if ( $asUrl ) {
-            $returnLink = '';
-            foreach($formValues as $key => $value ) {
-                $returnLink .= $key.'='.$value.'&';
+        // fill in additional form fields for all but action
+        foreach($additionalFormFields as $key => $value)
+        {
+            if($key != 'action')
+            {
+                $button .= '<input type="hidden" name="' . $key . '" value="' . $value . '" />' . "\n";
             }
-            foreach($additionalFormFields as $key => $value ) {
-                $returnLink .= $key.'='.$value.'&';
-            }
-            $returnLink = rtrim($returnLink,'&');
-            
-            return $returnLink;
-        } else {
-            
-            $form = 'form' . $relationship_name;
-            $button = '<form action="index.php" method="post" name="form" id="' . $form . "\">\n";
-            foreach($formValues as $key => $value) {
-                $button .= "<input type='hidden' name='" . $key . "' value='" . $value . "' />\n";
-            }
-            
-            // fill in additional form fields for all but action
-            foreach($additionalFormFields as $key => $value) {
-                if($key != 'action') {
-                    $button .= "<input type='hidden' name='" . $key . "' value='" . $value . "' />\n";
-                }
-            }
-
+        }
 
         return $button;
-        }
     }
 
 	/** This default function is used to create the HTML for a simple button */
@@ -268,15 +246,9 @@ class SugarWidgetSubPanelTopButton extends SugarWidget
 		
 		global $app_strings;
 		
-        if ( isset($_REQUEST['layout_def_key']) && $_REQUEST['layout_def_key'] == 'UserEAPM' ) {
-            // Subpanels generally don't go on the editview, so we have to handle this special
-            $megaLink = $this->_get_form($defines, $additionalFormFields,true);
-            $button = "<input title='$this->title' accesskey='$this->access_key' class='button' type='submit' name='$inputID' id='$inputID' value='  $this->form_value  ' onclick='javascript:document.location=\"index.php?".$megaLink."\"; return false;'/>";
-        } else {
-            $button = $this->_get_form($defines, $additionalFormFields);
-            $button .= "<input title='$this->title' accesskey='$this->access_key' class='button' type='submit' name='$inputID' id='$inputID' value='  $this->form_value  ' />\n</form>";
-        }
-        return $button;
+		$button = $this->_get_form($defines, $additionalFormFields);
+		$button .= "<input title='$this->title' accesskey='$this->access_key' class='button' type='submit' name='$inputID' id='$inputID' value='  $this->form_value  ' />\n</form>";
+		return $button;
 	}
 
 	/**

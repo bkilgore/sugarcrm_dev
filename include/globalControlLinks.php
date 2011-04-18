@@ -1,5 +1,5 @@
 <?php
-if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point'); 
 /*********************************************************************************
  * SugarCRM is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
@@ -41,7 +41,6 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 global $app_strings, $current_user;
-global $sugar_config, $sugar_version, $sugar_flavor, $server_unique_key, $current_language, $action;
 
  if(!isset($global_control_links)){
  	$global_control_links = array();
@@ -56,9 +55,9 @@ $global_control_links['employees'] = array(
 );
 if (
         is_admin($current_user)
-
+        
         ) $global_control_links['admin'] = array(
-
+        
 'linkinfo' => array($app_strings['LBL_ADMIN'] => 'index.php?module=Administration&action=index'),
 'submenu' => ''
 );
@@ -66,11 +65,6 @@ $global_control_links['training'] = array(
 'linkinfo' => array($app_strings['LBL_TRAINING'] => ' javascript:void window.open(\'http://support.sugarcrm.com\')'),
 'submenu' => ''
  );
-$global_control_links['help'] = array(
-    'linkinfo' => array($app_strings['LNK_HELP'] => ' javascript:void window.open(\'index.php?module=Administration&action=SupportPortal&view=documentation&version='.$sugar_version.'&edition='.$sugar_flavor.'&lang='.$current_language.'&help_module='.$GLOBALS['module'].'&help_action='.$action.'&key='.$server_unique_key.'\')'),
-    'submenu' => ''
- );
-
 $global_control_links['users'] = array(
 'linkinfo' => array($app_strings['LBL_LOGOUT'] => 'index.php?module=Users&action=Logout'),
 'submenu' => ''

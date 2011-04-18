@@ -93,7 +93,7 @@ $xtpl->assign("ID", $focus->id);
 $xtpl->assign("CONTACT",$contactName = Array("NAME" => $focus->contact_name, "ID" => $focus->contact_id));
 $xtpl->assign("OPPORTUNITY",$oppName = Array("NAME" => $focus->opportunity_name, "ID" => $focus->opportunity_id));
 
-echo getClassicModuleTitle($mod_strings['LBL_MODULE_NAME'], array($mod_strings['LBL_MODULE_NAME'],$mod_strings['LBL_CONTACT_OPP_FORM_TITLE']." ".$contactName['NAME'] . " - ". $oppName['NAME']), true);
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_CONTACT_OPP_FORM_TITLE']." ".$contactName['NAME'] . " - ". $oppName['NAME'], true);
 
 $xtpl->assign("CONTACT_ROLE_OPTIONS", get_select_options_with_id($app_list_strings['opportunity_relationship_type_dom'], $focus->contact_role));
 

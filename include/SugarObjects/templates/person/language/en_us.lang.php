@@ -56,7 +56,6 @@ $mod_strings = array(
 'LBL_PRIMARY_ADDRESS_STATE'=>'Primary State',
 'LBL_PRIMARY_ADDRESS_POSTALCODE'=>'Primary Postal Code',
 'LBL_PRIMARY_ADDRESS_COUNTRY' => 'Primary Address Country:',
-'LBL_ALT_ADDRESS'=>'Alternate Address', 
 'LBL_ALT_ADDRESS_STREET'=>'Alternate Address',
 'LBL_ALT_ADDRESS_STREET_2' => 'Alternate Address Street 2:',
 'LBL_ALT_ADDRESS_STREET_3' => 'Alternate Address Street 3:',

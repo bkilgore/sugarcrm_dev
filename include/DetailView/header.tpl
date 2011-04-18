@@ -48,13 +48,13 @@
 <input type="hidden" name="return_action">
 <input type="hidden" name="return_module">
 <input type="hidden" name="return_id">
-<input type="hidden" name="module_tab">
+<input type="hidden" name="module_tab"> 
 <input type="hidden" name="isDuplicate" value="false">
 <input type="hidden" name="offset" value="{$offset}">
 <input type="hidden" name="action" value="EditView">
 {{if isset($form.hidden)}}
 {{foreach from=$form.hidden item=field}}
-{{$field}}
+{{$field}}   
 {{/foreach}}
 {{/if}}
 
@@ -77,13 +77,9 @@
 	{{if count($form.buttons) > $num_buttons}}
 			{{foreach from=$form.buttons key=val item=button}}
 			  {{if is_array($button) && $button.customCode}}
-              {{if isset($closeFormBeforeCustomButtons)}}
               <td class="buttons" align="left" NOWRAP>
-              {{/if}}
 			  {{sugar_button module="$module" id="$button" view="EditView"}}
-              {{if isset($closeFormBeforeCustomButtons)}}
               </td>
-              {{/if}}
 			  {{/if}}
 			{{/foreach}}
 	{{/if}}

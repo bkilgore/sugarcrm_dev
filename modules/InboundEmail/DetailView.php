@@ -201,7 +201,7 @@ if('Inactive' == $focus->status) {
     $userStatus = $mod_strings['LBL_STATUS_INACTIVE'];
 }
 
-$xtpl->assign('MODULE_TITLE', getClassicModuleTitle($mod_strings['LBL_MODULE_TITLE'], array($mod_strings['LBL_MODULE_NAME'],$focus->name), true));
+$xtpl->assign('MODULE_TITLE', get_module_title($mod_strings['LBL_MODULE_TITLE'], $mod_strings['LBL_MODULE_NAME'].": ".$focus->name, true));
 $xtpl->assign('MOD', $mod_strings);
 $xtpl->assign('APP', $app_strings);
 $xtpl->assign('CREATED_BY', $focus->created_by_name);
@@ -293,10 +293,10 @@ if($focus->handleIsPersonal()) {
 //Overrides for bounce mailbox accounts
 if ($focus->mailbox_type == 'bounce')
 {
-    $xtpl->assign('MODULE_TITLE', getClassicModuleTitle($mod_strings['LBL_MODULE_TITLE'], array($mod_strings['LBL_BOUNCE_MODULE_NAME'],$focus->name), true));
+    $xtpl->assign('MODULE_TITLE', get_module_title($mod_strings['LBL_MODULE_TITLE'], $mod_strings['LBL_BOUNCE_MODULE_NAME'].": ".$focus->name, true));
 }
 else if( $focus->is_personal == '1')
-     $xtpl->assign('MODULE_TITLE', getClassicModuleTitle($mod_strings['LBL_MODULE_TITLE'], array($mod_strings['LBL_PERSONAL_MODULE_NAME'],$focus->name), true));
+     $xtpl->assign('MODULE_TITLE', get_module_title($mod_strings['LBL_MODULE_TITLE'], $mod_strings['LBL_PERSONAL_MODULE_NAME'].": ".$focus->name, true));
 
 $xtpl->parse('main');
 $xtpl->out('main');

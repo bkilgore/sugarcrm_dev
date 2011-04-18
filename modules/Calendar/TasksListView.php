@@ -121,7 +121,8 @@ global $timedate;
 
 //jc: bug 14616 - dates need to specificy the end of the current date in order to get tasks
 // that are scheduled to start today
-$today = $timedate->getNow(true)->get_day_end_time()->asDb();
+$today = $timedate->to_db_date(date($timedate->get_date_format() . " H:m:s"), false) . " 23:59:59";
+$today = $timedate->handle_offset($today, $timedate->dbDayFormat, true) . " 23:59:59";
 //end bug 14616
 
 $where = "(tasks.assigned_user_id='$current_user->id' and tasks.status<>'Completed' and tasks.status<>'Deferred'";
@@ -132,9 +133,8 @@ $lv->delete = false;
 $lv->select = false;
 $lv->mailMerge = false;
 $lv->multiSelect = false;
-$lv->showMassupdateFields = false;
-$lv->setup($seedTask, 'include/ListView/ListViewNoMassUpdate.tpl', $where, $params);
-echo getClassicModuleTitle($current_module_strings['LBL_MODULE_NAME'], array($current_module_strings['LBL_LIST_FORM_TITLE']), false);
+$lv->setup($seedTask, 'include/ListView/ListViewGeneric.tpl', $where, $params);
+echo get_module_title($current_module_strings['LBL_MODULE_NAME'], $current_module_strings['LBL_LIST_FORM_TITLE'], false);
 
 
 echo $lv->display();

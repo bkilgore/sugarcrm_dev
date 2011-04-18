@@ -21377,7 +21377,8 @@ $sugar_demodata['city_array'] = array(
 	 "Persistance",
 	 "Alabama",
 	 "Kansas City",
-);
+ );
+ 
 
 //cases demodata
 $sugar_demodata['case_seed_names'] = array(
@@ -21423,6 +21424,7 @@ $sugar_demodata['titles'] = array(
 	"Senior Product Manager"
 );
 
+
 //tasks
 $sugar_demodata['task_seed_data_names'] = array(
 	'Assemble catalogs', 
@@ -21446,6 +21448,7 @@ $sugar_demodata['task_seed_data_names'] = array(
 	'Send local user group information', 
 	'Add to mailing list',
 );
+$sugar_demodata['meeting_seed_data_descriptions'] = 'Meeting to discuss project plan and hash out the details of implementation';
 
 //meetings
 $sugar_demodata['meeting_seed_data_names'] = array(
@@ -21456,7 +21459,7 @@ $sugar_demodata['meeting_seed_data_names'] = array(
 	'Demo', 
 	'Introduce all players',
 );
-$sugar_demodata['meeting_seed_data_descriptions'] = 'Meeting to discuss project plan and hash out the details of implementation';
+$sugar_demodata['meeting_seed_data_descriptions'] = '';
 
 //emails
 $sugar_demodata['email_seed_data_subjects'] = array(
@@ -21475,6 +21478,7 @@ $sugar_demodata['billing_address_state']['east'] = 'NY';
 $sugar_demodata['billing_address_state']['west'] = 'CA';
 $sugar_demodata['primary_address_country'] = 'USA';
 
+
 //manufacturers
 $sugar_demodata['manufacturer_seed_data_names'] = array(
 	'TekWare Inc.', 
@@ -21490,6 +21494,7 @@ $sugar_demodata['shipper_seed_data_names'] = array(
 //productcategories
 $sugar_demodata['category_ext_name'] = ' Widgets';
 $sugar_demodata['product_ext_name'] = ' Gadget';
+
 $sugar_demodata['productcategory_seed_data_names'] = array(
 	'Desktops', 
 	'Laptops', 
@@ -21590,6 +21595,23 @@ $sugar_demodata['producttemplate_seed_data'][] = array(
 	'qty_in_stock' => '65',
 ); 
 
+/*
+$sugar_demodata['emailtemplates_seed_data'][] = array(
+    'name' => 'Demo data email',
+    'subject' => 'New demo data information',
+    'description' => 'This template is used when the System Administrator sends a new password to a user.',
+    'body' => '<div><table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" width="550" align=\"\&quot;\&quot;center\&quot;\&quot;\"><tbody><tr><td colspan=\"2\"><p>Here is your account username and temporary password:</p><p>Username : $contact_user_user_name </p><p>Password : $contact_user_user_hash </p><br><p>'.$GLOBALS['sugar_config']['site_url'].'/index.php</p><br><p>After you log in using the above password, you may be required to reset the password to one of your own choice.</p>   </td>         </tr><tr><td colspan=\"2\"></td>         </tr> </tbody></table> </div>',
+    'text_body' => 
+'
+Here is your account username and temporary password:
+Username : $contact_user_user_name
+Password : $contact_user_user_hash
+
+'.$GLOBALS['sugar_config']['site_url'].'/index.php
+
+After you log in using the above password, you may be required to reset the password to one of your own choice.',
+);
+*/
 
 $sugar_demodata['contract_seed_data'][] = array(
 	'name' => 'IT Tech Support for UK Datacenter',
@@ -21624,8 +21646,8 @@ $sugar_demodata['project_seed_data']['audit'] = array(
 
 $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'name' => 'Communicate with internal stakeholders',
-	'date_start' => '2010-11-1',
-	'date_finish' => '2010-11-8',
+	'date_start' => '2010/11/1',
+	'date_finish' => '2010/11/8',
 	'description' => 'Schedule individual meetings with Will, Max, and Sarah.',
 	'duration' => '6',
 	'duration_unit' => 'Days',
@@ -21634,8 +21656,8 @@ $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 
 $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'name' => 'Create draft of the plan',
-	'date_start' => '2010-11-5',
-	'date_finish' => '2010-11-20',
+	'date_start' => '2010/11/5',
+	'date_finish' => '2010/11/20',
 	'description' => 'Start new plan document, including all of the information from the initial discussion meetings.',
 	'duration' => '12',
 	'duration_unit' => 'Days',
@@ -21644,8 +21666,8 @@ $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 
 $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'name' => 'Perform field studies to collect data',
-	'date_start' => '2010-11-5',
-	'date_finish' => '2010-11-13',
+	'date_start' => '2010/11/5',
+	'date_finish' => '2010/11/13',
 	'description' => 'Obtain approval from all stakeholders of the plan.',
 	'duration' => '17',
 	'duration_unit' => 'Days',
@@ -21654,8 +21676,8 @@ $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 
 $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'name' => 'Update draft of the plan',
-	'date_start' => '2010-11-12',
-	'date_finish' => '2010-11-19',
+	'date_start' => '2010/11/12',
+	'date_finish' => '2010/11/19',
 	'description' => 'Schedule a meeting with the heads of the business units to review the plan.',
 	'duration' => '6',
 	'duration_unit' => 'Days',
@@ -21664,8 +21686,8 @@ $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 
 $sugar_demodata['project_seed_data']['audit']['project_tasks'][] = array(
 	'name' => 'Gather data from meetings',
-	'date_start' => '2010-11-20',
-	'date_finish' => '2010-11-20',
+	'date_start' => '2010/11/20',
+	'date_finish' => '2010/11/20',
 	'description' => 'Need to organize the data and create charts to represent the data.',
 	'duration' => '1',
 	'duration_unit' => 'Days',

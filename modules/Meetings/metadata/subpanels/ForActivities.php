@@ -49,8 +49,6 @@ $subpanel_layout = array(
 		'object_image'=>array(
 			'widget_class' => 'SubPanelIcon',
  		 	'width' => '2%',
-			'image2'=>'__VARIABLE',
- 		 	'image2_ext_url_field'=>'displayed_url',
 		),
 		'close_button'=>array(
 			'widget_class' => 'SubPanelCloseButton',
@@ -114,7 +112,7 @@ $subpanel_layout = array(
 		'time_start'=>array(
 			'usage'=>'query_only',
 	
-		),	
+		),					
 	),
 );		
 ?>

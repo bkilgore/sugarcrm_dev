@@ -1,5 +1,5 @@
 <?php
-if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
+if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point'); 
 /*********************************************************************************
  * SugarCRM is a customer relationship management program developed by
  * SugarCRM, Inc. Copyright (C) 2004-2011 SugarCRM Inc.
@@ -53,8 +53,8 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  	$emailTemp = new EmailTemplate();
  	$mail->setMailerForSystem();
     $emailTemp->disable_row_level_security = true;
-
-
+    
+ 	
     if ($current_user->is_admin){
     	if ($emailTemp->retrieve($GLOBALS['sugar_config']['passwordsetting']['generatepasswordtmpl']) == '')
         	return $mod_strings['LBL_EMAIL_TEMPLATE_MISSING'];
@@ -62,7 +62,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
     		return $app_strings['LBL_EMAIL_TEMPLATE_EDIT_PLAIN_TEXT'];
     	if($mail->Mailer == 'smtp' && $mail->Host =='')
     		return $mod_strings['ERR_SERVER_SMTP_EMPTY'];
-
+   
 		$email_errors=$mod_strings['ERR_EMAIL_NOT_SENT_ADMIN'];
 		if ($mail->Mailer == 'smtp')
 			$email_errors.="<br>-".$mod_strings['ERR_SMTP_URL_SMTP_PORT'];
@@ -82,52 +82,57 @@ function  hasPasswordExpired($username){
 	$current_user->retrieve($usr_id);
 	$type = '';
 	if ($current_user->system_generated_password == '1'){
-        $type='syst';
+        $type='syst';    
     }
 
     if ($current_user->portal_only=='0'){
-	    global $mod_strings, $timedate;
+	    global $mod_strings;
 	    $res=$GLOBALS['sugar_config']['passwordsetting'];
 	  	if ($type != '') {
 		    switch($res[$type.'expiration']){
-
+	        
 	        case '1':
 		    	global $timedate;
 		    	if ($current_user->pwd_last_changed == ''){
-		    		$current_user->pwd_last_changed= $timedate->nowDb();
+		    		$current_user->pwd_last_changed= gmdate($GLOBALS['timedate']->get_db_date_time_format());
 		    		$current_user->save();
 		    		}
-
+		    		
 		        $expireday = $res[$type.'expirationtype']*$res[$type.'expirationtime'];
-		        $expiretime = $timedate->fromUser($current_user->pwd_last_changed)->get("+{$expireday} days")->ts;
-
-			    if ($timedate->getNow()->ts < $expiretime)
+			    $stim = strtotime($current_user->pwd_last_changed);
+			    //add day to timestamp
+			    $expiretime = gmdate("Y-m-d H:i:s", mktime(date("H",$stim), date("i",$stim), date("s",$stim), date("m",$stim), date("d",$stim)+$expireday,   date("Y",$stim)));
+			    $timenow = gmdate($GLOBALS['timedate']->get_db_date_time_format());
+			    
+			    if ($timenow < $expiretime)
 			    	return false;
 			    else{
 			    	$_SESSION['expiration_type']= $mod_strings['LBL_PASSWORD_EXPIRATION_TIME'];
 			    	return true;
 			    	}
-				break;
-
-
+				break;        
+			
+			
 		    case '2':
 		    	$login=$current_user->getPreference('loginexpiration');
 		    	$current_user->setPreference('loginexpiration',$login+1);
 		        $current_user->save();
 		        if ($login+1 >= $res[$type.'expirationlogin']){
 		        	$_SESSION['expiration_type']= $mod_strings['LBL_PASSWORD_EXPIRATION_LOGIN'];
-		        	return true;
+		        	return true;    
 		        }
 		        else
 		            {
 			    	return false;
 			    	}
 		    	break;
-
-		    case '0':
+		    
+		    case '0':      
 		        return false;
 		   	 	break;
 		    }
 		}
     }
 }
+
+?>

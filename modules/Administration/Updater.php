@@ -68,15 +68,7 @@ if (isset($_REQUEST['useraction']) && ($_REQUEST['useraction']=='Save' || $_REQU
 		set_sugarbeat($beat);
 	}
 }
-
-echo getClassicModuleTitle(
-        "Administration", 
-        array(
-            "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
-           $mod_strings['LBL_SUGAR_UPDATE_TITLE'],
-           ), 
-        false
-        );
+echo get_module_title($mod_strings['LBL_MODULE_NAME'], $mod_strings['LBL_CONFIGURE_UPDATER'], true);
 
 if (get_sugarbeat()) $xtpl->assign("SEND_STAT_CHECKED", "checked");
 

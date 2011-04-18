@@ -37,7 +37,7 @@
 $searchdefs['Opportunities'] = array(
   'templateMeta' => 
   array (
-    'maxColumns' => '4',
+    'maxColumns' => '3',
     'widths' => 
     array (
       'label' => '10',
@@ -62,7 +62,7 @@ $searchdefs['Opportunities'] = array(
         'default' => true,
         'width' => '10%',
       ),
-	  array ('name' => 'open_only', 'label' => 'LBL_OPEN_ITEMS', 'type' => 'bool', 'default' => false, 'width' => '10%'),
+      
     ),
     'advanced_search' => 
     array (
@@ -126,6 +126,7 @@ $searchdefs['Opportunities'] = array(
         'default' => true,
         'name' => 'next_step',
       ),
+	  
     ),
   ),
 					

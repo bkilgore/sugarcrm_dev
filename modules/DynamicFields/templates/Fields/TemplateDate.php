@@ -36,16 +36,12 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  ********************************************************************************/
 
 
-require_once('modules/DynamicFields/templates/Fields/TemplateRange.php');
-
-class TemplateDate extends TemplateRange
-{
+class TemplateDate extends TemplateText{
 	var $type = 'date';
 	var $len = '';
 	var $dateStrings;
 
 function __construct() {
-	parent::__construct();
 	global $app_strings;
 	$this->dateStrings = array(
 			$app_strings['LBL_NONE']=>'',
@@ -57,7 +53,7 @@ function __construct() {
             $app_strings['LBL_NEXT_FRIDAY']=>'next friday',
             $app_strings['LBL_TWO_WEEKS']=> '+2 weeks',
             $app_strings['LBL_NEXT_MONTH']=> '+1 month',
-            $app_strings['LBL_FIRST_DAY_OF_NEXT_MONTH']=> 'first day of next month', // must handle this non-GNU date string in SugarBean->populateDefaultValues; if we don't this will evaluate to 1969...
+            $app_strings['LBL_FIRST_DAY_OF_NEXT_MONTH']=> 'first of next month', // must handle this non-GNU date string in SugarBean->populateDefaultValues; if we don't this will evaluate to 1969...
             $app_strings['LBL_THREE_MONTHS']=> '+3 months',  //kbrill Bug #17023
             $app_strings['LBL_SIXMONTHS']=> '+6 months',
             $app_strings['LBL_NEXT_YEAR']=> '+1 year',
@@ -91,7 +87,7 @@ function get_xtpl_edit(){
 			$returnXTPL[strtoupper($this->name)] = $this->bean->$name;
 		}else{
 		    if(empty($this->bean->id) && !empty($this->default_value) && !empty($this->dateStrings[$this->default_value])){
-		        $returnXTPL[strtoupper($this->name)] = $timedate->asUserDate($timedate->getNow(true)->modify($this->dateStrings[$this->default_value]), false);
+		        $returnXTPL[strtoupper($this->name)] = $GLOBALS['timedate']->to_display_date(date($GLOBALS['timedate']->dbDayFormat,strtotime($this->dateStrings[$this->default_value])), false);
 		    }
 		}
 		return $returnXTPL;

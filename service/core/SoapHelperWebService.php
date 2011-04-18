@@ -41,8 +41,7 @@ $disable_date_format = true;
 
 class SoapHelperWebServices {
 
-	function get_field_list($value, $fields, $translate=true)
-	{
+	function get_field_list($value,$fields,  $translate=true) {
 		$GLOBALS['log']->info('Begin: SoapHelperWebServices->get_field_list');
 		$module_fields = array();
 		$link_fields = array();
@@ -50,7 +49,7 @@ class SoapHelperWebServices {
 
 			foreach($value->field_defs as $var){
 				if(!empty($fields) && !in_array( $var['name'], $fields))continue;
-				if(isset($var['source']) && ($var['source'] != 'db' && $var['source'] != 'non-db' && $var['source'] != 'custom_fields') && $var['name'] != 'email1' && $var['name'] != 'email2' && (!isset($var['type'])|| $var['type'] != 'relate'))continue;
+				if(isset($var['source']) && ($var['source'] != 'db' && $var['source'] != 'non-db' &&$var['source'] != 'custom_fields') && $var['name'] != 'email1' && $var['name'] != 'email2' && (!isset($var['type'])|| $var['type'] != 'relate'))continue;
 				if ($var['source'] == 'non_db' && (isset($var['type']) && $var['type'] != 'link')) {
 					continue;
 				}
@@ -59,7 +58,6 @@ class SoapHelperWebServices {
 				$options_ret = array();
 				// Apparently the only purpose of this check is to make sure we only return fields
 				//   when we've read a record.  Otherwise this function is identical to get_module_field_list
-
 				if( isset($var['required']) && $var['required'] && $var['required'] !== 'false' ){
 					$required = 1;
 				}
@@ -317,12 +315,17 @@ function validate_user($user_name, $password){
 		$app_list_strings = return_app_list_strings_language($current_language);
 		$modules = query_module_access_list($user);
 		ACLController :: filterModuleList($modules, false);
-		global $modInvisList;
+		global $modInvisList, $modInvisListActivities;
 
 		foreach($modInvisList as $invis){
 			$modules[$invis] = 'read_only';
 		}
 
+		if(isset($modules['Calendar']) || $modules['Activities']){
+			foreach($modInvisListActivities as $invis){
+					$modules[$invis] = $invis;
+			}
+		}
 		$actions = ACLAction::getUserActions($user->id,true);
 		foreach($actions as $key=>$value){
 			if(isset($value['module']) && $value['module']['access']['aclaccess'] < ACL_ALLOW_ENABLED){
@@ -362,7 +365,7 @@ function validate_user($user_name, $password){
 
 	}
 
-	function get_name_value_list($value){
+	function get_name_value_list(&$value){
 		$GLOBALS['log']->info('Begin: SoapHelperWebServices->get_name_value_list');
 		global $app_list_strings;
 		$list = array();
@@ -467,7 +470,7 @@ function validate_user($user_name, $password){
 		return $list;
 
 	} // fn
-
+	
 	function array_get_name_value_list($array){
 		$GLOBALS['log']->info('Begin: SoapHelperWebServices->array_get_name_value_list');
 		$list = array();
@@ -736,10 +739,11 @@ function validate_user($user_name, $password){
 
 	function new_handle_set_entries($module_name, $name_value_lists, $select_fields = FALSE) {
 		$GLOBALS['log']->info('Begin: SoapHelperWebServices->new_handle_set_entries');
-		global $beanList, $beanFiles, $current_user, $app_list_strings;
+		global $beanList, $beanFiles, $current_user;
 
 		$ret_values = array();
 
+		global $current_user;
 		$class_name = $beanList[$module_name];
 		require_once($beanFiles[$class_name]);
 		$ids = array();
@@ -877,7 +881,7 @@ function validate_user($user_name, $password){
 		}
 	}
 
-	function get_return_value($value, $module){
+	function get_return_value(&$value, $module){
 		$GLOBALS['log']->info('Begin: SoapHelperWebServices->get_return_value');
 		global $module_name, $current_user;
 		$module_name = $module;
@@ -1020,7 +1024,7 @@ function validate_user($user_name, $password){
 	    } // else
 	} // fn
 
-	function check_for_duplicate_contacts($seed){
+	function check_for_duplicate_contacts(&$seed){
 		$GLOBALS['log']->info('Begin: SoapHelperWebServices->check_for_duplicate_contacts');
 		require_once('modules/Contacts/Contact.php');
 

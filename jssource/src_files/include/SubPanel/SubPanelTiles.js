@@ -595,8 +595,7 @@ SUGAR.subpanelUtils = function() {
 			for(group_sp in SUGAR.subpanelUtils.subpanelGroups[group]){
                 if ( typeof(SUGAR.subpanelUtils.subpanelGroups[group][group_sp]) != 'string' ) continue;
 				var cur = document.getElementById('whole_subpanel_'+SUGAR.subpanelUtils.subpanelGroups[group][group_sp]);
-				if (cur != null)
-				    cur.style.display = 'block';
+				cur.style.display = 'block';
 				/* use YDD swapNodes this and first, second, etc. */
 				try{
 					YAHOO.util.DDM.swapNode(cur, sp_list.getElementsByTagName('LI')[group_sp]);

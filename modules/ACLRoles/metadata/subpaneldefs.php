@@ -42,7 +42,7 @@ $layout_defs['ACLRoles'] = array(
 	// sets up which panels to show, in which order, and with what linked_fields
 	'subpanel_setup' => array(
         'users' => array(
-			'top_buttons' => array(	array('widget_class' => 'SubPanelTopSelectUsersButton', 'mode' => 'MultiSelect', 'popup_module' => 'Users', 'filter_out_is_admin' => true,),),
+			'top_buttons' => array(	array('widget_class' => 'SubPanelTopSelectButton', 'mode' => 'MultiSelect', 'popup_module' => 'Users'),),
 			'order' => 20,
 			'module' => 'Users',
 			'sort_by' => 'user_name',
@@ -58,7 +58,7 @@ $layout_defs['UserRoles'] = array(
 	// sets up which panels to show, in which order, and with what linked_fields
 	'subpanel_setup' => array(
         'aclroles' => array(
-			'top_buttons' => array(array('widget_class' => 'SubPanelTopSelectUsersButton', 'mode' => 'MultiSelect','popup_module' => 'ACLRoles', 'filter_out_is_admin' => true,),),
+			'top_buttons' => array(array('widget_class' => 'SubPanelTopSelectButton', 'mode' => 'MultiSelect','popup_module' => 'ACLRoles'),),
 			'order' => 20,
 			'module' => 'ACLRoles',
 			'sort_by' => 'name',

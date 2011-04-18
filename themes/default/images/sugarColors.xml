@@ -40,8 +40,7 @@
     <charts>		
         <docBorder>0xcccccc</docBorder>
 		<docBackground>0xffffff</docBackground>
-		<labelFontFamily>Arial</labelFontFamily>
-		<labelFontColor>0x000000</labelFontColor>
+		
         <scrollButtonFill>0x999999</scrollButtonFill>
         <scrollButtonArrow>0x333333</scrollButtonArrow>
         <scrollBarHighlight>off</scrollBarHighlight>
@@ -92,42 +91,27 @@
 		
 		<labelColor>style</labelColor>		
 		<chartElementColors>
-			<color>0x8c2b2b</color>
-			<color>0x468c2b</color>
-			<color>0x2b5d8c</color>
-			<color>0xcd5200</color>
-			<color>0xe6bf00</color>
-			<color>0x7f3acd</color>
-			<color>0x00a9b8</color>
-			<color>0x572323</color>
-			<color>0x004d00</color>
-			<color>0x000087</color>
-			<color>0xe48d30</color>
-			<color>0x9fba09</color>
-			<color>0x560066</color>
-			<color>0x009f92</color>
-			<color>0xb36262</color>
-			<color>0x38795c</color>
-			<color>0x3D3D99</color>
-			<color>0x99623d</color>
-			<color>0x998a3d</color>
-			<color>0x994e78</color>
-			<color>0x3d6899</color>
+			<color>0xFF0000</color>
+			<color>0x00FF00</color>
+			<color>0x0000FF</color>
+			<color>0xFF6600</color>
+			<color>0x42FF8E</color>
+			<color>0x6600FF</color>
+			<color>0xFFFF00</color>
+			<color>0x00FFFF</color>
+			<color>0xFF00FF</color>
+			<color>0x66FF00</color>
+			<color>0x0066FF</color>
+			<color>0xFF0066</color>
 			<color>0xCC0000</color>
 			<color>0x00CC00</color>
 			<color>0x0000CC</color>
-			<color>0xcc5200</color>
-			<color>0xccaa00</color>
-			<color>0x6600cc</color>
-			<color>0x005fcc</color>
+			<color>0xCC6600</color>
+			<color>0x00CC66</color>
+			<color>0x6600CC</color>
+			<color>0xCCCC00</color>
+			<color>0x00CCCC</color>
 		</chartElementColors>
-		<gaugeChartElementColors>
-			<color>0xcc0000</color>
-			<color>0x990000</color>
-			<color>0xe65c00</color>	
-			<color>0xe6bf00</color>	
-			<color>0x009900</color>	
-		</gaugeChartElementColors>
 		
 		<fadedEdges>off</fadedEdges>
 		

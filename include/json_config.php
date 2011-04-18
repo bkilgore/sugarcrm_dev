@@ -49,7 +49,7 @@ $json = getJSONobj();
 
 class json_config {
 	var $global_registry_var_name = 'GLOBAL_REGISTRY';
-
+	
 	function get_static_json_server($configOnly = true, $getStrings = false, $module = null, $record = null, $scheduler = false) {
 		global $current_user;
 		$str = '';
@@ -60,23 +60,23 @@ class json_config {
 		}
 		$str .= $this->getUserConfigJSON();
 
-		return $str;
+		return $str; 
 	}
-
+	
 	function getAppMetaJSON($scheduler = false) {
-
+        
 		global $json, $sugar_config;
-
+		
 		$str = "\nvar ". $this->global_registry_var_name." = new Object();\n";
 		$str .= "\n".$this->global_registry_var_name.".config = {\"site_url\":\"".getJavascriptSiteURL()."\"};\n";
-
+		
 		$str .= $this->global_registry_var_name.".meta = new Object();\n";
 		$str .= $this->global_registry_var_name.".meta.modules = new Object();\n";
-
+		
 		/*
 		$modules_arr = array('Meetings','Calls');
 		$meta_modules = array();
-
+			
 		global $beanFiles,$beanList;
 		//header('Content-type: text/xml');
 		foreach($modules_arr as $module) {
@@ -85,13 +85,13 @@ class json_config {
 			$meta_modules[$module] = array();
 			$meta_modules[$module]['field_defs'] = $focus->field_defs;
 		}
-
+		
 		$str .= $this->global_registry_var_name.".meta.modules.Meetings = ". $json->encode($meta_modules['Meetings'])."\n";
 		$str .= $this->global_registry_var_name.".meta.modules.Calls = ". $json->encode($meta_modules['Calls'])."\n";
 		*/
 		return $str;
 	}
-
+	
 	function getUserConfigJSON() {
 		global $timedate;
 		global $current_user, $sugar_config;
@@ -112,12 +112,16 @@ class json_config {
 		$user_arr['fields']['last_name'] = $current_user->last_name;
 		$user_arr['fields']['full_name'] = $current_user->full_name;
 		$user_arr['fields']['email'] = $current_user->email1;
-		$user_arr['fields']['gmt_offset'] = $timedate->getUserUTCOffset();
+		$userTz = $timedate->getUserTimeZone();
+		$dstRange = $timedate->getDSTRange(date('Y'), $userTz);
+		$user_arr['fields']['dst_start'] = $dstRange['start'];
+		$user_arr['fields']['dst_end'] = $dstRange['end'];
+		$user_arr['fields']['gmt_offset'] = $userTz['gmtOffset'];
 		$user_arr['fields']['date_time_format'] = $current_user->getUserDateTimePreferences();
 		$str = "\n".$this->global_registry_var_name.".current_user = ".$json->encode($user_arr).";\n";
 		return $str;
 	}
-
+	
 	function getFocusData($module, $record) {
 		global $json;
 		if (empty($module)) {
@@ -126,45 +130,45 @@ class json_config {
 		else if(empty($record)) {
 			return "\n".$this->global_registry_var_name.'["focus"] = {"module":"'.$module.'",users_arr:[],fields:{"id":"-1"}}'."\n";
 		}
-
+	
 		$module_arr = $this->meeting_retrieve($module, $record);
 		return "\n".$this->global_registry_var_name."['focus'] = ". $json->encode($module_arr).";\n";
 	}
-
+	
 	function meeting_retrieve($module, $record) {
 		global $json, $response;
 		global $beanFiles, $beanList;
 		require_once($beanFiles[$beanList[$module]]);
 		$focus = new $beanList[$module];
-
+		
 		if(empty($module) || empty($record)) {
 			return '';
 		}
-
+		
 		$focus->retrieve($record);
 		$module_arr = $this->populateBean($focus);
-
+		
 		if($module == 'Meetings') {
 			$users = $focus->get_meeting_users();
-		}
+		} 
 		else if ( $module == 'Calls') {
 			$users = $focus->get_call_users();
 		}
 
 		$module_arr['users_arr'] = array();
-
+		
 		foreach($users as $user) {
 			array_push($module_arr['users_arr'],  $this->populateBean($user));
 		}
-
+		
 		$module_arr['orig_users_arr_hash'] = array();
-
+		
 		foreach($users as $user) {
 			$module_arr['orig_users_arr_hash'][$user->id] = '1';
 		}
-
+		
 		$module_arr['contacts_arr'] = array();
-
+		
 		$focus->load_relationships('contacts');
 		$contacts=$focus->get_linked_beans('contacts','Contact');
 		foreach($contacts as $contact) {
@@ -176,15 +180,15 @@ class json_config {
 		foreach($leads as $lead) {
 			array_push($module_arr['users_arr'], $this->populateBean($lead));
 	  	}
-
+	
 		return $module_arr;
 	}
-
+	
 	function getStringsJSON($module) {
 	  global $current_language;
 	  $currentModule = 'Calendar';
 	  $mod_list_strings = return_mod_list_strings_language($current_language,$currentModule);
-
+	
 	  global $json;
 	  $str = "\n".$this->global_registry_var_name."['calendar_strings'] =  {\"dom_cal_month_long\":". $json->encode($mod_list_strings['dom_cal_month_long']).",\"dom_cal_weekdays_long\":". $json->encode($mod_list_strings['dom_cal_weekdays_long'])."}\n";
 	  if(empty($module)) {
@@ -194,23 +198,23 @@ class json_config {
 	  $mod_strings = return_module_language($current_language,$currentModule);
 	  return  $str . "\n".$this->global_registry_var_name."['meeting_strings'] =  ". $json->encode($mod_strings)."\n";
 	}
-
+	
 	// HAS MEETING SPECIFIC CODE:
 	function populateBean(&$focus) {
 		require_once('include/utils/db_utils.php');
-		$all_fields = $focus->column_fields;
+		$all_fields = $focus->list_fields;
 		// MEETING SPECIFIC
 		$all_fields = array_merge($all_fields,array('required','accept_status','name')); // need name field for contacts and users
 		//$all_fields = array_merge($focus->column_fields,$focus->additional_column_fields);
-
+		
 		$module_arr = array();
-
+		
 		$module_arr['module'] = $focus->object_name;
-
+		
 		$module_arr['fields'] = array();
-
+		
 		foreach($all_fields as $field) {
-			if(isset($focus->$field) && !is_object($focus->$field)) {
+			if(isset($focus->$field)) {
 				$focus->$field =  from_html($focus->$field);
 				$focus->$field =  preg_replace("/\r\n/","<BR>",$focus->$field);
 				$focus->$field =  preg_replace("/\n/","<BR>",$focus->$field);

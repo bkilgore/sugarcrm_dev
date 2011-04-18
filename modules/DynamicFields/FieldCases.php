@@ -119,7 +119,6 @@ function get_widget($type)
 			case 'id':
 						$local_temp = new TemplateId(); break;
 			case 'datetimecombo':
-			case 'datetime':
 						$local_temp = new TemplateDatetimecombo(); break;
             case 'image':
                         $local_temp = new TemplateImage(); break;

@@ -39,40 +39,36 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
 
 $listViewDefs['Documents'] = array(
+  'FILE_URL' => 
+  array (
+    'width' => '2%',
+    'label' => '&nbsp;',
+    'link' => true,
+    'default' => true,
+    'related_fields' => 
+    array (
+      0 => 'document_revision_id',
+    ),
+    'sortable' => false,
+    'studio' => false,
+  ),
   'DOCUMENT_NAME' => 
   array (
-    'width' => '20%',
+    'width' => '40%',
     'label' => 'LBL_NAME',
     'link' => true,
     'default' => true,
     'bold' => true,
   ),
-  'FILENAME' => 
-  array (
-    'width' => '20%',
-    'label' => 'LBL_FILENAME',
-    'link' => true,
-    'default' => true,
-    'bold' => false,
-    'displayParams' => array ( 'module' => 'Documents', ),
-    'sortable' => false,
-    'related_fields' => 
-    array (
-        0 => 'document_revision_id',
-        1 => 'doc_id', 
-        2 => 'doc_type',
-        3 => 'doc_url',
-    ),
-  ),
   'CATEGORY_ID' => 
   array (
-    'width' => '10%',
+    'width' => '40%',
     'label' => 'LBL_LIST_CATEGORY',
     'default' => true,
   ),
   'SUBCATEGORY_ID' => 
   array (
-    'width' => '15%',
+    'width' => '40%',
     'label' => 'LBL_LIST_SUBCATEGORY',
     'default' => true,
   ),
@@ -87,20 +83,26 @@ $listViewDefs['Documents'] = array(
       0 => 'document_revision_id',
     ),
   ),
+  'CREATED_BY_NAME' => 
+  array (
+    'width' => '2%',
+    'label' => 'LBL_LIST_LAST_REV_CREATOR',
+    'default' => true,
+    'sortable' => false,
+  ),
+  'ACTIVE_DATE' => 
+  array (
+    'width' => '10%',
+    'label' => 'LBL_LIST_ACTIVE_DATE',
+    'default' => true,
+  ),
   'EXP_DATE' => 
   array (
     'width' => '10%',
     'label' => 'LBL_LIST_EXP_DATE',
     'default' => true,
   ),
-  'ASSIGNED_USER_NAME' =>
-  array(
-    'width' => '10',
-    'label' => 'LBL_LIST_ASSIGNED_USER',
-    'module' => 'Employees',
-    'id' => 'ASSIGNED_USER_ID',
-    'default' => true),
-  'MODIFIED_BY_NAME' =>
+  'MODIFIED_BY_NAME' => 
   array (
     'width' => '10%',
     'label' => 'LBL_MODIFIED_USER',
@@ -108,15 +110,10 @@ $listViewDefs['Documents'] = array(
     'id' => 'USERS_ID',
     'default' => false,
     'sortable' => false,
-    'related_fields' =>
+    'related_fields' => 
     array (
       0 => 'modified_user_id',
     ),
-    ),
-  'DATE_ENTERED' => array (
-    'width' => '10%',
-    'label' => 'LBL_DATE_ENTERED',
-    'default' => true,
   )
 );
 ?>

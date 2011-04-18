@@ -41,13 +41,13 @@ class ViewDropdown extends SugarView
  	/**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
-	protected function _getModuleTitleParams($browserTitle = false)
+	protected function _getModuleTitleParams()
 	{
 	    global $mod_strings;
 	    
     	return array(
     	   translate('LBL_MODULE_NAME','Administration'),
-    	   ModuleBuilderController::getModuleTitle(),
+    	   $mod_strings['LBL_MODULEBUILDER'],
     	   );
     }
 
@@ -87,8 +87,8 @@ class ViewDropdown extends SugarView
 		if(!empty($_REQUEST['view_package']) && $_REQUEST['view_package'] != 'studio'){
 			require_once('modules/ModuleBuilder/MB/ModuleBuilder.php');
 			$mb = new ModuleBuilder();
-			$this->module = $mb->getPackageModule($_REQUEST['view_package'], $_REQUEST['view_module']);
-			$package = $mb->packages[$_REQUEST['view_package']];
+			$this->module =& $mb->getPackageModule($_REQUEST['view_package'], $_REQUEST['view_module']);
+			$package =& $mb->packages[$_REQUEST['view_package']];
 			$package_name = $package->name;
 			$this->module->getVardefs();
 			if(empty($_REQUEST['dropdown_name']) && !empty($_REQUEST['field'])){
@@ -111,7 +111,8 @@ class ViewDropdown extends SugarView
 		asort($dropdowns);
 		$keys = array_keys($dropdowns);
 		$first_string = $my_list_strings[$dropdowns[$keys[0]]];
-
+		if(!empty($cf))$smarty->assign('cf', $cf);
+		
 		$name = '';
 		$selected_dropdown = array();
 		

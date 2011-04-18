@@ -170,24 +170,14 @@ EOQ;
 		$button .= "<input type='hidden' name='close_window' value='true'>";
 		$button .= "<input type='hidden' name='html' value='change_address'>";
 		$button .= "<input type='hidden' name='account_name' value='$account_name'>";
-        // Added ID attribute to each element to use getElementById. To give ID attribute to an element is a good practice.
-		$button .= "<span style='display: none'><textarea name='primary_address_street' id='primary_address_street'>" . str_replace("&lt;br&gt;", "\n", $_REQUEST["primary_address_street"]) . "</textarea></span>";
-		$button .= "<input type='hidden' name='primary_address_city' id='primary_address_city' value='". $_REQUEST["primary_address_city"] ."'>";
-		$button .= "<input type='hidden' name='primary_address_state' id='primary_address_state' value='". $_REQUEST["primary_address_state"] ."'>";
-		$button .= "<input type='hidden' name='primary_address_postalcode' id='primary_address_postalcode' value='". $_REQUEST["primary_address_postalcode"] ."'>";
-		$button .= "<input type='hidden' name='primary_address_country' id='primary_address_country' value='". $_REQUEST["primary_address_country"] ."'>";
-		// Adding an onclick event to remove address for alternate address, as user has selected copy address to primary address
-		$button .= "<input title='".$mod_strings['LBL_COPY_ADDRESS_CHECKED_PRIMARY']."'  class='button' LANGUAGE=javascript type='submit' name='button' value='  ".$mod_strings['LBL_COPY_ADDRESS_CHECKED_PRIMARY']."  ' onclick='clearAddress(\"alt\")' >\n";
-		// Adding a new block of code copy the address to alternate address for contacts
-		$button .= "<span style='display: none'><textarea name='alt_address_street' id='alt_address_street'>" . str_replace("&lt;br&gt;", "\n", $_REQUEST["primary_address_street"]) . "</textarea></span>";
-		$button .= "<input type='hidden' name='alt_address_city' id='alt_address_city' value='". $_REQUEST["primary_address_city"] ."'>";
-		$button .= "<input type='hidden' name='alt_address_state' id='alt_address_state' value='". $_REQUEST["primary_address_state"] ."'>";
-		$button .= "<input type='hidden' name='alt_address_postalcode' id='alt_address_postalcode' value='". $_REQUEST["primary_address_postalcode"] ."'>";
-		$button .= "<input type='hidden' name='alt_address_country' id='alt_address_country' value='". $_REQUEST["primary_address_country"] ."'>";
-		// Adding an onclick event to remove address for primary address, as user has selected copy address to alternate address
-		// NOTE => You need to change the label as as per SugarCRM way..
-		$button .= "<input title='".$mod_strings['LBL_COPY_ADDRESS_CHECKED_ALT']."'  class='button' LANGUAGE=javascript type='submit' name='button' value='  ".$mod_strings['LBL_COPY_ADDRESS_CHECKED_ALT']."  ' onclick='clearAddress(\"primary\")' >\n";
+		$button .= "<span style='display: none'><textarea name='primary_address_street'>" . str_replace("&lt;br&gt;", "\n", $_REQUEST["primary_address_street"]) . "</textarea></span>";
+		$button .= "<input type='hidden' name='primary_address_city' value='". $_REQUEST["primary_address_city"] ."'>";
+		$button .= "<input type='hidden' name='primary_address_state' value='". $_REQUEST["primary_address_state"] ."'>";
+		$button .= "<input type='hidden' name='primary_address_postalcode' value='". $_REQUEST["primary_address_postalcode"] ."'>";
+		$button .= "<input type='hidden' name='primary_address_country' value='". $_REQUEST["primary_address_country"] ."'>";
+		$button .= "<input title='".$mod_strings['LBL_COPY_ADDRESS_CHECKED']."'  class='button' LANGUAGE=javascript type='submit' name='button' value='  ".$mod_strings['LBL_COPY_ADDRESS_CHECKED']."  '>\n";
 		$button .= "<input title='".$app_strings['LBL_CANCEL_BUTTON_TITLE']."' accessKey='".$app_strings['LBL_CANCEL_BUTTON_KEY']."' class='button' LANGUAGE=javascript onclick=\"window.close()\" type='submit' name='button' value='  ".$app_strings['LBL_CANCEL_BUTTON_LABEL']."  '>\n";
+	
 		ob_start();
 		insert_popup_header($theme);
 		$output_html .= ob_get_contents();
@@ -219,36 +209,22 @@ EOQ;
         $change = 'save_checks';
         $output_html = preg_replace(array($exp), array($change), $output_html);
         
-		$output_html .= <<<EOJS
-        <script type="text/javascript>
-        <!--
-        // Function to clear address according to the buttons clicked.
-        function clearAddress(key)
-        {
-            document.getElementById(key+"_address_street").value = "";
-            document.getElementById(key+"_address_city").value = "";
-            document.getElementById(key+"_address_state").value = "";
-            document.getElementById(key+"_address_postalcode").value = "";
-            document.getElementById(key+"_address_country").value = "";
-        }
-        checked_items = Array();
-        inputs_array = document.MassUpdate.elements;
-        
-        for(wp = 0 ; wp < inputs_array.length; wp++) {
-            if(inputs_array[wp].name == "mass[]" && inputs_array[wp].style.display == "none") {
-                checked_items.push(inputs_array[wp].value);
-            } 
-        }
-        for(i in checked_items) {
-            for(wp = 0 ; wp < inputs_array.length; wp++) {
-                if(inputs_array[wp].name == "mass[]" && inputs_array[wp].value == checked_items[i]) {
-                    inputs_array[wp].checked = true;
-                }
-            }
-        }
-        -->
-        </script>
-EOJS;
+		$output_html .= '<script>		
+		checked_items = Array();
+		inputs_array = document.MassUpdate.elements;
+
+		for(wp = 0 ; wp < inputs_array.length; wp++) {
+			if(inputs_array[wp].name == "mass[]" && inputs_array[wp].style.display == "none") {
+				checked_items.push(inputs_array[wp].value);
+			} 
+		}
+		for(i in checked_items) {
+			for(wp = 0 ; wp < inputs_array.length; wp++) {
+				if(inputs_array[wp].name == "mass[]" && inputs_array[wp].value == checked_items[i]) {
+					inputs_array[wp].checked = true;
+				}
+			}
+		}</script>';
 		
 		$output_html .= insert_popup_footer();
 		return $output_html;
