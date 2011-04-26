@@ -1,0 +1,34 @@
+<phpunit bootstrap="./SugarTestHelper.php" 
+    backupGlobals="false"
+    backupStaticAttributes="false">
+    <testsuite name="All Sugar Tests">
+        <directory>./tests/include</directory>
+        <directory>./tests/install</directory>
+        <directory>./tests/modules</directory>
+        <directory>./tests/service</directory>
+        <directory>./tests/tests</directory>
+    </testsuite>
+    <filter>
+        <blacklist>
+            <directory suffix=".php">./cache</directory>
+            <directory suffix=".php">./custom</directory>
+            <directory suffix=".php">./examples</directory>
+            <directory suffix=".php">./jscalendar</directory>
+            <directory suffix=".php">./jssource</directory>
+            <directory suffix=".php">./log4php</directory>
+            <directory suffix=".php">./metadata</directory>
+            <directory suffix=".php">./test</directory>
+            <directory suffix=".php">./themes</directory>
+            <directory suffix=".php">./XTemplate</directory>
+            <file>./config.php</file>
+            <file>./config_override.php</file>
+        </blacklist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="./tests/coverage" charset="UTF-8"
+            yui="true" highlight="false"
+            lowUpperBound="35" highLowerBound="70"/>
+        <log type="test-xml" target="./tests/logfile.xml" logIncompleteSkipped="false"/>
+        <log type="testdox-text" target="./tests/testdox.txt"/>
+    </logging>
+</phpunit>
