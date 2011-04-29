@@ -265,7 +265,7 @@ function addToValidateLessThan(formname, name, type, required, msg, max, max_fie
 	validate[formname][validate[formname].length - 1][jstypeIndex] = 'less';
     validate[formname][validate[formname].length - 1][maxIndex] = max;
     validate[formname][validate[formname].length - 1][altMsgIndex] = max_field_msg;
-    
+
 }
 function addToValidateMoreThan(formname, name, type, required, msg, min) {
 	addToValidate(formname, name, type, required, msg);
@@ -329,7 +329,7 @@ function isValidPrecision(value, precision){
 			return true;
 		}else{
 			return false;
-		}		
+		}
 	}
 	//#27021   end
 	var actualPrecision = value.substr(value.indexOf(".")+1, value.length).length;
@@ -458,27 +458,27 @@ function isValidEmail(emailStr) {
 	if(!lastChar.match(/[^\.]/i)) {
 		return false;
 	}
-	//bug 40068, According to rules in page 6 of http://www.apps.ietf.org/rfc/rfc3696.html#sec-3, 
+	//bug 40068, According to rules in page 6 of http://www.apps.ietf.org/rfc/rfc3696.html#sec-3,
 	//first character of local part of an email address
-	//should not be a period i.e. '.' 
-	
+	//should not be a period i.e. '.'
+
 	var firstLocalChar=emailStr.charAt(0);
 	if(firstLocalChar.match(/\./)){
 		return false;
-	} 
-	
-	//bug 40068, According to rules in page 6 of http://www.apps.ietf.org/rfc/rfc3696.html#sec-3, 
+	}
+
+	//bug 40068, According to rules in page 6 of http://www.apps.ietf.org/rfc/rfc3696.html#sec-3,
 	//last character of local part of an email address
-	//should not be a period i.e. '.' 
-	
+	//should not be a period i.e. '.'
+
 	var pos=emailStr.lastIndexOf("@");
 	var localPart = emailStr.substr(0, pos);
 	var lastLocalChar=localPart.charAt(localPart.length - 1);
 	if(lastLocalChar.match(/\./)){
 		return false;
 	}
-	
-	
+
+
 	var reg = /@.*?;/g;
 	while ((results = reg.exec(emailStr)) != null) {
 			orignial = results[0];
@@ -502,8 +502,8 @@ function isValidEmail(emailStr) {
 	// mfh: bug 15010 - more practical implementation of RFC 2822 from http://www.regular-expressions.info/email.html, modifed to accept CAPITAL LETTERS
 	//if(!/[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?/.test(emailStr))
 	//	return false
-	
-	//bug 40068, According to rules in page 6 of http://www.apps.ietf.org/rfc/rfc3696.html#sec-3, 
+
+	//bug 40068, According to rules in page 6 of http://www.apps.ietf.org/rfc/rfc3696.html#sec-3,
 	//allowed special characters ! # $ % & ' * + - / = ?  ^ _ ` . { | } ~ in local part
     var emailArr = emailStr.split(/::;::/);
 	for (var i = 0; i < emailArr.length; i++) {
@@ -511,7 +511,7 @@ function isValidEmail(emailStr) {
 		if (trim(emailAddress) != '') {
 			if(!/^\s*[\w.%+\-&'#!\$\*=\?\^_`\{\}~\/]+@([A-Z0-9-]+\.)*[A-Z0-9-]+\.[\w-]{2,}\s*$/i.test(emailAddress) &&
 			   !/^.*<[A-Z0-9._%+\-&'#!\$\*=\?\^_`\{\}~]+?@([A-Z0-9-]+\.)*[A-Z0-9-]+\.[\w-]{2,}>\s*$/i.test(emailAddress)) {
-	
+
 			   return false;
 			} // if
 		}
@@ -559,7 +559,7 @@ function isTime(timeStr) {
 	if(!myregexp.test(timeStr))
 		return false
 
-	return true
+	return true;
 }
 
 function inRange(value, min, max) {
@@ -595,7 +595,7 @@ function add_error_style(formname, input, txt, flash) {
 	// strip off the colon at the end of the warning strings
 	if ( txt.substring(txt.length-1) == ':' )
 	    txt = txt.substring(0,txt.length-1)
-	
+
 	// Bug 28249 - To help avoid duplicate messages for an element, strip off extra messages and
 	// match on the field name itself
 	requiredTxt = SUGAR.language.get('app_strings', 'ERR_MISSING_REQUIRED_FIELDS');
@@ -631,8 +631,8 @@ function add_error_style(formname, input, txt, flash) {
 	        if ( tabView.get ) {
 	            var tabs = tabView.get("tabs");
 	            for (var i in tabs) {
-	                if (tabs[i].get("contentEl") == parentDiv 
-	                		|| YAHOO.util.Dom.isAncestor(tabs[i].get("contentEl"), inputHandle)) 
+	                if (tabs[i].get("contentEl") == parentDiv
+	                		|| YAHOO.util.Dom.isAncestor(tabs[i].get("contentEl"), inputHandle))
 	                {
 	                    tabs[i].get("labelEl").style.color = "red";
 	                    if ( inputsWithErrors.length == 1 )
@@ -640,7 +640,7 @@ function add_error_style(formname, input, txt, flash) {
 	                }
 	            }
 	        }
-		} 
+		}
 		window.setTimeout("inputsWithErrors[" + (inputsWithErrors.length - 1) + "].style.backgroundColor = null;", 2000);
     }
 
@@ -655,18 +655,18 @@ function add_error_style(formname, input, txt, flash) {
 function clear_all_errors() {
     for(var wp = 0; wp < inputsWithErrors.length; wp++) {
         if(typeof(inputsWithErrors[wp]) !='undefined' && typeof inputsWithErrors[wp].parentNode != 'undefined' && inputsWithErrors[wp].parentNode != null) {
-            if ( inputsWithErrors[wp].parentNode.className.indexOf('x-form-field-wrap') != -1 ) 
+            if ( inputsWithErrors[wp].parentNode.className.indexOf('x-form-field-wrap') != -1 )
             {
                 inputsWithErrors[wp].parentNode.parentNode.removeChild(inputsWithErrors[wp].parentNode.parentNode.lastChild);
             }
-            else 
+            else
             {
                 inputsWithErrors[wp].parentNode.removeChild(inputsWithErrors[wp].parentNode.lastChild);
             }
         }
 	}
 	if (inputsWithErrors.length == 0) return;
-	
+
 	if ( YAHOO.util.Dom.getAncestorByTagName(inputsWithErrors[0], "form") ) {
         var formname = YAHOO.util.Dom.getAncestorByTagName(inputsWithErrors[0], "form").getAttribute("name");
         if(typeof (window[formname + "_tabs"]) != "undefined") {
@@ -836,15 +836,15 @@ function validate_form(formname, startsWith){
 							primary_field_id = '';
 							validation_passed = false;
 							replace_selected = false;
-							
+
 							//Loop through the option elements (replace or add currently)
-							for(t in input_elements) { 
-								if(input_elements[t].type && input_elements[t].type == 'radio' && input_elements[t].checked == true && input_elements[t].value == 'replace') {	
+							for(t in input_elements) {
+								if(input_elements[t].type && input_elements[t].type == 'radio' && input_elements[t].checked == true && input_elements[t].value == 'replace') {
 
 						           //Now find where the primary radio button is and if a value has been set
 						           radio_elements = YAHOO.util.Selector.query('input[type=radio]', document.getElementById(formname + '_team_name_table'));
 
-						           for(x in radio_elements) {	
+						           for(x in radio_elements) {
 						        	   if(radio_elements[x].name != 'team_name_type') {
 						        		  primary_field_id = 'team_name_collection_' + radio_elements[x].value;
 						        		  if(radio_elements[x].checked) {
@@ -852,15 +852,15 @@ function validate_form(formname, startsWith){
 						        			  if(trim(document.forms[formname].elements[primary_field_id].value) != '') {
 		                                         validation_passed = true;
 		                                         break;
-										      }						        			  
+										      }
 						        		  } else if(trim(document.forms[formname].elements[primary_field_id].value) != '') {
 						        			  replace_selected = true;
 						        		  }
 						        	   }
-								   }	
+								   }
 						        }
 							}
-							
+
 							if(replace_selected && !validation_passed) {
 						       add_error_style(formname, primary_field_id, SUGAR.language.get('app_strings', 'ERR_NO_PRIMARY_TEAM_SPECIFIED'));
 						       isError = true;
@@ -872,7 +872,7 @@ function validate_form(formname, startsWith){
 								   input_elements = YAHOO.util.Selector.query('input[type=radio]', document.getElementById(table_element_id));
 								   has_primary = false;
 								   primary_field_id = form[validate[formname][i][nameIndex]].name + '_collection_0';
-								   
+
 								   for(t in input_elements) {
 									    primary_field_id = form[validate[formname][i][nameIndex]].name + '_collection_' + input_elements[t].value;
 								        if(input_elements[t].type && input_elements[t].type == 'radio' && input_elements[t].checked == true) {
@@ -880,16 +880,16 @@ function validate_form(formname, startsWith){
 								        	  has_primary = true;
 								           }
 								           break;
-								        }								   
+								        }
 								   }
-								   
+
 								   if(!has_primary) {
 									  isError = true;
 									  field_id = form[validate[formname][i][nameIndex]].name + '_collection_' + input_elements[0].value;
 									  add_error_style(formname, field_id, SUGAR.language.get('app_strings', 'ERR_NO_PRIMARY_TEAM_SPECIFIED'));
 								   }
 							   }
-						       break;							
+						       break;
 					    case 'error':
 							isError = true;
                             add_error_style(formname, validate[formname][i][nameIndex], validate[formname][i][msgIndex]);
@@ -1105,7 +1105,7 @@ function validate_form(formname, startsWith){
 				break;
 			}
 		}
-		
+
 
 		if(!inView) window.scrollTo(scrollToLeft,scrollToTop);
 
@@ -1289,10 +1289,10 @@ function http_fetch_sync(url,post_data) {
 	}
 
 	global_xmlhttp.send(post_data);
-	
+
 	if (SUGAR.util.isLoginPage(global_xmlhttp.responseText))
 		return false;
-	
+
 	var args = {"responseText" : global_xmlhttp.responseText,
 				"responseXML" : global_xmlhttp.responseXML,
 				"request_id" : typeof(request_id) != "undefined" ? request_id : 0};
@@ -1567,15 +1567,15 @@ function snapshotForm(theForm) {
     var elemList = theForm.elements;
     var elem;
     var elemType;
-    
+
     for( var i = 0; i < elemList.length ; i++ ) {
         elem = elemList[i];
         if ( typeof(elem.type) == 'undefined' ) {
             continue;
         }
-        
+
         elemType = elem.type.toLowerCase();
-        
+
         snapshotTxt = snapshotTxt + elem.name;
 
         if ( elemType == 'text' || elemType == 'textarea' || elemType == 'password' ) {
@@ -1598,7 +1598,7 @@ function snapshotForm(theForm) {
             snapshotTxt = snapshotTxt + elem.value;
         }
     }
-    
+
     return snapshotTxt;
 }
 
@@ -1625,11 +1625,11 @@ function initEditView(theForm) {
     }
     editViewSnapshots[theForm.id] = snapshotForm(theForm);
     SUGAR.loadedForms[theForm.id] = true;
-    
+
 }
 
 function onUnloadEditView(theForm) {
-	
+
 	var dataHasChanged = false;
 
     if ( typeof editViewSnapshots == 'undefined' ) { 
@@ -1640,16 +1640,16 @@ function onUnloadEditView(theForm) {
     if ( typeof theForm == 'undefined' ) {
         // Need to check all editViewSnapshots
         for ( var idx in editViewSnapshots ) {
-            
+
             theForm = document.getElementById(idx);
             // console.log('DEBUG: Checking all forms '+theForm.id);
-            if ( theForm == null 
+            if ( theForm == null
                  || typeof editViewSnapshots[theForm.id] == 'undefined'
                  || editViewSnapshots[theForm.id] == null
                  || !SUGAR.loadedForms[theForm.id]) {
                 continue;
             }
-            
+
             var snap = snapshotForm(theForm);
             if ( editViewSnapshots[theForm.id] != snap ) {
                 dataHasChanged = true;
@@ -1681,7 +1681,7 @@ function disableOnUnloadEditView(theForm) {
     if ( typeof theForm == 'undefined' || typeof editViewSnapshots == 'undefined' || theForm == null || editViewSnapshots == null) {
         window.onbeforeunload = null;
         editViewSnapshots = null;
-        
+
         // console.log('DEBUG: Disabling all edit view checks');
 
     } else {
@@ -1774,8 +1774,16 @@ sugarListView.update_count = function(count, add) {
 			if(typeof the_form.elements[wp].name != 'undefined' && the_form.elements[wp].name == 'selectCount[]') {
 				if(add)	{
 					the_form.elements[wp].value = parseInt(the_form.elements[wp].value,10) + count;
+					if (the_form.select_entire_list.value == 1 && the_form.show_plus.value) {
+						the_form.elements[wp].value += '+';
+					}
+				} else {
+					if (the_form.select_entire_list.value == 1 && the_form.show_plus.value) {
+				        the_form.elements[wp].value = count + '+';
+				    } else {
+				        the_form.elements[wp].value = count;
+				    }
 				}
-				else the_form.elements[wp].value = count;
 			}
 		}
 	}
@@ -1926,13 +1934,13 @@ sugarListView.prototype.send_form_for_emails = function(select, currentModule, a
 	isAjaxCall.type = 'hidden';
 	isAjaxCall.value = true;
 	newForm.appendChild(isAjaxCall);
-		
+
 	var isListView = document.createElement('input');
 	isListView.name = 'ListView';
 	isListView.type = 'hidden';
 	isListView.value = true;
 	newForm.appendChild(isListView);
-	
+
 	var toPdf = document.createElement('input');
 	toPdf.name = 'to_pdf';
 	toPdf.type = 'hidden';
@@ -1940,19 +1948,19 @@ sugarListView.prototype.send_form_for_emails = function(select, currentModule, a
 	newForm.appendChild(toPdf);
 
 	//Grab the Quick Compose package for the listview
-    YAHOO.util.Connect.setForm(newForm); 
-    var callback = 
-	{ 
+    YAHOO.util.Connect.setForm(newForm);
+    var callback =
+	{
 	  success: function(o) {
 	      var resp = YAHOO.lang.JSON.parse(o.responseText);
 	      var quickComposePackage = new Object();
 	      quickComposePackage.composePackage = resp;
 	      quickComposePackage.fullComposeUrl = 'index.php?module=Emails&action=Compose&ListView=true' +
 	                                           '&uid=' + uidTa.value + '&action_module=' + action_module;
-	                                           
+
 	      SUGAR.quickCompose.init(quickComposePackage);
 	  }
-	} 
+	}
 
 	YAHOO.util.Connect.asyncRequest('POST','index.php', callback,null);
 
@@ -1964,18 +1972,18 @@ sugarListView.prototype.send_form_for_emails = function(select, currentModule, a
 
 sugarListView.prototype.send_form = function(select, currentModule, action, no_record_txt,action_module,return_info) {
 	if (document.MassUpdate.select_entire_list.value == 1) {
-		
+
 		if(sugarListView.get_checks_count() < 1) {
 		   alert(no_record_txt);
 		   return false;
 		}
-		
+
 		var href = action;
 		if ( action.indexOf('?') != -1 )
 			href += '&module=' + currentModule;
 		else
 			href += '?module=' + currentModule;
-        
+
 		if (return_info)
 			href += return_info;
         var newForm = document.createElement('form');
@@ -2141,7 +2149,7 @@ sugarListView.prototype.order_checks = function(order,orderBy,moduleString){
    document.MassUpdate.return_module.value='';
    document.MassUpdate.return_action.value='';
    document.MassUpdate.submit();
-   	
+
 	return !checks;
 }
 sugarListView.prototype.save_checks = function(offset, moduleString) {
@@ -2157,7 +2165,7 @@ sugarListView.prototype.save_checks = function(offset, moduleString) {
        document.MassUpdate.return_module.value='';
        document.MassUpdate.return_action.value='';
 	   document.MassUpdate.submit();
-	
+
 
 	return !checks;
 }
@@ -2293,7 +2301,7 @@ sugarListView.prototype.check_boxes = function() {
 
 
 /**
- * This function is used in Email Template Module's listview. 
+ * This function is used in Email Template Module's listview.
  * It will check whether the templates are used in Campaing->EmailMarketing.
  * If true, it will notify user.
  */
@@ -2311,8 +2319,8 @@ function check_used_email_templates() {
 		}
 		};
 	url = "index.php?module=EmailTemplates&action=CheckDeletable&from=ListView&to_pdf=1&records="+ids;
-	YAHOO.util.Connect.asyncRequest('POST',url, call_back,null);	
-	
+	YAHOO.util.Connect.asyncRequest('POST',url, call_back,null);
+
 }
 
 sugarListView.prototype.send_mass_update = function(mode, no_record_txt, del) {
@@ -2382,7 +2390,7 @@ sugarListView.prototype.send_mass_update = function(mode, no_record_txt, del) {
 			check_used_email_templates();
 			return false;
 		}
-		 
+
 	}
 
 	document.MassUpdate.submit();
@@ -2552,7 +2560,7 @@ SUGAR.unifiedSearchAdvanced = function() {
 			SUGAR.unifiedSearchAdvanced.usa_img = document.getElementById('unified_search_advanced_img');
 
 			if(!SUGAR.unifiedSearchAdvanced.usa_div || !SUGAR.unifiedSearchAdvanced.usa_img) return;
-			var attributes = { height: { to: 300 } }; 
+			var attributes = { height: { to: 300 } };
             SUGAR.unifiedSearchAdvanced.anim_open = new YAHOO.util.Anim('unified_search_advanced_div', attributes );
 			SUGAR.unifiedSearchAdvanced.anim_open.duration = 0.75;
 			SUGAR.unifiedSearchAdvanced.anim_close = new YAHOO.util.Anim('unified_search_advanced_div', { height: {to: 0} } );
@@ -2652,7 +2660,7 @@ SUGAR.util = function () {
 				el = document.getElementById(el);
 			if (el && el.parentNode)
 				el.parentNode.removeChild(el);
-			
+
 			return el;
 		},
 		paramsToUrl : function (params) {
@@ -2662,7 +2670,7 @@ SUGAR.util = function () {
 			}
 			return url;
 		},
-	    evalScript:function(text){			
+	    evalScript:function(text){
 			if (isSafari) {
 				var waitUntilLoaded = function(){
 					SUGAR.evalScript_waitCount--;
@@ -2676,7 +2684,7 @@ SUGAR.util = function () {
                       }
 					}
 				};
-				
+
 				var tmpElem = document.createElement('div');
 				tmpElem.innerHTML = text;
 				var results = tmpElem.getElementsByTagName('script');
@@ -2684,7 +2692,7 @@ SUGAR.util = function () {
 					// No scripts found, bail out
 					return;
 				}
-				
+
 				var headElem = document.getElementsByTagName('head')[0];
 				var tmpElem = null;
 				SUGAR.evalScript_waitCount = 0;
@@ -2707,7 +2715,7 @@ SUGAR.util = function () {
 					SUGAR.evalScript_waitCount++;
 					headElem.appendChild(tmpElem);
 				}
-                // Add some code to handle pages without any external scripts                
+                // Add some code to handle pages without any external scripts
 				SUGAR.evalScript_waitCount++;
                 waitUntilLoaded();
 
@@ -2933,6 +2941,18 @@ SUGAR.util = function () {
 			if (overrides) {
 			    for (var i in overrides)	subc.prototype[i] = overrides[i];
 			}
+		},
+		hrefURL : function(url) {
+			if(SUGAR.isIE) {
+				// IE needs special treatment since otherwise it would not pass Referer
+				var trampoline = document.createElement('a');
+				trampoline.href = url;
+				document.body.appendChild(trampoline);
+				trampoline.click();
+				document.body.removeChild(trampoline);
+			} else {
+				document.location.href = url;
+			}
 		}
 	};
 }(); // end util
@@ -3001,8 +3021,8 @@ SUGAR.savedViews = function() {
 				document.search_form.saved_search_action.value = action;
 				document.search_form.search_module.value = document.search_form.module.value;
 				document.search_form.module.value = 'SavedSearch';
-				// Bug 31922 - Make sure to specify that we want to hit the index view here of 
-				// the SavedSearch module, since the ListView doesn't have the logic to save the 
+				// Bug 31922 - Make sure to specify that we want to hit the index view here of
+				// the SavedSearch module, since the ListView doesn't have the logic to save the
 				// search and redirect back
 				document.search_form.action.value = 'index';
 			}
@@ -3169,9 +3189,9 @@ SUGAR.searchForm = function() {
                 if ( typeof(elem.type) == 'undefined' ) {
                     continue;
                 }
-                
+
                 elemType = elem.type.toLowerCase();
-                
+
                 if ( elemType == 'text' || elemType == 'textarea' || elemType == 'password' ) {
                     elem.value = '';
                 }
@@ -3189,6 +3209,7 @@ SUGAR.searchForm = function() {
                 else if ( elemType == 'hidden' ) {
                     // We only want to reset the hidden values that link to the select boxes.
                     if ( ( elem.name.length > 3 && elem.name.substring(elem.name.length-3) == '_id' )
+                         || ((elem.name.length > 9) && (elem.name.substring(elem.name.length - 9) == '_id_basic'))
                          || ( elem.name.length > 12 && elem.name.substring(elem.name.length-12) == '_id_advanced' ) ) {
                         elem.value = '';
                     }
@@ -3741,18 +3762,19 @@ function open_popup(module_name, width, height, initial_filter, close_popup, hid
 		+ 'module=' + module_name
 		+ '&action=Popup';
 
-	if(initial_filter != '')
-	{
+	if (initial_filter != '') {
 		URL += '&query=true' + initial_filter;
+		// Bug 41891 - Popup Window Name
+		popupName = initial_filter.replace(/[^a-z_\-0-9]+/ig, '_');
+		windowName = module_name + '_popup_window' + popupName;
+	} else {
+		windowName = module_name + '_popup_window' + popupCount;
 	}
+	popupCount++;
 
-	if(hide_clear_button)
-	{
+	if (hide_clear_button) {
 		URL += '&hide_clear_button=true';
 	}
-
-	windowName = module_name + '_popup_window' + popupCount;
-	popupCount++;
 
 	windowFeatures = 'width=' + width
 		+ ',height=' + height
@@ -3771,14 +3793,25 @@ function open_popup(module_name, width, height, initial_filter, close_popup, hid
 		URL+='&metadata='+metadata;
 	}
 
-	win = window.open(URL, windowName, windowFeatures);
+	if(SUGAR.isIE) {
+		// IE needs special treatment since otherwise it would not pass Referer
+		win = window.open('', windowName, windowFeatures);
+		var trampoline = document.createElement('a');
+		trampoline.href = URL;
+		trampoline.target = windowName;
+		document.body.appendChild(trampoline);
+		trampoline.click();
+		document.body.removeChild(trampoline);
+	} else {
+		win = window.open(URL, windowName, windowFeatures);
+	}
 
 	if(window.focus)
 	{
 		// put the focus on the popup if the browser supports the focus() method
 		win.focus();
 	}
-	
+
 	win.popupCount = popupCount;
 
 	return win;
@@ -3821,10 +3854,10 @@ function set_return_basic(popup_reply_data,filter)
 			// end andopes change: support for enum fields (SELECT)
 		}
 	}
-} 
+}
 
 function set_return(popup_reply_data)
-{ 
+{
 	from_popup_return = true;
 	var form_name = popup_reply_data.form_name;
 	var name_to_value_array = popup_reply_data.name_to_value_array;
@@ -3841,13 +3874,13 @@ function set_return(popup_reply_data)
 			}
 			else
 			{
-				var displayValue=name_to_value_array[the_key].replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&#039;/gi,'\'').replace(/&quot;/gi,'"');			
+				var displayValue=name_to_value_array[the_key].replace(/&amp;/gi,'&').replace(/&lt;/gi,'<').replace(/&gt;/gi,'>').replace(/&#039;/gi,'\'').replace(/&quot;/gi,'"');
 				if(window.document.forms[form_name] && document.getElementById(the_key+'_label') && !the_key.match(/account/)) {
 					var data_label = document.getElementById(the_key+'_label').innerHTML.replace(/\n/gi,'');
 					label_str += data_label + ' \n';
 					label_data_str += data_label  + ' ' + displayValue + '\n';
 					if(window.document.forms[form_name].elements[the_key]) {
-						current_label_data_str += data_label + ' ' + window.document.forms[form_name].elements[the_key].value +'\n';				
+						current_label_data_str += data_label + ' ' + window.document.forms[form_name].elements[the_key].value +'\n';
 					}
 				}
 			}
@@ -3946,11 +3979,11 @@ function copyAddress(form, fromKey, toKey) {
 // end code for address copy
 
 /**
- * This function is used in Email Template Module. 
+ * This function is used in Email Template Module.
  * It will check whether the template is used in Campaing->EmailMarketing.
  * If true, it will notify user.
  */
- 
+
 function check_deletable_EmailTemplate() {
 	id = document.getElementsByName('record')[0].value;
 	currentForm = document.getElementById('form');
@@ -3965,8 +3998,8 @@ function check_deletable_EmailTemplate() {
 					return false;
 				}
 			}
-			currentForm.return_module.value='EmailTemplates'; 
-			currentForm.return_action.value='ListView'; 
+			currentForm.return_module.value='EmailTemplates';
+			currentForm.return_action.value='ListView';
 			currentForm.action.value='Delete';
 			currentForm.submit();
 		}
@@ -3978,30 +4011,30 @@ function check_deletable_EmailTemplate() {
 SUGAR.image = {
      remove_upload_imagefile : function(field_name) {
             var field=document.getElementById('remove_imagefile_' + field_name);
-            field.value=1;            
-            
+            field.value=1;
+
             //enable the file upload button.
             var field=document.getElementById( field_name);
             field.style.display="";
-            
+
             //hide the image and remove button.
             var field=document.getElementById('img_' + field_name);
             field.style.display="none";
             var field=document.getElementById('bt_remove_' + field_name);
             field.style.display="none";
-            
+
             if(document.getElementById(field_name + '_duplicate')) {
                var field = document.getElementById(field_name + '_duplicate');
                field.value = "";
             }
     },
-    
+
     confirm_imagefile : function(field_name) {
-            var field=document.getElementById(field_name); 
-            var filename=field.value;   
+            var field=document.getElementById(field_name);
+            var filename=field.value;
             var fileExtension = filename.substring(filename.lastIndexOf(".")+1);
             fileExtension = fileExtension.toLowerCase();
-            if (fileExtension == "jpg" || fileExtension == "jpeg" 
+            if (fileExtension == "jpg" || fileExtension == "jpeg"
                 || fileExtension == "gif" || fileExtension == "png" || fileExtension == "bmp"){
                     //image file
                 }
@@ -4036,16 +4069,16 @@ SUGAR.util.isTouchScreen = function()
     if ( Get_Cookie("touchscreen") == '1' ) {
         return true;
     }
-    
+
     // next check if we should use the touch interface with our device
     if ( (navigator.userAgent.match(/iPad/i) != null) ) {
         return true;
     }
-    
+
     return false;
 }
 
-SUGAR.util.isLoginPage = function(content) 
+SUGAR.util.isLoginPage = function(content)
 {
 	//skip if this is packageManager screen
 	if(SUGAR.util.isPackageManager()) {return false;}
@@ -4078,26 +4111,29 @@ SUGAR.util.callOnChangeListers = function(field){
 
 SUGAR.util.closeActivityPanel = {
     show:function(module,id,new_status,viewType,parentContainerId){
-        if (SUGAR.util.closeActivityPanel.panel) 
+        if (SUGAR.util.closeActivityPanel.panel)
 			SUGAR.util.closeActivityPanel.panel.destroy();
 	    var singleModule = SUGAR.language.get("app_list_strings", "moduleListSingular")[module];
 	    singleModule = typeof(singleModule != 'undefined') ? singleModule.toLowerCase() : '';
 	    var closeText =  SUGAR.language.get("app_strings", "LBL_CLOSE_ACTIVITY_CONFIRM").replace("#module#",singleModule);
-        SUGAR.util.closeActivityPanel.panel =  
-	    new YAHOO.widget.SimpleDialog("closeActivityDialog",  
-	             { width: "300px", 
-	               fixedcenter: true, 
-	               visible: false, 
-	               draggable: false, 
-	               close: true, 
-	               text: closeText, 
-	               constraintoviewport: true, 
-	               buttons: [ { text:SUGAR.language.get("app_strings", "LBL_EMAIL_OK"), handler:function(){ 
+        SUGAR.util.closeActivityPanel.panel =
+	    new YAHOO.widget.SimpleDialog("closeActivityDialog",
+	             { width: "300px",
+	               fixedcenter: true,
+	               visible: false,
+	               draggable: false,
+	               close: true,
+	               text: closeText,
+	               constraintoviewport: true,
+	               buttons: [ { text:SUGAR.language.get("app_strings", "LBL_EMAIL_OK"), handler:function(){
 	                   if (SUGAR.util.closeActivityPanel.panel)
                             SUGAR.util.closeActivityPanel.panel.hide();
-                                    
+
                         ajaxStatus.showStatus(SUGAR.language.get('app_strings', 'LBL_SAVING'));
-                        var args = "action=save&id=" + id + "&status=" + new_status + "&module=" + module;
+                        var args = "action=save&id=" + id + "&record=" + id + "&status=" + new_status + "&module=" + module;
+                        // 20110307 Frank Steegmans: Fix for bug 42361, Any field with a default configured in any activity will be set to this default when closed using the close dialog
+                        // TODO: Take id out and regression test. Left id in for now to not create any other unexpected problems
+                        //var args = "action=save&id=" + id + "&status=" + new_status + "&module=" + module;
                         var callback = {
                             success:function(o)
                             {	//refresh window to show updated changes
@@ -4122,14 +4158,14 @@ SUGAR.util.closeActivityPanel = {
                             },
                             argument:{'parentContainerId':parentContainerId}
                         };
-                
+
                         YAHOO.util.Connect.asyncRequest('POST', 'index.php', callback, args);
-	               
-	               }, isDefault:true }, 
-	                          { text:SUGAR.language.get("app_strings", "LBL_EMAIL_CANCEL"),  handler:function(){SUGAR.util.closeActivityPanel.panel.hide(); }} ] 
-	             } ); 
-	  
-	    SUGAR.util.closeActivityPanel.panel.setHeader(SUGAR.language.get("app_strings", "LBL_CLOSE_ACTIVITY_HEADER")); 
+
+	               }, isDefault:true },
+	                          { text:SUGAR.language.get("app_strings", "LBL_EMAIL_CANCEL"),  handler:function(){SUGAR.util.closeActivityPanel.panel.hide(); }} ]
+	             } );
+
+	    SUGAR.util.closeActivityPanel.panel.setHeader(SUGAR.language.get("app_strings", "LBL_CLOSE_ACTIVITY_HEADER"));
         SUGAR.util.closeActivityPanel.panel.render(document.body);
         SUGAR.util.closeActivityPanel.panel.show();
     }

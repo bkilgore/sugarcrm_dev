@@ -173,21 +173,17 @@ class ImportViewStep1 extends SugarView
         }
         
         // show any custom mappings
-        if (sugar_is_dir('custom/modules/Import') && $dir = opendir('custom/modules/Import')) {
-            while (($file = readdir('custom/modules/Import')) !== false) {
-                if ($file == ".." 
-                        || $file == "."
-                        || $file == ".svn"
-                        || $file == "CVS" 
-                        || $file == "Attic"
-                        || !sugar_is_dir("./$dirPath".$file)
-                        || sugar_is_file("modules/Import/{$file}")
-                        )
-                    continue;
-                require_once("custom/modules/Import/{$file}");
-                $classname = str_replace('.php','',$file);
-                $mappingClass = new $classname;
-                $custom_mappings[] = $mappingClass->name;
+        if (sugar_is_dir('custom/modules/Import') && $dir = opendir('custom/modules/Import')) 
+        {
+            while (($file = readdir($dir)) !== false) 
+            {
+                if (sugar_is_file("custom/modules/Import/{$file}") && strpos($file,".php") !== false)
+                {
+	                require_once("custom/modules/Import/{$file}");
+	                $classname = str_replace('.php','',$file);
+	                $mappingClass = new $classname;
+	                $custom_mappings[] = $mappingClass->name;
+                }
             }
         }
         

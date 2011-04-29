@@ -1182,62 +1182,68 @@ echo "RUNNING DCE UPGRADE\n";
  */
 function repairTableDictionaryExtFile()
 {
-	$tableDictionaryExtFiles = array('custom/Extension/application/Ext/TableDictionary/tabledictionary.ext.php', 
-	                                 'custom/application/Ext/TableDictionary/tabledictionary.ext.php');
+	$tableDictionaryExtDirs = array('custom/Extension/application/Ext/TableDictionary', 'custom/application/Ext/TableDictionary');
 	
-	foreach($tableDictionaryExtFiles as $tableDictionaryExtFile)
+	foreach($tableDictionaryExtDirs as $tableDictionaryExt)
 	{
 	
-		if(file_exists($tableDictionaryExtFile) && is_writable($tableDictionaryExtFile))
-		{
-			if(function_exists('sugar_fopen'))
+		if(is_dir($tableDictionaryExt) && is_writable($tableDictionaryExt)){
+			$dir = dir($tableDictionaryExt);
+			while(($entry = $dir->read()) !== false)
 			{
-				$fp = @sugar_fopen($tableDictionaryExtFile, 'r');
-			} else {
-				$fp = fopen($tableDictionaryExtFile, 'r');
-			}			
-			
-			
-		    if($fp)
-	        {
-	             $altered = false;
-	             $contents = '';
-			     
-	             while($line = fgets($fp))
-			     {
-			    	if(preg_match('/\s*include\s*\(\s*\'(.*?)\'\s*\)\s*;/', $line, $match))
-			    	{
-			    	   if(!file_exists($match[1]))
-			    	   {
-			    	      $altered = true;
-			    	   } else {
-			    	   	  $contents .= $line;
-			    	   }
-			    	} else {
-			    	   $contents .= $line;
-			    	}
-			     }
-			     
-			     fclose($fp); 
-	        }
-	        
-	        
-		    if($altered)
-		    {
-				if(function_exists('sugar_fopen'))
+				$entry = $tableDictionaryExt . '/' . $entry;
+				if(is_file($entry) && preg_match('/\.php$/i', $entry) && is_writeable($entry))
 				{
-					$fp = @sugar_fopen($tableDictionaryExtFile, 'w');
-				} else {
-					$fp = fopen($tableDictionaryExtFile, 'w');
-				}		    	
-	            
-				if($fp && fwrite($fp, $contents))
-				{
-					fclose($fp);
-				}
-		    }
-		}
-
+			
+						if(function_exists('sugar_fopen'))
+						{
+							$fp = @sugar_fopen($entry, 'r');
+						} else {
+							$fp = fopen($entry, 'r');
+						}			
+						
+						
+					    if($fp)
+				        {
+				             $altered = false;
+				             $contents = '';
+						     
+				             while($line = fgets($fp))
+						     {
+						    	if(preg_match('/\s*include\s*\(\s*[\'|\"](.*?)[\"|\']\s*\)\s*;/', $line, $match))
+						    	{
+						    	   if(!file_exists($match[1]))
+						    	   {
+						    	      $altered = true;
+						    	   } else {
+						    	   	  $contents .= $line;
+						    	   }
+						    	} else {
+						    	   $contents .= $line;
+						    	}
+						     }
+						     
+						     fclose($fp); 
+				        }
+				        
+				        
+					    if($altered)
+					    {
+							if(function_exists('sugar_fopen'))
+							{
+								$fp = @sugar_fopen($entry, 'w');
+							} else {
+								$fp = fopen($entry, 'w');
+							}		    	
+				            
+							if($fp && fwrite($fp, $contents))
+							{
+								fclose($fp);
+							}
+					    }					
+				} //if
+			} //while
+		} //if
 	}
 }
 

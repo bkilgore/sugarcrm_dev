@@ -54,6 +54,12 @@ if($unzip_dir == null ) {
 logThis('About to repair the database.', $path);
 //Use Repair and rebuild to update the database.
 global $dictionary, $beanFiles;
+
+require_once('modules/Trackers/TrackerManager.php');
+$trackerManager = TrackerManager::getInstance();
+$trackerManager->pause();
+$trackerManager->unsetMonitors();
+
 require_once("modules/Administration/QuickRepairAndRebuild.php");
 $rac = new RepairAndClear();
 $rac->clearVardefs();
@@ -186,6 +192,11 @@ if(file_exists('include/SugarLogger/LoggerManager.php')){
 if($_SESSION['current_db_version'] < '610' && function_exists('upgrade_connectors'))
 {
    upgrade_connectors($path);
+}
+
+if ($_SESSION['current_db_version'] < '620' && ($sugar_config['dbconfig']['db_type'] == 'mssql' || $sugar_config['dbconfig']['db_type'] == 'oci8'))
+{
+    repair_long_relationship_names($path);
 }
 
 //Global search support

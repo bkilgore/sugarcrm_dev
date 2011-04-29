@@ -143,23 +143,41 @@ class Document extends SugarBean {
             }
             
             $Revision->doc_type = $this->doc_type;
-            $Revision->doc_id = $this->doc_id;
-            $Revision->doc_url = $this->doc_url;
-            $Revision->save();
-			
+            if ( isset($this->doc_id) ) {
+                $Revision->doc_id = $this->doc_id;
+            }
+            if ( isset($this->doc_url) ) {
+                $Revision->doc_url = $this->doc_url;
+            }
+            
+            $Revision->id = create_guid();
+            $Revision->new_with_id = true;
+
+            $createRevision = false;
             //Move file saved during populatefrompost to match the revision id rather than document id
             if (!empty($_FILES['filename_file'])) {
                 rename(UploadFile :: get_url($this->filename, $this->id), UploadFile :: get_url($this->filename, $Revision->id));
+                $createRevision = true;
             } else if ( $isDuplicate && ( empty($this->doc_type) || $this->doc_type == 'Sugar' ) ) {
                 // Looks like we need to duplicate a file, this is tricky
                 $oldDocument = new Document();
                 $oldDocument->retrieve($_REQUEST['duplicateId']);
                 $GLOBALS['log']->debug('Attempting to copy from '.UploadFile :: get_url($this->filename, $oldDocument->document_revision_id).' to '.UploadFile :: get_url($this->filename, $Revision->id));
                 copy(UploadFile :: get_url($this->filename, $oldDocument->document_revision_id), UploadFile :: get_url($this->filename, $Revision->id));
+                $createRevision = true;
             }
-            //update document with latest revision id
-            $this->process_save_dates=false; //make sure that conversion does not happen again.
-            $this->document_revision_id = $Revision->id;	
+
+            // For external documents, we just need to make sure we have a doc_id
+            if ( !empty($this->doc_id) && $this->doc_type != 'Sugar' ) {
+                $createRevision = true;
+            }
+
+            if ( $createRevision ) {
+                $Revision->save();
+                //update document with latest revision id
+                $this->process_save_dates=false; //make sure that conversion does not happen again.
+                $this->document_revision_id = $Revision->id;	
+            }
 
 
             //set relationship field values if contract_id is passed (via subpanel create)
@@ -199,24 +217,26 @@ class Document extends SugarBean {
 		
 		$mod_strings = return_module_language($current_language, 'Documents');
 
-		$query = "SELECT users.first_name AS first_name, users.last_name AS last_name, document_revisions.date_entered AS rev_date, document_revisions.filename AS filename, document_revisions.revision AS revision, document_revisions.file_ext AS file_ext FROM users, document_revisions WHERE users.id = document_revisions.created_by AND document_revisions.id = '$this->document_revision_id'";
-		$result = $this->db->query($query);
-		$row = $this->db->fetchByAssoc($result);
+        if (!empty($this->document_revision_id)) {
+            $query = "SELECT users.first_name AS first_name, users.last_name AS last_name, document_revisions.date_entered AS rev_date, document_revisions.filename AS filename, document_revisions.revision AS revision, document_revisions.file_ext AS file_ext FROM users, document_revisions WHERE users.id = document_revisions.created_by AND document_revisions.id = '$this->document_revision_id'";
+            $result = $this->db->query($query);
+            $row = $this->db->fetchByAssoc($result);
 
-		//popuplate filename
-        if(isset($row['filename']))$this->filename = $row['filename'];
-        //$this->latest_revision = $row['revision'];
-        if(isset($row['revision']))$this->revision = $row['revision'];
+            //popuplate filename
+            if(isset($row['filename']))$this->filename = $row['filename'];
+            //$this->latest_revision = $row['revision'];
+            if(isset($row['revision']))$this->revision = $row['revision'];
         
-		//populate the file url. 
-		//image is selected based on the extension name <ext>_icon_inline, extension is stored in document_revisions.
-		//if file is not found then default image file will be used.
-		global $img_name;
-		global $img_name_bare;
-		if (!empty ($row['file_ext'])) {
-			$img_name = SugarThemeRegistry::current()->getImageURL(strtolower($row['file_ext'])."_image_inline.gif");
-			$img_name_bare = strtolower($row['file_ext'])."_image_inline";
-		}
+            //populate the file url. 
+            //image is selected based on the extension name <ext>_icon_inline, extension is stored in document_revisions.
+            //if file is not found then default image file will be used.
+            global $img_name;
+            global $img_name_bare;
+            if (!empty ($row['file_ext'])) {
+                $img_name = SugarThemeRegistry::current()->getImageURL(strtolower($row['file_ext'])."_image_inline.gif");
+                $img_name_bare = strtolower($row['file_ext'])."_image_inline";
+            }
+        }
 
 		//set default file name.
 		if (!empty ($img_name) && file_exists($img_name)) {
@@ -248,8 +268,10 @@ class Document extends SugarBean {
 	       //_pp($this->status_id);
 	       $this->status = $app_list_strings['document_status_dom'][$this->status_id];
 	    }
-        $this->related_doc_name = Document::get_document_name($this->related_doc_id);
-        $this->related_doc_rev_number = DocumentRevision::get_document_revision_name($this->related_doc_rev_id);
+        if (!empty($this->related_doc_id)) {
+            $this->related_doc_name = Document::get_document_name($this->related_doc_id);
+            $this->related_doc_rev_number = DocumentRevision::get_document_revision_name($this->related_doc_rev_id);
+        }
         $this->save_file = basename($this->file_url_noimage);
         
 	}

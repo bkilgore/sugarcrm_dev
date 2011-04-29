@@ -98,13 +98,12 @@ EditView_tabs.on('contentReady', function(e){
 {/literal}
 {if $ID}
 {literal}
-    EditView_tabs.addTab( new YAHOO.widget.Tab({
-        label: '{/literal}{$MOD.LBL_EAPM_SUBPANEL_TITLE}{literal}',
-        dataSrc: 'index.php?sugar_body_only=1&module=Users&subpanel=eapm&action=SubPanelViewer&inline=1&record={/literal}{$ID}{literal}&layout_def_key=UserEAPM&inline=1&ajaxSubpanel=true',
-        content: '<div style="text-align:center; width: 100%">{/literal}{sugar_image name="loading"}{literal}</div>',
-        cacheData: true
-    }));
-    EditView_tabs.getTab(4).getElementsByTagName('a')[0].id = 'tab5';
+    EditView_tabs.getTab(4).set('dataSrc','index.php?sugar_body_only=1&module=Users&subpanel=eapm&action=SubPanelViewer&inline=1&record={/literal}{$ID}{literal}&layout_def_key=UserEAPM&inline=1&ajaxSubpanel=true');
+    EditView_tabs.getTab(4).set('cacheData',true);
+
+    if ( document.location.hash == '#tab5' ) {
+        EditView_tabs.selectTab(4);
+    }
 {/literal}
 {/if}
 });
@@ -135,6 +134,9 @@ EditView_tabs.on('contentReady', function(e){
         <li><a id="tab3" href="#tab3"><em>{$MOD.LBL_THEME}</em></a></li>
         {/if}
         <li><a id="tab4" href="#tab4" style='display:{$HIDE_FOR_GROUP_AND_PORTAL};'><em>{$MOD.LBL_ADVANCED}</em></a></li>
+        {if $ID}
+        <li><a id="tab5" href="#tab5"><em>{$MOD.LBL_EAPM_SUBPANEL_TITLE}</em></a></li>
+        {/if}
     </ul>
     <div class="yui-content">
         <div>
@@ -607,6 +609,11 @@ EditView_tabs.on('contentReady', function(e){
                     </table>
         </div>
     </div>
+    {if $ID}
+    <div id="eapm_area">
+        <div style="text-align:center; width: 100%">{sugar_image name="loading"}</div>
+    </div>
+    {/if}
 </div>
 
 

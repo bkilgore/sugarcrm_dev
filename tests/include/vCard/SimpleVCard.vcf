@@ -1,0 +1,13 @@
+BEGIN:VCARD
+N:person;test;
+FN: person lead
+BDAY:
+TEL;FAX:
+TEL;HOME:
+TEL;CELL:
+TEL;WORK:
+EMAIL;INTERNET:
+ADR;WORK:;;;;;;
+ORG:SDizzle Inc;
+TITLE:
+END:VCARD

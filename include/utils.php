@@ -752,10 +752,10 @@ function return_app_list_strings_language($language)
             include("include/language/$lang.lang.php.override");
             $GLOBALS['log']->info("Found override language file: $lang.lang.php.override");
         }
-        
+
         $app_list_strings_array[] = $app_list_strings;
     }
-    
+
     $app_list_strings = array();
     foreach ( $app_list_strings_array as $app_list_strings_item ) {
         $app_list_strings = sugarArrayMerge($app_list_strings, $app_list_strings_item);
@@ -4189,4 +4189,70 @@ function getUrls($string)
 	}
     return $urls;
 }
-?>
+
+
+/**
+ * Sanitize image file from hostile content
+ * @param string $path Image file
+ * @param bool $jpeg Recode as JPEG (false - recode as PNG)
+ */
+function verify_image_file($path, $jpeg = false)
+{
+	if(function_exists('imagepng') && function_exists('imagejpeg') && function_exists('imagecreatefromstring')) {
+        $img = imagecreatefromstring(file_get_contents($path));
+    	if(!$img) {
+    	    return false;
+    	}
+        if($jpeg) {
+            if(imagejpeg($img, $path)) {
+                return true;
+            }
+        } else {
+        	imagealphablending($img, true);
+        	imagesavealpha($img, true);
+    	    if(imagepng($img, $path)) {
+                return true;
+    	    }
+        }
+	} else {
+	    // check image manually
+	    $fp = fopen($path, "r");
+	    if(!$fp) return false;
+	    $data = fread($fp, 4096);
+	    fclose($fp);
+	    if(preg_match("/<(html|!doctype|script|body|head|plaintext|table|img |pre(>| )|frameset|iframe|object|link|base|style|font|applet|meta|center|form|isindex)/i",
+	         $data, $m)) {
+	        $GLOBALS['log']->info("Found {$m[0]} in $path, not allowing upload");
+	        return false;
+	    }
+	    return true;
+	}
+	return false;
+}
+
+/**
+ * Verify uploaded image
+ * Verifies that image has proper extension, MIME type and doesn't contain hostile contant
+ * @param string $path  Image path
+ * @param bool $jpeg_only  Accept only JPEGs?
+ */
+function verify_uploaded_image($path, $jpeg_only = false)
+{
+    $supportedExtensions = array('jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg');
+    if(!$jpeg_only) {
+        $supportedExtensions['png'] = 'image/png';
+    }
+
+    if(!file_exists($path) || !is_file($path)) {
+	    return false;
+	}
+
+	$img_size = getimagesize($path);
+	$filetype = $img_size['mime'];
+	$ext = end(explode(".", $path));
+	if(substr_count('..', $path) > 0 || $ext === $path || !in_array(strtolower($ext), array_keys($supportedExtensions)) ||
+	    !in_array($filetype, array_values($supportedExtensions))) {
+	        return false;
+	}
+    return verify_image_file($path, $jpeg_only);
+}

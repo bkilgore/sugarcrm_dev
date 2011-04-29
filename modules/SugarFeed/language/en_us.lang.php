@@ -111,7 +111,7 @@ $mod_strings = array (
   'LBL_POST' => 'Post', 
   'LBL_EXTERNAL_PREFIX' => 'External: ',
   'LBL_EXTERNAL_WARNING' => 'Items labeled "external" require an <a href="?module=EAPM">external account</a>.',
-  'LBL_AUTHENTICATE' => 'Authenticate',
+  'LBL_AUTHENTICATE' => 'Connect to',
   'LBL_AUTHENTICATION_PENDING' => 'Not all of the external accounts you have selected have been authenticated. Click \'Cancel\' to return to the Options window to authenticate the external accounts, or click \'Ok\' to proceed without authenticating.',
 );
 ?>

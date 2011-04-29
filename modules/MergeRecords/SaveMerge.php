@@ -81,6 +81,10 @@ foreach($focus->merge_bean->additional_column_fields as $field)
 global $check_notify;
 
 $_REQUEST['useEmailWidget'] = true;
+if (isset($_POST['date_entered'])) {
+	// set this to true so we won't unset date_entered when saving
+    $focus->merge_bean->update_date_entered = true;
+}
 $focus->merge_bean->save($check_notify);
 unset($_REQUEST['useEmailWidget']);
 

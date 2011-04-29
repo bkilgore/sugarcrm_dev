@@ -303,7 +303,7 @@ ProcessImport = new function()
                             + "&import_module={/literal}{$IMPORT_MODULE}{literal}";
                         if ( ProcessImport.fileCount >= ProcessImport.fileTotal ) {
                         	YAHOO.SUGAR.MessageBox.updateProgress(1,'{/literal}{$MOD.LBL_IMPORT_COMPLETE}{literal}');
-                            document.location.href = locationStr;
+                        	SUGAR.util.hrefURL(locationStr);
                         }
                         else {
                             document.getElementById("importstep3").save_map_as.value = '';

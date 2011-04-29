@@ -182,7 +182,7 @@ class SqlsrvHelper extends MssqlHelper
 			elseif ( in_array($row['TYPE_NAME'],array('nchar','nvarchar')) ) {
 				$columns[$column_name]['len']=strtolower($row['PRECISION']);
 				if ( $row['TYPE_NAME'] == 'nvarchar' && $row['PRECISION'] == '0' ) {
-				    $columns[$column_name]['len']='max';
+				    $columns[$column_name]['len']='255';
 				}
 			}
             elseif ( !in_array($row['TYPE_NAME'],array('datetime','text')) ) {
@@ -318,6 +318,20 @@ EOSQL;
         $sql .= parent::changeColumnSQL($tablename, $fieldDefs, $action, $ignoreRequired);
 
         return $sql;
+    }
+    
+    /**
+     * @see DBHelper::massageFieldDef()
+     */
+    public function massageFieldDef(
+        &$fieldDef,
+        $tablename
+        )
+    {
+        parent::massageFieldDef($fieldDef,$tablename);
+        
+        if ($fieldDef['type'] == 'bit')
+            $fieldDef['len'] = '1';
     }
 }
 ?>

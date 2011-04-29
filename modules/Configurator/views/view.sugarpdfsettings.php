@@ -44,34 +44,34 @@ class ConfiguratorViewSugarpdfsettings extends SugarView
 	public function preDisplay()
     {
         if(!is_admin($GLOBALS['current_user']))
-            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']); 
+            sugar_die($GLOBALS['app_strings']['ERR_NOT_ADMIN']);
     }
-    
+
     /**
 	 * @see SugarView::_getModuleTitleParams()
 	 */
 	protected function _getModuleTitleParams($browserTitle = false)
 	{
 	    global $mod_strings;
-	    
+
     	return array(
     	   "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
     	   $mod_strings['LBL_PDFMODULE_NAME']
     	   );
     }
-    
+
 	/**
 	 * @see SugarView::display()
 	 */
 	public function display()
 	{
 	    global $mod_strings, $app_strings, $app_list_strings;
-	    
+
         require_once("modules/Configurator/metadata/SugarpdfSettingsdefs.php");
         if(file_exists('custom/modules/Configurator/metadata/SugarpdfSettingsdefs.php')){
             require_once('custom/modules/Configurator/metadata/SugarpdfSettingsdefs.php');
         }
-        
+
         if(!empty($_POST['save'])){
             // Save the logos
             $error=$this->checkUploadImage();
@@ -93,9 +93,9 @@ class ConfiguratorViewSugarpdfsettings extends SugarView
                 header('Location: index.php?module=Administration&action=index');
             }
         }
-        
+
         if(!empty($_POST['restore'])){
-            $focus = new Administration();    
+            $focus = new Administration();
             foreach($_POST as $key => $val) {
                 $prefix = $focus->get_config_prefix($key);
                 if(in_array($prefix[0], $focus->config_categories)) {
@@ -108,18 +108,18 @@ class ConfiguratorViewSugarpdfsettings extends SugarView
             }
             header('Location: index.php?module=Configurator&action=SugarpdfSettings');
         }
-        
+
         echo getClassicModuleTitle(
-                "Administration", 
+                "Administration",
                 array(
                     "<a href='index.php?module=Administration&action=index'>".translate('LBL_MODULE_NAME','Administration')."</a>",
                    $mod_strings['LBL_PDFMODULE_NAME'],
-                   ), 
+                   ),
                 false
                 );
-        
+
         $pdf_class = array("TCPDF"=>"TCPDF","EZPDF"=>"EZPDF");
-        
+
         $this->ss->assign('APP_LIST', $app_list_strings);
         $this->ss->assign("JAVASCRIPT",get_set_focus_js());
         $this->ss->assign("SugarpdfSettings", $SugarpdfSettings);
@@ -131,7 +131,7 @@ class ConfiguratorViewSugarpdfsettings extends SugarView
             $this->ss->assign("selected_pdf_class", PDF_CLASS);
         }
         $this->ss->assign("pdf_class", $pdf_class);
-        
+
         if(!empty($error)){
             $this->ss->assign("error", $mod_strings[$error]);
         }
@@ -140,9 +140,9 @@ class ConfiguratorViewSugarpdfsettings extends SugarView
         }
         else
             $this->ss->assign("GD_WARNING", 0);
-        
+
         $this->ss->display('modules/Configurator/tpls/SugarpdfSettings.tpl');
-        
+
         require_once("include/javascript/javascript.php");
         $javascript = new javascript();
         $javascript->setFormName("ConfigureSugarpdfSettings");
@@ -150,10 +150,10 @@ class ConfiguratorViewSugarpdfsettings extends SugarView
             if(isset($v["required"]) && $v["required"] == true)
                 $javascript->addFieldGeneric($k, "varchar", $v['label'], TRUE, "");
         }
-        
+
         echo $javascript->getScript();
     }
-    
+
     private function checkUploadImage()
     {
         $error="";
@@ -171,17 +171,13 @@ class ConfiguratorViewSugarpdfsettings extends SugarView
                     if (!move_uploaded_file($v['tmp_name'], $file_name))
                         die("Possible file upload attack!\n");
                     if(file_exists($file_name) && is_file($file_name)){
-                        $img_size = getimagesize($file_name);
-                        $filetype = $img_size['mime'];
-                        if($filetype != 'image/jpeg' && !empty($_REQUEST['sugarpdf_pdf_class']) && $_REQUEST['sugarpdf_pdf_class'] == "EZPDF"){
-                            $error='LBL_ALERT_TYPE_IMAGE_EZPDF';
-                        }
-                        else if($filetype != 'image/jpeg' && $filetype != 'image/png'){
-                            $error='LBL_ALERT_TYPE_IMAGE';
-                        }else{
-                            $test=$img_size[0]/$img_size[1];
-                            if (($test>10 || $test<1)){
-                                //$error='LBL_ALERT_SIZE_RATIO_QUOTES';
+                        if(!empty($_REQUEST['sugarpdf_pdf_class']) && $_REQUEST['sugarpdf_pdf_class'] == "EZPDF") {
+                            if(!verify_uploaded_image($file_name, true)) {
+                                $error='LBL_ALERT_TYPE_IMAGE_EZPDF';
+                            }
+                        } else {
+                            if(!verify_uploaded_image($file_name)) {
+                                $error='LBL_ALERT_TYPE_IMAGE';
                             }
                         }
                         if(!empty($error)){

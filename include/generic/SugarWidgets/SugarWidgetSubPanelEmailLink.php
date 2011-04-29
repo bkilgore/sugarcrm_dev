@@ -87,23 +87,22 @@ class SugarWidgetSubPanelEmailLink extends SugarWidgetField {
 				$client = $defaultPref;
 			}
 			
-			
-			if($client == 'sugar') 
+			if($client == 'sugar')
 			{				
-			    $fullComposeUrl = 'load_id='.$layout_def['fields']['ID'].
-					'&load_module='. $this->layout_manager->defs['module_name'] . 
-					'&parent_type='.$this->layout_manager->defs['module_name'].
-					'&parent_id='.$layout_def['fields']['ID'];
-                    if(isset($layout_def['fields']['FULL_NAME'])){
-					   $fullComposeUrl .= '&parent_name='.urlencode($layout_def['fields']['FULL_NAME']);
-                    }
-					$fullComposeUrl .= '&return_module='.$module.'&return_action='.$action.'&return_id='.$record;
-					
-					require_once('modules/Emails/EmailUI.php');
-		            $eUi = new EmailUI();
-		            $j_quickComposeOptions = $eUi->generateComposePackageForQuickCreateFromComposeUrl($fullComposeUrl);
-					
-    		        $link = "<a href='javascript:void(0);' onclick='SUGAR.quickCompose.init($j_quickComposeOptions);'>";
+			    $fullComposeUrl = 'load_id='.$layout_def['fields']['ID']
+                                . '&load_module='. $this->layout_manager->defs['module_name']
+                                . '&parent_type='.$this->layout_manager->defs['module_name']
+                                . '&parent_id='.$layout_def['fields']['ID'];
+
+                if(isset($layout_def['fields']['FULL_NAME'])){
+                   $fullComposeUrl .= '&parent_name='.urlencode($layout_def['fields']['FULL_NAME']);
+                }
+                $fullComposeUrl .= '&return_module='.$module.'&return_action='.$action.'&return_id='.$record;
+                require_once('modules/Emails/EmailUI.php');
+                $eUi = new EmailUI();
+                $j_quickComposeOptions = $eUi->generateComposePackageForQuickCreateFromComposeUrl($fullComposeUrl);
+
+                $link = "<a href='javascript:void(0);' onclick='SUGAR.quickCompose.init($j_quickComposeOptions);'>";
 			} else {
 				$link = '<a href="mailto:' . $value .'" >';
 			}

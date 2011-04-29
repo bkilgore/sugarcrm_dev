@@ -3688,6 +3688,40 @@ class InboundEmail extends SugarBean {
 		return $ret;
 	}
 
+   /**
+	* URL cleanup function
+	* Until we have comprehensive CSRF protection, we need to sanitize URLs in emails
+	* to avoid CSRF attacks
+	*/
+	public function urlCleaner($attr, $value)
+	{
+	// hrefs are ok
+	    if(strtolower($attr) == "href") return true;
+	    $items = parse_url($value);
+	    if(empty($items)) return false;
+	// don't allow relative URLs
+		if(empty($items['host'])) return false;
+	// allow URLs with no query
+		if(empty($items['query'])) return true;
+	// allow URLs that don't start with /? or /index.php?
+		if(!empty($items['path']) && $items['path'] != '/' && strtolower(substr($items['path'], -10)) != '/index.php') {
+			return true;
+		}
+	// now we have blah-blah/index.php?query - let's see if query looks dangerous
+		$query_items = array();
+		parse_str(from_html($items['query']), $query_items);
+	// weird query, probably harmless
+		if(empty($query_items)) return true;
+	// suspiciously like SugarCRM query, reject
+		if(!empty($query_items['module']) && !empty($query_items['action'])) return false;
+	// looks like non-download entry point - allow only specific entry points
+		if(!empty($query_items['entryPoint']) && !in_array($query_items['entryPoint'], array('download', 'image', 'getImage'))) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * Cleans content for XSS and other types of attack vectors
 	 * @param string str String to clean
@@ -3696,6 +3730,7 @@ class InboundEmail extends SugarBean {
 	function cleanContent($str) {
 		// Safe_HTML
 		$this->safe->clear();
+		$this->safe->setUrlCallback(array($this, "urlCleaner"));
 		$str = $this->safe->parse($str);
 		return $this->cleanXssContent($str);
 	}

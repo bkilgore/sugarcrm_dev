@@ -4842,6 +4842,33 @@ function upgrade_connectors($path='') {
     logThis('End upgrade_connectors', $path);
 }
 
+function repair_long_relationship_names($path='')
+{
+    logThis("Begin repair_long_relationship_names", $path);
+    require_once 'modules/ModuleBuilder/parsers/relationships/DeployedRelationships.php' ;
+    $GLOBALS['mi_remove_tables'] = false;
+    $touched = array();
+    foreach($GLOBALS['moduleList'] as $module)
+    {
+        $relationships = new DeployedRelationships ($module) ;
+        foreach($relationships->getRelationshipList() as $rel_name)
+        {
+            if (strlen($rel_name) > 27 && empty($touched[$rel_name]))
+            {
+                logThis("Rebuilding relationship fields for $rel_name", $path);
+                $touched[$rel_name] = true;
+                $rel_obj = $relationships->get($rel_name);
+                $rel_obj->setReadonly(false);
+                $relationships->delete($rel_name);
+                $relationships->save();
+                $relationships->add($rel_obj);
+                $relationships->save();
+                $relationships->build () ;
+            }
+        }
+    }
+    logThis("End repair_long_relationship_names", $path);
+}
 
 function removeSilentUpgradeVarsCache(){
     global $silent_upgrade_vars_loaded;

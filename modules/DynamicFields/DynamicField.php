@@ -398,21 +398,24 @@ class DynamicField {
                         elseif ( $this->bean->$name === TRUE )
                             $this->bean->$name = '1';
                     }
-                    if(($field['type'] == 'date' || $field['type'] == 'datetimecombo') && (empty($this->bean->$name )|| $this->bean->$name == '1900-01-01')){
-                        $quote = '';
-                        $this->bean->$name = "NULL";
+
+                    $val = $this->bean->$name;
+					if(($field['type'] == 'date' || $field['type'] == 'datetimecombo') && (empty($this->bean->$name )|| $this->bean->$name == '1900-01-01')){
+                    	$quote = '';
+                        $val = 'NULL';
+                        $this->bean->$name = ''; // do not set it to string 'NULL'
                     }
                     if($isUpdate){
                         if($first){
-                            $query .= " $name=$quote".$GLOBALS['db']->quote($this->bean->$name)."$quote";
+                            $query .= " $name=$quote".$GLOBALS['db']->quote($val)."$quote";
 
                         }else{
-                            $query .= " ,$name=$quote".$GLOBALS['db']->quote($this->bean->$name)."$quote";
+                            $query .= " ,$name=$quote".$GLOBALS['db']->quote($val)."$quote";
                         }
                     }
                     $first = false;
                     $queryInsert .= " ,$name";
-                    $values .= " ,$quote". $GLOBALS['db']->quote($this->bean->$name). "$quote";
+                    $values .= " ,$quote". $GLOBALS['db']->quote($val). "$quote";
                 }
             }
             if($isUpdate){

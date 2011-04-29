@@ -55,6 +55,7 @@ class ListViewDisplay {
 	var $multiSelect = true;
 	var $mailMerge = true;
 	var $should_process = true;
+	var $show_plus = false;
 	/*
 	 * Used in view.popup.php. Sometimes there are fields on the search form that are not referenced in the listviewdefs. If this
 	 * is the case, then the filterFields will be set and the related fields will not be referenced when calling create_new_list_query.
@@ -269,6 +270,11 @@ class ListViewDisplay {
 		global $app_strings;
 		if ($pageTotal < 0)
 			$pageTotal = $total;
+		$plus = '';
+		if (!empty($GLOBALS['sugar_config']['disable_count_query']) && $total > $pageTotal) {
+			$plus = '+';
+			$this->show_plus = true;
+		}
 		$script = "<script>
 			function select_overlib() {
 				return overlib('<a style=\'width: 150px\' name=\"thispage\" class=\'menuItem\' onmouseover=\'hiliteItem(this,\"yes\");\' onmouseout=\'unhiliteItem(this);\' onclick=\'if (document.MassUpdate.select_entire_list.value==1){document.MassUpdate.select_entire_list.value=0;sListView.check_all(document.MassUpdate, \"mass[]\", true, $pageTotal)}else {sListView.check_all(document.MassUpdate, \"mass[]\", true)};\' href=\'#\'>{$app_strings['LBL_LISTVIEW_OPTION_CURRENT']}&nbsp;&#x28;{$pageTotal}&#x29;&#x200E;</a>"
@@ -440,7 +446,7 @@ EOHTML;
 	function buildSelectedObjectsSpan($echo = true, $total=0) {
 		global $app_strings;
 
-		$selectedObjectSpan = "<div style='display: inline-block;'>{$app_strings['LBL_LISTVIEW_SELECTED_OBJECTS']}<input  style='border: 0px; background: transparent; font-size: inherit; color: inherit' type='text' id='selectCountTop' readonly name='selectCount[]' value='{$total}' /></div>";
+		$selectedObjectSpan = "<span style='display: inline-block;'>{$app_strings['LBL_LISTVIEW_SELECTED_OBJECTS']}<input  style='border: 0px; background: transparent; font-size: inherit; color: inherit' type='text' id='selectCountTop' readonly name='selectCount[]' value='{$total}' /></span>";
 
         return $selectedObjectSpan;
 	}
@@ -506,7 +512,9 @@ EOHTML;
 	protected function buildTargetList()
 	{
         global $app_strings;
-        $current_query_by_page = base64_encode(serialize(array_merge($_POST, $_GET)));
+        $temp = array_merge($_GET, $_POST);
+        unset($temp['current_query_by_page']);
+		$current_query_by_page = base64_encode(serialize($temp));
 
 		$js = <<<EOF
             if(sugarListView.get_checks_count() < 1) {
@@ -606,9 +614,9 @@ EOF;
 
 		$str .= "<textarea style='display: none' name='uid'>{$uids}</textarea>\n" .
 				"<input type='hidden' name='select_entire_list' value='{$select_entire_list}'>\n".
-				"<input type='hidden' name='{$this->moduleString}' value='0'>\n";
-		
-        return $str;
+				"<input type='hidden' name='{$this->moduleString}' value='0'>\n".
+		        "<input type='hidden' name='show_plus' value='{$this->show_plus}'>\n";
+		return $str;
 	}
 
 }

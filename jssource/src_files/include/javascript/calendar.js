@@ -36,6 +36,26 @@
 
 Calendar = function() {};
 
+Calendar.getHighestZIndex = function (containerEl)
+{
+   var highestIndex = 0;
+   var currentIndex = 0;
+   var els = Array();
+   
+   els = containerEl ? containerEl.getElementsByTagName('*') : document.getElementsByTagName('*');
+   
+   for(var i=0; i < els.length; i++)
+   {
+      currentIndex = YAHOO.util.Dom.getStyle(els[i], "zIndex");
+      if(!isNaN(currentIndex) && currentIndex > highestIndex)
+      { 
+      	 highestIndex = parseInt(currentIndex); 
+      }
+   }
+   
+   return (highestIndex == Number.MAX_VALUE) ? Number.MAX_VALUE : highestIndex+1;
+};
+
 Calendar.setup = function (params) {
 
     YAHOO.util.Event.onDOMReady(function(){
@@ -58,14 +78,14 @@ Calendar.setup = function (params) {
         Event.on(Dom.get(showButton), "click", function() {
 
             if (!dialog) {
-                             
+                                  
                 dialog = new YAHOO.widget.SimpleDialog("container_" + showButton, {
                     visible:false,
                     context:[showButton, "tl", "bl"],
                     buttons:[],
                     draggable:false,
                     close:true,
-                    zIndex: 1000
+                    zIndex: Calendar.getHighestZIndex(document.body)
                 });
                 
                 dialog.setHeader(SUGAR.language.get('app_strings', 'LBL_MASSUPDATE_DATE'));

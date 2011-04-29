@@ -52,17 +52,8 @@ $viewdefs[$module_name]['DetailView'] = array(
                         ),
 
 'panels' =>array (
-  array('application'),
-  array (
-    'name',
-  ),
-  array (
-    'active', 'validated'
-  ),
-  array (
-     'url'
-  ),
-
+    array('application', 'validated'),
+    array('name',        'url'),
 
   array (
 	array (
@@ -77,9 +68,6 @@ $viewdefs[$module_name]['DetailView'] = array(
     ),
   ),
 
-  array (
-    'description',
-  ),
 )
 );
 ?>

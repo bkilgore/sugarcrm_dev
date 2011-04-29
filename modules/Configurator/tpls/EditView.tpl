@@ -139,7 +139,7 @@
     </tr>
     <tr>
         <td  scope="row" width='12%' nowrap>
-        {$MOD.CURRENT_LOGO}&nbsp;{sugar_help text=$MOD.CURRENT_LOGO_HELP} 
+        {$MOD.CURRENT_LOGO}&nbsp;{sugar_help text=$MOD.CURRENT_LOGO_HELP}
         </td>
         <td width='35%' >
             <img id="company_logo_image" src='{$company_logo}' height="40" width="212">
@@ -217,7 +217,7 @@
 	</tr>
  </table>
 
-  
+
 <table width="100%" border="0" cellspacing="1" cellpadding="0" class="edit view">
 	<tr>
 	<th align="left" scope="row" colspan="4"><h4>{$MOD.LBL_MAILMERGE}</h4></th>
@@ -303,9 +303,9 @@
 			<input type='text' size='4' name='vcal_time' value='{$config.vcal_time}'>
 		</td>
 	</tr>
-	
-	
-	
+
+
+
 </table>
 
 
@@ -382,9 +382,10 @@ function toggleDisplay_2(div_string){
             eval("var file_type = " + r.responseText);
             var forQuotes = file_type['forQuotes'];
             document.getElementById('loading_img_'+forQuotes).style.display="none";
+            bad_image = SUGAR.language.get('Configurator',(forQuotes == 'quotes')?'LBL_ALERT_TYPE_JPEG':'LBL_ALERT_TYPE_IMAGE');
             switch(file_type['data']){
                 case 'other':
-                    alert(SUGAR.language.get('Configurator','LBL_ALERT_JPG_IMAGE'));
+                    alert(bad_image);
                     document.getElementById('my_file_' + forQuotes).value='';
                     break;
                 case 'size':
@@ -403,7 +404,7 @@ function toggleDisplay_2(div_string){
                     break;
                 //error in getimagesize because unsupported type
                 default:
-                   alert(SUGAR.language.get('Configurator','LBL_ALERT_TYPE_IMAGE'));
+                   alert(bad_image);
                    document.getElementById('my_file_' + forQuotes).value='';
             }
         },

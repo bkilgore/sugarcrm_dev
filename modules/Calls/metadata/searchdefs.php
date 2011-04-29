@@ -115,7 +115,8 @@ array (
   ),
   'templateMeta' => 
   array (
-    'maxColumns' => '4',
+    'maxColumns' => '3',
+    'maxColumnsBasic' => '4',
     'widths' => 
     array (
       'label' => '10',

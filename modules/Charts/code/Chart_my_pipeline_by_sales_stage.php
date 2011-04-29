@@ -398,7 +398,7 @@ echo get_validate_chart_js();
 
 	function constructQuery(){
 		global $current_user;
-		global $time_date;
+		global $timedate;
 
 		//get the dates to display
 		$user_date_start = $current_user->getPreference('mypbss_date_start');

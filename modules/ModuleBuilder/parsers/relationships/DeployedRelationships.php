@@ -167,6 +167,8 @@ class DeployedRelationships extends AbstractRelationships implements Relationshi
         $rac = new RepairAndClear ( ) ;
         $rac->repairAndClearAll ( array ( 'clearAll', 'rebuildExtensions',  ), array ( $GLOBALS [ 'mod_strings' ] [ 'LBL_ALL_MODULES' ] ), true, false ) ;
         $GLOBALS [ 'mod_strings' ] = $MBmodStrings;
+
+        //Bug 41070, supercedes the previous 40941 fix in this section
         if (isset($this->relationships[$rel_name]))
         {
             unset($this->relationships[$rel_name]);
@@ -380,6 +382,38 @@ class DeployedRelationships extends AbstractRelationships implements Relationshi
                     $parser->handleSave ( false ) ;
                 }
         }
+    }
+    
+    /**
+     * Added for bug #40941
+     * Deletes the field from DetailView and editView of the appropriate module
+     * after the relatioship is deleted in delete() function above.
+     * @param $relationship    The relationship that is getting deleted
+     * return null
+     */
+	private function removeFieldsFromDeployedLayout ($relationship)
+    {
+        
+        // many-to-many relationships don't have fields so if we have a many-to-many we can just skip this...
+        if ($relationship->getType () == MB_MANYTOMANY)
+            return false ;
+        
+        $successful = true ;
+        $layoutAdditions = $relationship->buildFieldsToLayouts () ;
+        
+        require_once 'modules/ModuleBuilder/parsers/views/GridLayoutMetaDataParser.php' ;
+        foreach ( $layoutAdditions as $deployedModuleName => $fieldName )
+        {
+            foreach ( array ( MB_EDITVIEW , MB_DETAILVIEW ) as $view )
+            {
+                $parser = new GridLayoutMetaDataParser ( $view, $deployedModuleName ) ;
+                $parser->removeField ( $fieldName );
+                $parser->handleSave ( false ) ;
+             
+            }
+        }
+        
+        return $successful ;
     }
 
 }

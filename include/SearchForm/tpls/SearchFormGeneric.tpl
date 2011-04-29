@@ -35,7 +35,12 @@
  ********************************************************************************/
 
 *}
-
+{{* If templateMeta.maxColumnsBasic is not set, use maxColumns *}}
+{if !isset($templateMeta.maxColumnsBasic)}
+	{assign var="basicMaxColumns" value=$templateMeta.maxColumns}
+{else}
+    {assign var="basicMaxColumns" value=$templateMeta.maxColumnsBasic}
+{/if}
 
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
@@ -43,10 +48,10 @@
 	{counter assign=index}
 	{math equation="left % right"
    		  left=$index
-          right=$templateMeta.maxColumns
+          right=$basicMaxColumns
           assign=modVal
     }
-	{if ($index % $templateMeta.maxColumns == 1 && $index != 1)}
+	{if ($index % $basicMaxColumns == 1 && $index != 1)}
 		</tr><tr>
 	{/if}
 	
@@ -65,7 +70,7 @@
    	{{/if}}
    	</td>
 {{/foreach}}
-    {if $formData|@count >= $templateMeta.maxColumns+1}
+    {if $formData|@count >= $basicMaxColumns+1}
     </tr>
     <tr>
 	<td colspan="{$searchTableColumnCount}">

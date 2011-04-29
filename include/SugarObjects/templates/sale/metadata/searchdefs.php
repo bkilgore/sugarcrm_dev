@@ -47,7 +47,7 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
  $_module_name = '<_module_name>';
   $searchdefs[$module_name] = array(
 					'templateMeta' => array(
-							'maxColumns' => '3',
+							'maxColumns' => '3', 'maxColumnsBasic' => '4',
                             'widths' => array('label' => '10', 'field' => '30'),
                            ),
                     'layout' => array(

@@ -54,7 +54,7 @@ if(isset($_FILES['file_1'])){
     $file_name = $uploadTmpDir . DIRECTORY_SEPARATOR .  cleanFileName(basename($_FILES['file_1']['name']));
     if(file_exists($uploadTmpDir))
        rmdir_recursive($uploadTmpDir);
-    
+
     mkdir_recursive( $uploadTmpDir,null,true );
     if (!empty($_FILES['file_1']['error'])){
         rmdir_recursive($uploadTmpDir);
@@ -75,14 +75,12 @@ if(isset($_FILES['file_1'])){
 }
 if(file_exists($file_name) && is_file($file_name)){
     $returnArray['path']=$file_name;
-    $img_size = getimagesize($file_name);
-    $filetype = $img_size['mime'];
-    $ext = end(explode(".", $file_name));
-    if($ext === $file_name || !in_array($ext, $supportedExtensions) || ($filetype != 'image/jpeg' && $filetype != 'image/png') ||  ($filetype != 'image/jpeg' && $returnArray['forQuotes'] == 'quotes')){
+    if(!verify_uploaded_image($file_name, $returnArray['forQuotes'] == 'quotes')) {
         $returnArray['data']='other';
         $returnArray['path'] = '';
-        
-    }else{
+    } else {
+        $img_size = getimagesize($file_name);
+        $filetype = $img_size['mime'];
         $test=$img_size[0]/$img_size[1];
         if (($test>10 || $test<1) && $returnArray['forQuotes'] == 'company'){
             $rmdir=false;

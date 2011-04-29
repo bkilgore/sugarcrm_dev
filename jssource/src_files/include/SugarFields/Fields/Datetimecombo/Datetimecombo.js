@@ -193,17 +193,31 @@ Datetimecombo.prototype.html = function(callback) {
 /**
  * update
  * This method handles events on the hour, minute and meridiem elements for the widget
- *
+ * 
+ * XXX TODO 20100317 Frank Steegmans: The code in this module is violating so many best practices
+ * that it will need to get rewritten. Also note that it still stems from before the datetime unification.
  */
 Datetimecombo.prototype.update = function() {
-    id = this.fieldname + '_date';
-    d = window.document.getElementById(id).value;
-	id = this.fieldname + '_hours';
-	h = window.document.getElementById(id).value;
-	id = this.fieldname + '_minutes';
-	m = window.document.getElementById(id).value;
+	// Bug 42025: hour/minute/second still required when start_date is non required
+	//			  Fixing this by just assigning default when they aren't required
+    var d = window.document.getElementById(this.fieldname + '_date');
+	var h = window.document.getElementById(this.fieldname + '_hours');
+	var m = window.document.getElementById(this.fieldname + '_minutes');
+	var mer = document.getElementById(this.fieldname + "_meridiem");
 	
-	newdate = d + ' ' + h + this.timeseparator  + m;
+	if(d.value == "") { // if date is not set wipe time settings
+		h.selectedIndex = 0;
+		m.selectedIndex = 0;
+		if(mer) mer.selectedIndex = 0;
+	} else { // if date is set and hours/minutes are not allowed empty, initialize them
+		if(this.allowEmptyHM) {
+			if(h.selectedIndex == 0) h.selectedIndex = 12;
+			if(m.selectedIndex == 0) m.selectedIndex = 1;
+			if(mer && (mer.selectedIndex == 0)) mer.selectedIndex = 1;
+		}
+	}
+	
+	var newdate = d.value + ' ' + h.value + this.timeseparator  + m.value;
 
 	if(this.hasMeridiem) {
 	   ampm = document.getElementById(this.fieldname + "_meridiem").value;

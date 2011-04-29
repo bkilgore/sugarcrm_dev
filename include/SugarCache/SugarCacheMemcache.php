@@ -43,22 +43,27 @@ class SugarCacheMemcache extends SugarCacheAbstract
      * @var Memcache server name string
      */
     protected $_host = 'localhost';
-    
+
     /**
      * @var Memcache server port int
      */
     protected $_port = 11211;
-    
+
     /**
      * @var Memcache object
      */
     protected $_memcache = '';
-    
+
     /**
      * @see SugarCacheAbstract::$_priority
      */
     protected $_priority = 900;
-     
+
+    /**
+     * Minimal data size to be compressed
+     * @var int
+     */
+    protected $min_compress = 512;
     /**
      * @see SugarCacheAbstract::useBackend()
      */
@@ -68,10 +73,10 @@ class SugarCacheMemcache extends SugarCacheAbstract
                 && empty($GLOBALS['sugar_config']['external_cache_disabled_memcache'])
                 && $this->_getMemcacheObject() )
             return true;
-            
+
         return false;
     }
-    
+
     /**
      * @see SugarCacheAbstract::__construct()
      */
@@ -79,7 +84,7 @@ class SugarCacheMemcache extends SugarCacheAbstract
     {
         parent::__construct();
     }
-    
+
     /**
      * Get the memcache object; initialize if needed
      */
@@ -87,16 +92,22 @@ class SugarCacheMemcache extends SugarCacheAbstract
     {
         if ( !($this->_memcache instanceOf Memcache) ) {
             $this->_memcache = new Memcache();
-            $this->_host = SugarConfig::getInstance()->get('external_cache.memcache.host', $this->_host);
-            $this->_port = SugarConfig::getInstance()->get('external_cache.memcache.port', $this->_port);
+            $config = SugarConfig::getInstance();
+            $this->_host = $config->get('external_cache.memcache.host', $this->_host);
+            $this->_port = $config->get('external_cache.memcache.port', $this->_port);
             if ( !@$this->_memcache->connect($this->_host,$this->_port) ) {
                 return false;
             }
+            if($config->get('external_cache.memcache.disable_compression', false)) {
+                $this->_memcache->setCompressThreshold($config->get('external_cache.memcache.min_compression', $this->min_compress));
+            } else {
+                $this->_memcache->setCompressThreshold(0);
+            }
         }
-        
+
         return $this->_memcache;
     }
-    
+
     /**
      * @see SugarCacheAbstract::_setExternal()
      */
@@ -105,9 +116,9 @@ class SugarCacheMemcache extends SugarCacheAbstract
         $value
         )
     {
-        $this->_getMemcacheObject()->set($key, $value, $this->expireTimeout);
+        $this->_getMemcacheObject()->set($key, $value, 0, $this->expireTimeout);
     }
-    
+
     /**
      * @see SugarCacheAbstract::_getExternal()
      */
@@ -119,10 +130,10 @@ class SugarCacheMemcache extends SugarCacheAbstract
         if ( $returnValue === false ) {
             return null;
         }
-        
+
         return $returnValue;
     }
-    
+
     /**
      * @see SugarCacheAbstract::_clearExternal()
      */
@@ -132,7 +143,7 @@ class SugarCacheMemcache extends SugarCacheAbstract
     {
         $this->_getMemcacheObject()->delete($key);
     }
-    
+
     /**
      * @see SugarCacheAbstract::_resetExternal()
      */

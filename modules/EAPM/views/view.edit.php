@@ -111,7 +111,7 @@ class EAPMViewEdit extends ViewEdit {
             if(!empty($this->bean) && empty($this->bean->id) && $this->_returnId != $GLOBALS['current_user']->id){
                 $this->bean->assigned_user_id = $this->_returnId;
             }
-
+            
             parent::display();
         } else {
         	ACLController::displayNoAccess();

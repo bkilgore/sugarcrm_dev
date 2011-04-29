@@ -59,6 +59,15 @@ $dictionary['Meeting'] = array('table' => 'meetings',
     'len' => '20',
     'source'=>'non-db',
   ),
+  //bug 39559 
+  'set_accept_links' => array (
+    'name' => 'accept_status',
+    'vname' => 'LBL_SUBJECT',
+    'type' => 'varchar',
+    'dbType' => 'varchar',
+    'len' => '20',
+    'source'=>'non-db',
+  ),
   'location' =>
   array (
     'name' => 'location',

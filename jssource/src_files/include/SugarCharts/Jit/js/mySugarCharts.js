@@ -90,14 +90,9 @@ var activeTab = activePage,
 		refreshPage: function() {
 			var newWidth = document.body.offsetWidth;			
 			if(newWidth != windowWidth && !firstLoad){
-				if(SUGAR.isIE) { 
-					SUGAR.mySugar.loading.show();
-					document.getElementById('loading_c').style.display = 'inline';
-					setTimeout(function() {location.reload();}, 500);
-										
-				} else {
-					SUGAR.mySugar.retrievePage(activePage);	
-				}
+				
+				setTimeout(function() {location.reload();}, 500);
+					
 				SUGAR.mySugar.sugarCharts.loadSugarCharts(activePage);
 						
 			}

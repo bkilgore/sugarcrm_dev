@@ -1,0 +1,16 @@
+<phpunit bootstrap="SugarTestHelper.php" 
+    backupGlobals="false"
+    backupStaticAttributes="false">
+    <testsuites>
+        <testsuite>
+            <directory>build</directory>
+            <directory>data</directory>
+            <directory>include</directory>
+            <directory>install</directory>
+            <directory>modules</directory>
+            <directory>ModuleInstall</directory>
+            <directory>service</directory>
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

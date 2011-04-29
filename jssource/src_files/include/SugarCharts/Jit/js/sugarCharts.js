@@ -416,6 +416,24 @@ function loadSugarChart (chartId,jsonFilename,css,chartConfig) {
 				  type: useGradients? chartConfig["pieType"]+':gradient' : chartConfig["pieType"],
 				  //whether to show the labels for the slices
 				  showLabels:true,
+				  Title: {
+					text: properties['title'],
+					size: 16,
+					color: '#444444',
+					offset: 20
+				  },
+				  Subtitle: {
+					text: properties['subtitle'],
+					size: 11,
+					color: css["color"],
+					offset: 20
+				  },
+				  Margin: {
+					top:20,
+					left: 20,
+					right: 20,
+					bottom: 20
+				  },
 				  Events: {
 					enable: true,
 					onClick: function(node) {  

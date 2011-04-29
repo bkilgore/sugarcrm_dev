@@ -130,7 +130,7 @@ function generateComposeDataPackage($data,$forFullCompose = TRUE)
 		$email_id = "";
 		$attachments = array();
 		if ($bean->module_dir == 'Cases') {
-			$subject = str_replace('%1', $bean->case_number, $bean->getEmailSubjectMacro() . " ". $bean->name) ;
+			$subject = str_replace('%1', $bean->case_number, $bean->getEmailSubjectMacro() . " ". from_html($bean->name)) ;//bug 41928 
 			$bean->load_relationship("contacts");
 			$contact_ids = $bean->contacts->get();
 			$contact = new Contact();

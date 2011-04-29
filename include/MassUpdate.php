@@ -97,8 +97,9 @@ class MassUpdate
 		global $sugar_config;
 		global $current_user;
 
-		unset($_REQUEST['current_query_by_page']);
-		$query = base64_encode(serialize(array_merge($_POST, $_GET)));
+		$temp = array_merge($_GET, $_POST);
+        unset($temp['current_query_by_page']);
+		$query = base64_encode(serialize($temp));
 
         $bean = loadBean($_REQUEST['module']);
        $order_by_name = $bean->module_dir.'2_'.strtoupper($bean->object_name).'_ORDER_BY' ;
@@ -146,10 +147,7 @@ eoq;
 	function handleMassUpdate(){
 
 		require_once('include/formbase.php');
-		global $current_user, $db, $disable_date_format;
-		
-		//We need to disable_date_format so that date values for the beans remain in database format
-		$disable_date_format = true;
+		global $current_user, $db, $disable_date_format, $timedate;
 
 		foreach($_POST as $post=>$value){
 			if(is_array($value)){
@@ -163,24 +161,40 @@ eoq;
 				unset($_POST[$post]);
 			}
 			}
-			if(is_string($value)
-				 && isset($this->sugarbean->field_defs[$post]) &&
-				 ($this->sugarbean->field_defs[$post]['type'] == 'bool'
+			if(is_string($value) && isset($this->sugarbean->field_defs[$post])) {
+		        if(($this->sugarbean->field_defs[$post]['type'] == 'bool'
 				 	|| (!empty($this->sugarbean->field_defs[$post]['custom_type']) && $this->sugarbean->field_defs[$post]['custom_type'] == 'bool'
 				 	))){
-
-
 				 		if(strcmp($value, '2') == 0)$_POST[$post] = 0;
 				 		if(!empty($this->sugarbean->field_defs[$post]['dbType']) && strcmp($this->sugarbean->field_defs[$post]['dbType'], 'varchar') == 0 ){
 				 			if(strcmp($value, '1') == 0 )$_POST[$post] = 'on';
 				 			if(strcmp($value, '2') == 0)$_POST[$post] = 'off';
 				 		}
-			}
-			if(is_string($value)
-				 && isset($this->sugarbean->field_defs[$post]) && $this->sugarbean->field_defs[$post]['type'] == 'radioenum' && isset($_POST[$post]) && strlen($value) == 0){
-				$_POST[$post] = '';
+    			}
+			    if($this->sugarbean->field_defs[$post]['type'] == 'radioenum' && isset($_POST[$post]) && strlen($value) == 0){
+				    $_POST[$post] = '';
+			    }
+                if ($this->sugarbean->field_defs[$post]['type'] == 'bool') {
+                    $this->checkClearField($post, $value);
+                }
+			    if($this->sugarbean->field_defs[$post]['type'] == 'date' && !empty($_POST[$post])){
+			        $_POST[$post] = $timedate->to_db_date($_POST[$post]);
+			    }
+                if($this->sugarbean->field_defs[$post]['type'] == 'datetime' && !empty($_POST[$post])){
+			        $_POST[$post] = $timedate->to_db($this->date_to_dateTime($post, $value));
+			    }
+			    if($this->sugarbean->field_defs[$post]['type'] == 'datetimecombo' && !empty($_POST[$post])){
+			        $_POST[$post] = $timedate->to_db($_POST[$post]);
+			    }
 			}
 		}
+
+		//We need to disable_date_format so that date values for the beans remain in database format
+		//notice we make this call after the above section since the calls to TimeDate class there could wind up
+		//making it's way to the UserPreferences objects in which case we want to enable the global date formatting
+		//to correctly retrieve the user's date format preferences
+		$old_value = $disable_date_format;
+		$disable_date_format = true;
 
 		if(!empty($_REQUEST['uid'])) $_POST['mass'] = explode(',', $_REQUEST['uid']); // coming from listview
 		elseif(isset($_REQUEST['entire']) && empty($_POST['mass'])) {
@@ -255,25 +269,6 @@ eoq;
 
 					$this->sugarbean->retrieve($id);
 
-					foreach($_POST as $field=>$value){
-                        if (isset($this->sugarbean->field_defs[$field])) {
-                            if($this->sugarbean->field_defs[$field]['type'] == 'datetime') {
-                                $_POST[$field] = $this->date_to_dateTime($field, $value);
-                            }
-                            if($this->sugarbean->field_defs[$field]['type'] == 'datetimecombo') {
-                                if(!empty($_POST[$field]) && strlen($_POST[$field]) > 10 ){
-						    		$dateValue = $_POST[$field];
-						    		$_POST[$field] = $dateValue;
-						    	}else{
-						    		unset($_POST[$field]);
-						    	}
-                            }
-                            if ($this->sugarbean->field_defs[$field]['type'] == 'bool') {
-                                $this->checkClearField($field, $value);
-                            }
-                        }
-                    }
-
 
 					if($this->sugarbean->ACLAccess('Save')){
 						$_POST['record'] = $id;
@@ -340,7 +335,7 @@ eoq;
 			}
 
 		}
-
+		$disable_date_format = $old_value;
 	}
 	/**
   	  * Displays the massupdate form

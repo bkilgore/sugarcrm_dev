@@ -237,7 +237,6 @@ require_once('modules/UpgradeWizard/uw_utils.php');
 require_once('include/utils/zip_utils.php');
 require_once('include/utils/sugar_file_utils.php');
 require_once('include/SugarObjects/SugarConfig.php');
-
 global $sugar_config;
 $isDCEInstance = false;
 $errors = array();
@@ -356,6 +355,12 @@ set_time_limit(0);
 
 ///    RELOAD NEW DEFINITIONS
 global $ACLActions, $beanList, $beanFiles;
+
+require_once('modules/Trackers/TrackerManager.php');
+$trackerManager = TrackerManager::getInstance();
+$trackerManager->pause();
+$trackerManager->unsetMonitors();
+
 include('modules/ACLActions/actiondefs.php');
 include('include/modules.php'); 
 

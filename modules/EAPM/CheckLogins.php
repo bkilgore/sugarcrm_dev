@@ -42,7 +42,7 @@ require_once('include/externalAPI/ExternalAPIFactory.php');
 
 global $app_strings;
 
-$checkList = ExternalAPIFactory::listAPI();
+$checkList = ExternalAPIFactory::listAPI('',true);
 
 if ( !empty($_REQUEST['api']) ) {
     // Check just one login type
@@ -68,16 +68,16 @@ if ( is_array($checkList) ) {
             if ( ! $loginCheck['success'] ) {
                 $thisFail = array();
                 
-                $thisFail['checkURL'] = 'index.php?module=EAPM&closeWhenDone=1&action=Save&record='.$api->eapmBean->id;
+                $thisFail['checkURL'] = 'index.php?module=EAPM&closeWhenDone=1&action=QuickSave&application='.$apiName;
 
                 $translateKey = 'LBL_EXTAPI_'.strtoupper($apiName);
                 if ( ! empty($app_strings[$translateKey]) ) {
-                    $thisFail['label'] = $app_strings[$translateKey];
+                    $apiLabel = $app_strings[$translateKey];
                 } else {
-                    $thisFail['label'] = $apiName;
+                    $apiLabel = $apiName;
                 }
 
-                $thisFail['label'] .= translate('LBL_ERR_FAILED_QUICKCHECK','EAPM');
+                $thisFail['label'] = str_replace('{0}',$apiLabel,translate('LBL_ERR_FAILED_QUICKCHECK','EAPM'));
                 
                 $failList[$apiName] = $thisFail;
             }

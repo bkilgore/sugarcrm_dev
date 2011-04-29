@@ -64,7 +64,6 @@ class EAPM extends Basic {
 		var $password;
 		var $url;
 		var $validated = false;
-		var $active;
 		var $oauth_token;
 		var $oauth_secret;
 		var $application;
@@ -92,10 +91,9 @@ class EAPM extends Basic {
                return null;
            }
        } else {
-           $queryArray = array('assigned_user_id'=>$current_user->id, 'application'=>$application );
+           $queryArray = array('assigned_user_id'=>$current_user->id, 'application'=>$application, 'deleted'=>0 );
            if ( !$includeInactive ) {
                $queryArray['validated'] = 1;
-               $queryArray['active'] = 1;
            }
            $eapmBean = $eapmBean->retrieve_by_string_fields($queryArray);
            
@@ -168,9 +166,9 @@ class EAPM extends Basic {
         // Don't use save, it will attempt to revalidate
        $adata = $GLOBALS['db']->quote($this->api_data);
        $GLOBALS['db']->query("UPDATE eapm SET validated=1,api_data='$adata'  WHERE id = '{$this->id}' AND deleted = 0");
-       if($this->active && !empty($this->application)) {
+       if(!$this->deleted && !empty($this->application)) {
            // deactivate other EAPMs with same app
-           $sql = "UPDATE eapm SET active=0 WHERE application = '{$this->application}' AND id != '{$this->id}' AND active=1 AND deleted = 0 AND assigned_user_id = '{$this->assigned_user_id}'";
+           $sql = "UPDATE eapm SET deleted=1 WHERE application = '{$this->application}' AND id != '{$this->id}' AND deleted = 0 AND assigned_user_id = '{$this->assigned_user_id}'";
            $GLOBALS['db']->query($sql,true);
        }
 

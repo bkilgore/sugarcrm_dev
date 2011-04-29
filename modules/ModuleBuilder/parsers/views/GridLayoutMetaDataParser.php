@@ -721,7 +721,7 @@ class GridLayoutMetaDataParser extends AbstractMetaDataParser implements MetaDat
 	{
 		$ret = array_intersect_key ( $def , 
             array ( 'studio' => true , 'name' => true , 'label' => true , 'displayParams' => true , 'comment' => true , 
-                    'customCode' => true , 'customLabel' => true , 'tabIndex' => true , 'hideLabel' => true) ) ;
+                    'customCode' => true , 'customLabel' => true , 'tabindex' => true , 'hideLabel' => true) ) ;
         if (!empty($def['vname']) && empty($def['label']))
             $ret['label'] = $def['vname'];
 		return $ret;

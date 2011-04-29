@@ -87,7 +87,7 @@ init: function() {
     new YAHOO.util.DDTarget("{$source_id}:{$module}:enabled_ul"); 
 	new YAHOO.util.DDTarget("{$source_id}:{$module}:disabled_ul"); 
 	{foreach from=$field_defs key=index item=field}
-	     new YAHOO.example.DDList("{$source_id}:{$module}:{$index}");
+	     new YAHOO.example.DDList("{$source_id}:{$module}:{$index}", ["{$source_id}:{$module}:enabled_ul",  "{$source_id}:{$module}:disabled_ul"]);
 	{/foreach}
 {/foreach}    
 {literal}	        

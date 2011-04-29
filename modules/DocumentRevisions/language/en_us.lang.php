@@ -52,7 +52,7 @@ $mod_strings = array (
 
 	//vardef labels
 	'LBL_REVISION_NAME' => 'Revision Number',
-	'LBL_FILENAME' => 'Filename',
+	'LBL_FILENAME' => 'File:',
 	'LBL_MIME' => 'Mime Type',
 	'LBL_REVISION' => 'Revision',
 	'LBL_DOCUMENT' => 'Related Document',
@@ -72,7 +72,7 @@ $mod_strings = array (
 	'LBL_REV_LIST_ENTERED' => 'Date Created',
 	'LBL_REV_LIST_CREATED' => 'Created by',
 	'LBL_REV_LIST_LOG'=> 'Change Log',
-	'LBL_REV_LIST_FILENAME' => 'Filename',
+	'LBL_REV_LIST_FILENAME' => 'File',
 
 	'LBL_CURRENT_DOC_VERSION'=> 'Latest Revision:',
 	'LBL_SEARCH_FORM_TITLE'=> 'Document Search',

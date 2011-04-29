@@ -170,13 +170,6 @@ class SearchMerge extends ListViewMerge{
 		return false;
 	}	
 	
-	
-	/**
-	 * Merge the templateMeta entry for the view defs.  Also assume that any changes made in the custom files should
-	 * have precedence since they must be changed manually, even over new files that may be provided in the upgarde
-	 * patch.
-	 *
-	 */
 	protected function mergeTemplateMeta()
 	{
 	    if( isset($this->customData[$this->module][$this->viewDefs][$this->templateMetaName]) )
@@ -184,16 +177,11 @@ class SearchMerge extends ListViewMerge{
 	       $this->newData[$this->module][$this->viewDefs][$this->templateMetaName] = $this->customData[$this->module][$this->viewDefs][$this->templateMetaName];
 	    }
 	    
-	    //Now here comes some special customization.  In 6.2 we added "Open Items" checkbox for basic search forms for eight
-	    //modules and set the maxColumns attribute for these modules to be 4 instead of 3.  The eight modules are 
-	    //Bugs, Calls, Cases, Leads, Meetings, Opportunities, Quotes and Tasks.  Here we are updating the maxColumns to 4 for
-	    //these eight modules if the current value is 3.
-	    $open_item_modules = array('Bugs', 'Calls', 'Cases', 'Leads', 'Meetings', 'Opportunities', 'Quotes', 'Tasks');	    
-	    
-	    if(in_array($this->module, $open_item_modules) && (isset($this->newData[$this->module][$this->viewDefs][$this->templateMetaName]['maxColumns']) && $this->newData[$this->module][$this->viewDefs][$this->templateMetaName]['maxColumns'] == '3'))
+	    if(!isset($this->newData[$this->module][$this->viewDefs][$this->templateMetaName]['maxColumnsBasic']) && isset($this->newData[$this->module][$this->viewDefs][$this->templateMetaName]['maxColumns']))
 	    {
-	       $this->newData[$this->module][$this->viewDefs][$this->templateMetaName]['maxColumns'] = '4';
+	    	$this->newData[$this->module][$this->viewDefs][$this->templateMetaName]['maxColumnsBasic'] = $this->newData[$this->module][$this->viewDefs][$this->templateMetaName]['maxColumns'];
 	    }
 	}	
+	
 }
 ?>

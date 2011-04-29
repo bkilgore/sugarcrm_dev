@@ -40,6 +40,9 @@
 {capture name=imageNameCapture assign=imageName}
 {sugar_fetch object=$parentFieldArray key=DOC_TYPE}_image_inline.png
 {/capture}
-<img src="{sugar_getimagepath file=$imageName}" border="0">
+{capture name=imageURLCapture assign=imageURL}
+{sugar_getimagepath file=$imageName}
+{/capture}
+{if strlen($imageURL)>1}<img src="{$imageURL}" border="0">{/if}
 {/if}
 </a>

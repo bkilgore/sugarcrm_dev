@@ -107,4 +107,9 @@ function EAPMEditStart(userIsAdmin) {
         // Disable the assigned user picker for non-admins
         document.getElementById('assigned_user_name').parentNode.innerHTML = document.getElementById('assigned_user_name').value;
     }
+
+    // Disable the app picker if we are editing an existing record.
+    if ( apiElem.form.record.value != '' ) {
+        apiElem.disabled = true;
+    }
 }

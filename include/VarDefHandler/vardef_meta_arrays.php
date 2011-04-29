@@ -179,8 +179,9 @@ $vardef_meta_array = array (
 		//end inc_override
 		),
 		'ex_override' => array(
-			'link_type' => array('one'),
+			//'link_type' => array('one'),
 			'name' => array('users'),
+		    'module' => array('Users'),
 		//end ex_override
 		)
 	

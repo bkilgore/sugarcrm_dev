@@ -189,6 +189,15 @@ $dictionary['Call'] = array('table' => 'calls', 'comment' => 'A Call is an activ
     'len' => '20',
     'source'=>'non-db',
   ),
+  //bug 39559 
+  'set_accept_links' => array (
+    'name' => 'accept_status',
+    'vname' => 'LBL_SUBJECT',
+    'dbType' => 'varchar',
+    'type' => 'varchar',
+    'len' => '20',
+    'source'=>'non-db',
+  ),
   'contact_name' =>
   array (
     'name' => 'contact_name',

@@ -76,12 +76,12 @@ else {
             // It's a document, get the revision that really stores this file
             $focusRevision = new DocumentRevision();
             $focusRevision->retrieve($_REQUEST['id']);
-            
+
             if ( empty($focusRevision->id) ) {
                 // This wasn't a document revision id, it's probably actually a document id, we need to grab that, get the latest revision and use that
                 $focusDocument = new Document();
                 $focusDocument->retrieve($_REQUEST['id']);
-                
+
                 $focusRevision->retrieve($focusDocument->document_revision_id);
 
                 if ( !empty($focusRevision->id) ) {
@@ -89,7 +89,7 @@ else {
                 }
             }
         }
-        
+
         // See if it is a remote file, if so, send them that direction
         if ( isset($focus->doc_url) && !empty($focus->doc_url) ) {
             header('Location: '.$focus->doc_url);
@@ -106,10 +106,10 @@ else {
 	$local_location = (isset($_REQUEST['isTempFile'])) ? "{$GLOBALS['sugar_config']['cache_dir']}/modules/Emails/{$_REQUEST['ieId']}/attachments/{$_REQUEST['id']}"
 		 : $GLOBALS['sugar_config']['upload_dir']."/".$_REQUEST['id'];
 
-	if(isset($_REQUEST['isTempFile']) && ($_REQUEST['type']=="SugarFieldImage")) {			
-	    $local_location =  $GLOBALS['sugar_config']['upload_dir']."/".$_REQUEST['id'];	    
+	if(isset($_REQUEST['isTempFile']) && ($_REQUEST['type']=="SugarFieldImage")) {
+	    $local_location =  $GLOBALS['sugar_config']['upload_dir']."/".$_REQUEST['id'];
     }
-    
+
 	if(!file_exists( $local_location ) || strpos($local_location, "..")) {
 		die($app_strings['ERR_INVALID_FILE_REFERENCE']);
 	}
@@ -121,7 +121,7 @@ else {
 			$query = "SELECT filename name FROM document_revisions INNER JOIN documents ON documents.id = document_revisions.document_id ";
 			$query .= "WHERE document_revisions.id = '".$db->quote($_REQUEST['id'])."' ";
 		} elseif($file_type == 'kbdocuments') {
-				$query="SELECT document_revisions.filename name	FROM document_revisions INNER JOIN kbdocument_revisions ON document_revisions.id = kbdocument_revisions.document_revision_id INNER JOIN kbdocuments ON kbdocument_revisions.kbdocument_id = kbdocuments.id ";	 
+				$query="SELECT document_revisions.filename name	FROM document_revisions INNER JOIN kbdocument_revisions ON document_revisions.id = kbdocument_revisions.document_revision_id INNER JOIN kbdocuments ON kbdocument_revisions.kbdocument_id = kbdocuments.id ";
             $query .= "WHERE document_revisions.id = '" . $db->quote($_REQUEST['id']) ."'";
 		}  elseif($file_type == 'notes') {
 			$query = "SELECT filename name FROM notes ";
@@ -151,21 +151,28 @@ else {
 			$download_location = $local_location;
 			$name = $_REQUEST['tempName'];
 		}
-		
+
 		if(isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/MSIE/", $_SERVER['HTTP_USER_AGENT']))
-		{	
+		{
 			$name = urlencode($name);
 			$name = str_replace("+", "_", $name);
 		}
 
 		header("Pragma: public");
 		header("Cache-Control: maxage=1, post-check=0, pre-check=0");
-		if(isset($_REQUEST['isTempFile']) && ($_REQUEST['type']=="SugarFieldImage"))
-			header("Content-type: image");
-		else {
-		    header("Content-type: application/force-download");
-            header("Content-disposition: attachment; filename=\"".$name."\";");
+		if(isset($_REQUEST['isTempFile']) && ($_REQUEST['type']=="SugarFieldImage")) {
+		    $mime = getimagesize($download_location);
+		    if(!empty($mime)) {
+			    header("Content-Type: {$mime['mime']}");
+		    } else {
+		        header("Content-Type: image/png");
+		    }
+		} else {
+		    header("Content-Type: application/force-download");
+            header("Content-Disposition: attachment; filename=\"".$name."\";");
 		}
+		// disable content type sniffing in MSIE
+		header("X-Content-Type-Options: nosniff");
 		header("Content-Length: " . filesize($local_location));
 		header("Expires: 0");
 		set_time_limit(0);
@@ -173,7 +180,7 @@ else {
 		@ob_end_clean();
 		ob_start();
 
-	        echo file_get_contents($download_location);
+	        readfile($download_location);
 		@ob_flush();
 	}
 }

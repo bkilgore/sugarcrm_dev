@@ -36,7 +36,7 @@
 
 $dictionary['EAPM'] = array(
 	'table'=>'eapm',
-	'audited'=>true,
+	'audited'=>false,
 	'fields'=>array (
   'password' =>
   array (
@@ -174,13 +174,17 @@ $dictionary['EAPM'] = array(
         'type' => 'bool',
 	    'default' => false,
 	  ),
-	  'active' => array(
-        'required' => false,
-        'name' => 'active',
-        'vname' => 'LBL_ACTIVE',
-        'type' => 'bool',
-	    'default' => true,
-	  ),
+      'note' => array(
+          'name' => 'note',
+          'vname' => 'LBL_NOTE',
+          'required' => false,
+          'reportable' => false,
+          'importable' => false,
+          'massupdate' => false,
+          'studio' => 'hidden',
+          'type' => 'varchar',
+          'source' => 'non-db',
+      ),
 
 ),
 	'relationships'=>array (
@@ -189,7 +193,7 @@ $dictionary['EAPM'] = array(
         array(
                 'name' => 'idx_app_active',
                 'type' => 'index',
-                'fields'=> array('assigned_user_id', 'application', 'active'),
+                'fields'=> array('assigned_user_id', 'application', 'validated'),
         ),
 ),
 	'optimistic_locking'=>true,

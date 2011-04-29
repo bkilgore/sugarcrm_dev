@@ -43,7 +43,7 @@
 $module_name = 'EAPM';
   $searchdefs[$module_name] = array(
 					'templateMeta' => array(
-							'maxColumns' => '3',
+							'maxColumns' => '3', 'maxColumnsBasic' => '4',
                             'widths' => array('label' => '10', 'field' => '30'),
                            ),
                     'layout' => array(
@@ -53,7 +53,7 @@ $module_name = 'EAPM';
 							array ('name' => 'favorites_only','label' => 'LBL_FAVORITES_FILTER','type' => 'bool',),
 							),
 						'advanced_search' => array(
-							'name', 'type', 'active', 'validated',
+							'name', 'type', 'validated',
 							array('name' => 'assigned_user_id', 'label' => 'LBL_ASSIGNED_TO', 'type' => 'enum', 'function' => array('name' => 'get_user_array', 'params' => array(false))),
 							array ('name' => 'favorites_only','label' => 'LBL_FAVORITES_FILTER','type' => 'bool',),
 							),

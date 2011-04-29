@@ -35,9 +35,9 @@
  ********************************************************************************/
 
 $viewdefs['Employees']['EditView'] = array(
-    'templateMeta' => array('maxColumns' => '2',
+    'templateMeta' => array('maxColumns' => '2', 
                             'widths' => array(
-                                            array('label' => '10', 'field' => '30'),
+                                            array('label' => '10', 'field' => '30'), 
                                             array('label' => '10', 'field' => '30')
                                             ),
                             ),
@@ -45,11 +45,7 @@ $viewdefs['Employees']['EditView'] = array(
 
   'default'=>array (
 	    array (
-	      array('name' => 'employee_status',
-	             'customCode' => '
-<select name="{$fields.employee_status.name}" id="{$fields.employee_status.name}"{if !empty($STATUS_DISABLE)} disabled{/if}>
-{html_options options=$fields.employee_status.options selected=$fields.employee_status.value}
-</select>'),
+	      'employee_status',
 	    ),
 	    array (
 	      'first_name',
@@ -58,14 +54,14 @@ $viewdefs['Employees']['EditView'] = array(
 	    array (
 	      array(
               'name'=>'title',
-              'customCode' => '{if $EDIT_REPORTS_TO}<input type="text" name="{$fields.title.name}" id="{$fields.title.name}" size="30" maxlength="50" value="{$fields.title.value}" title="">'.
+              'customCode' => '{if $EDIT_REPORTS_TO}<input type="text" name="{$fields.title.name}" id="{$fields.title.name}" size="30" maxlength="50" value="{$fields.title.value}" title="" tabindex="t" >'.
                               '{else}{$fields.title.value}<input type="hidden" name="{$fields.title.name}" id="{$fields.title.name}" value="{$fields.title.value}">{/if}'),
 	      array('name'=>'phone_work','label'=>'LBL_OFFICE_PHONE'),
 	    ),
 	    array (
 	      array(
-              'name'=>'department',
-              'customCode' => '{if $EDIT_REPORTS_TO}<input type="text" name="{$fields.department.name}" id="{$fields.department.name}" size="30" maxlength="50" value="{$fields.department.value}" title="">'.
+              'name'=>'department', 
+              'customCode' => '{if $EDIT_REPORTS_TO}<input type="text" name="{$fields.department.name}" id="{$fields.department.name}" size="30" maxlength="50" value="{$fields.department.value}" title="" tabindex="t" >'.
                               '{else}{$fields.department.value}<input type="hidden" name="{$fields.department.name}" id="{$fields.department.name}" value="{$fields.department.value}">{/if}'),
 	      'phone_mobile',
 	    ),
